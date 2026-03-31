@@ -1,39 +1,1232 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[PAGE TITLE] — Canada Marketplace Inc.</title>
-  <link rel="canonical" href="https://www.canadamarketplace.ca/[slug]">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Canada Marketplace — Buy & Sell Safely Across Canada</title>
+  <meta name="description" content="Canada's trusted marketplace. Buy and sell safely with escrow payments, verified sellers, and PIPEDA-compliant data protection. All prices in CAD." />
+  <meta name="keywords" content="Canada marketplace, buy sell Canada, Canadian online marketplace, PIPEDA compliant marketplace" />
+  <link rel="canonical" href="https://www.canadamarketplace.ca/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.canadamarketplace.ca/" />
+  <meta property="og:title" content="Canada Marketplace — Buy & Sell Safely Across Canada" />
+  <meta property="og:description" content="Canada's trusted marketplace. Escrow payments, verified sellers, data stored in Canada." />
+  <meta property="og:image" content="https://www.canadamarketplace.ca/og-image.jpg" />
+  <meta property="og:locale" content="en_CA" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Canada Marketplace — Buy & Sell Safely Across Canada" />
+  <meta name="twitter:description" content="Escrow payments, verified sellers, data stored in Canada." />
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍁</text></svg>" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+
   <style>
-    body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f5f5f4; }
-    .glass { background: rgba(23,23,23,0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f5f5f4; overflow-x: hidden; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #78716c, #57534e); border-radius: 3px; }
+
+    .glass {
+      background: rgba(23, 23, 23, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .grid-pattern {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #d6d3d1 0%, #a8a29e 50%, #78716c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gradient-text-warm {
+      background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 50%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gradient-text-red {
+      background: linear-gradient(135deg, #fecaca 0%, #f87171 50%, #dc2626 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-20px) rotate(2deg); }
+      50% { transform: translateY(-10px) rotate(0deg); }
+      75% { transform: translateY(-25px) rotate(-2deg); }
+    }
+    @keyframes morph {
+      0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+      50% { border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%; }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(60px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slide-in-right {
+      from { opacity: 0; transform: translateX(100%); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slide-out-right {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(100%); }
+    }
+
+    .animate-float { animation: float 8s ease-in-out infinite; }
+    .animate-morph { animation: morph 15s ease-in-out infinite; }
+    .animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(60px);
+      transition: all 1s cubic-bezier(0.17, 0.55, 0.55, 1);
+    }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    .stagger-1 { transition-delay: 0.1s; }
+    .stagger-2 { transition-delay: 0.2s; }
+    .stagger-3 { transition-delay: 0.3s; }
+    .stagger-4 { transition-delay: 0.4s; }
+    .stagger-5 { transition-delay: 0.5s; }
+    .stagger-6 { transition-delay: 0.6s; }
+
+    .hover-lift { transition: all 0.5s cubic-bezier(0.17, 0.55, 0.55, 1); }
+    .hover-lift:hover { transform: translateY(-12px); box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5); }
+
+    .card-shine { position: relative; overflow: hidden; }
+    .card-shine::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 60%);
+      transform: translate(-50%, -50%);
+      transition: transform 0.8s;
+    }
+    .card-shine:hover::after { transform: translate(50%, 50%); }
+
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: #f59e0b;
+      transition: width 0.4s;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    .product-img { transition: transform 0.6s cubic-bezier(0.17, 0.55, 0.55, 1); }
+    .product-card:hover .product-img { transform: scale(1.08); }
+
+    .toast { animation: fade-up 0.4s ease-out; }
+    .cart-panel-enter { animation: slide-in-right 0.35s ease-out; }
+    .cart-panel-exit { animation: slide-out-right 0.3s ease-in forwards; }
+
+    .cat-pill.active {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0a0a0a;
+      border-color: transparent;
+    }
+
+    .province-tag { transition: all 0.3s; }
+    .province-tag:hover, .province-tag.active {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+    }
+
+    .search-input:focus {
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+    }
+
+    .stat-number { font-variant-numeric: tabular-nums; }
+
+    .trust-badge {
+      background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.02));
+      border: 1px solid rgba(245,158,11,0.15);
+    }
+
+    .leaf-icon {
+      position: absolute;
+      font-size: 120px;
+      color: rgba(245, 158, 11, 0.03);
+      pointer-events: none;
+    }
+
+    .canada-flag-stripe {
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        #dc2626 15%, 
+        #dc2626 18%, 
+        #ffffff 18.5%, 
+        #ffffff 19.5%, 
+        #dc2626 20%, 
+        #dc2626 23%, 
+        transparent 38%,
+        transparent 62%,
+        #dc2626 77%,
+        #dc2626 80%,
+        #ffffff 80.5%,
+        #ffffff 81.5%,
+        #dc2626 82%,
+        #dc2626 85%,
+        transparent 100%
+      );
+      height: 2px;
+      opacity: 0.3;
+    }
   </style>
+
+  <!-- Structured Data for Google -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Canada Marketplace",
+    "url": "https://www.canadamarketplace.ca",
+    "description": "Canada's trusted marketplace. Buy and sell safely with escrow payments, verified sellers, and PIPEDA-compliant data protection.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.canadamarketplace.ca/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Canada Marketplace Inc.",
+    "url": "https://www.canadamarketplace.ca",
+    "logo": "https://www.canadamarketplace.ca/logo.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "support@canadamarketplace.ca",
+      "contactType": "customer support",
+      "areaServed": "CA"
+    },
+    "jurisdiction": "CA"
+  }
+  </script>
 </head>
-<body>
-  <nav class="py-4 px-6">
-    <div class="max-w-7xl mx-auto glass rounded-2xl px-6 py-4 flex items-center justify-between">
-      <a href="https://www.canadamarketplace.ca" class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center text-white">
-          <span class="iconify" data-icon="mdi:maple-leaf" data-width="22"></span>
+<body class="grid-pattern">
+
+  <!-- Decorative Blobs -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-stone-800/30 to-stone-900/30 rounded-full blur-3xl animate-morph"></div>
+    <div class="absolute top-1/3 -right-48 w-80 h-80 bg-gradient-to-br from-red-900/15 to-stone-900/15 rounded-full blur-3xl animate-morph" style="animation-delay:-5s"></div>
+    <div class="absolute bottom-1/4 left-1/4 w-72 h-72 bg-gradient-to-br from-stone-800/20 to-stone-900/20 rounded-full blur-3xl animate-morph" style="animation-delay:-10s"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 py-4 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="glass rounded-2xl px-6 py-4 flex items-center justify-between">
+        <a href="https://www.canadamarketplace.ca" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform duration-500 shadow-lg shadow-red-900/30">
+            <span class="iconify" data-icon="mdi:maple-leaf" data-width="22"></span>
+          </div>
+          <div class="hidden sm:block">
+            <span class="text-stone-100 font-semibold text-lg tracking-tight block leading-tight">Canada</span>
+            <span class="text-[10px] text-stone-500 uppercase tracking-[0.25em] leading-tight">Marketplace</span>
+          </div>
+        </a>
+
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="#categories" class="nav-link text-sm text-stone-400 hover:text-stone-200 transition-colors">Categories</a>
+          <a href="#products" class="nav-link text-sm text-stone-400 hover:text-stone-200 transition-colors">Browse</a>
+          <a href="#regions" class="nav-link text-sm text-stone-400 hover:text-stone-200 transition-colors">Regions</a>
+          <a href="#safety" class="nav-link text-sm text-stone-400 hover:text-stone-200 transition-colors">How It Works</a>
+          <a href="#sellers" class="nav-link text-sm text-stone-400 hover:text-stone-200 transition-colors">Sellers</a>
         </div>
-        <div><span class="text-stone-100 font-semibold text-lg block leading-tight">Canada</span><span class="text-[10px] text-stone-500 uppercase tracking-[0.25em] leading-tight">Marketplace</span></div>
-      </a>
-      <a href="https://www.canadamarketplace.ca" class="text-sm text-stone-400 hover:text-stone-200 transition-colors">← Back to Marketplace</a>
+
+        <div class="flex items-center gap-3">
+          <button onclick="toggleSearch()" class="w-10 h-10 rounded-xl border border-neutral-800 flex items-center justify-center text-stone-400 hover:text-stone-200 hover:border-neutral-700 transition-all" aria-label="Search">
+            <span class="iconify" data-icon="mdi:magnify" data-width="20"></span>
+          </button>
+          <button onclick="toggleCart()" class="relative w-10 h-10 rounded-xl border border-neutral-800 flex items-center justify-center text-stone-400 hover:text-stone-200 hover:border-neutral-700 transition-all" aria-label="Cart">
+            <span class="iconify" data-icon="mdi:cart-outline" data-width="20"></span>
+            <span id="cart-badge" class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-amber-500 text-[10px] font-semibold text-black flex items-center justify-center hidden">0</span>
+          </button>
+          <button onclick="openSellModal()" class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-red-700 text-white text-sm font-medium hover:from-red-500 hover:to-red-600 transition-all shadow-lg shadow-red-900/20">
+            <span class="iconify" data-icon="mdi:plus" data-width="16"></span>
+            Sell
+          </button>
+          <button onclick="toggleMobileMenu()" class="lg:hidden w-10 h-10 rounded-xl border border-neutral-800 flex items-center justify-center text-stone-400 hover:text-stone-200 transition-all" aria-label="Menu">
+            <span class="iconify" data-icon="mdi:menu" data-width="20"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div id="search-bar" class="glass rounded-2xl px-6 py-4 mt-2 hidden" style="animation: fade-up 0.3s ease-out">
+        <div class="flex items-center gap-4">
+          <span class="iconify text-stone-500" data-icon="mdi:magnify" data-width="22"></span>
+          <input type="text" id="search-input" placeholder="Search across all of Canada..." class="search-input flex-1 bg-transparent border-none outline-none text-stone-200 placeholder-stone-600 text-base" oninput="handleSearch(this.value)" aria-label="Search products" />
+          <button onclick="toggleSearch()" class="text-stone-500 hover:text-stone-300 transition-colors" aria-label="Close search">
+            <span class="iconify" data-icon="mdi:close" data-width="20"></span>
+          </button>
+        </div>
+        <div id="search-results" class="mt-3 hidden border-t border-neutral-800 pt-3"></div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="glass rounded-2xl px-6 py-4 mt-2 hidden lg:hidden" style="animation: fade-up 0.3s ease-out">
+        <div class="flex flex-col gap-3">
+          <a href="#categories" class="text-sm text-stone-400 hover:text-stone-200 transition-colors py-2">Categories</a>
+          <a href="#products" class="text-sm text-stone-400 hover:text-stone-200 transition-colors py-2">Browse</a>
+          <a href="#regions" class="text-sm text-stone-400 hover:text-stone-200 transition-colors py-2">Regions</a>
+          <a href="#safety" class="text-sm text-stone-400 hover:text-stone-200 transition-colors py-2">How It Works</a>
+          <a href="#sellers" class="text-sm text-stone-400 hover:text-stone-200 transition-colors py-2">Sellers</a>
+          <a href="/privacy" class="text-sm text-stone-400 hover:text-stone-200 transition-colors py-2">Privacy Policy</a>
+          <button onclick="openSellModal()" class="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-red-700 text-white text-sm font-medium mt-2">
+            <span class="iconify" data-icon="mdi:plus" data-width="16"></span>
+            Start Selling
+          </button>
+        </div>
+      </div>
     </div>
   </nav>
-  <main class="max-w-3xl mx-auto px-6 py-16">
-    <h1 class="text-4xl font-bold mb-2">[PAGE TITLE]</h1>
-    <p class="text-stone-500 text-sm mb-10">Coming soon. Contact privacy@canadamarketplace.ca for questions.</p>
-    <div class="text-stone-400 font-light leading-relaxed">
-      <p>This page is under development and will be published before marketplace launch. Canada Marketplace Inc. is committed to full transparency and legal compliance.</p>
+
+  <!-- Hero Section -->
+  <section class="min-h-screen flex items-center justify-center relative px-6 pt-24">
+    <div class="leaf-icon top-20 right-10 animate-float">
+      <span class="iconify" data-icon="mdi:maple-leaf"></span>
     </div>
-  </main>
-  <footer class="py-8 px-6 border-t border-neutral-800 text-center">
-    <p class="text-stone-600 text-sm">© 2025 Canada Marketplace Inc. All rights reserved.</p>
+    <div class="max-w-6xl mx-auto text-center relative z-10">
+      <div class="reveal">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-neutral-800 mb-8">
+          <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+          <span class="text-xs font-medium text-stone-400 uppercase tracking-[0.3em]">Canada's Trusted Marketplace</span>
+        </div>
+      </div>
+      <h1 class="reveal stagger-1 text-5xl md:text-7xl lg:text-8xl font-bold leading-none tracking-tight mb-8">
+        Buy & Sell<br/>
+        <span class="gradient-text-warm">Across Canada</span>
+      </h1>
+      <p class="reveal stagger-2 text-lg font-light text-stone-400 max-w-2xl mx-auto mb-6 leading-relaxed">
+        Escrow-protected payments. Verified sellers. Data stored in Canada.<br class="hidden md:block" /> PIPEDA compliant. All prices in Canadian dollars.
+      </p>
+
+      <!-- Trust Badges Row -->
+      <div class="reveal stagger-3 flex flex-wrap items-center justify-center gap-3 mb-12">
+        <div class="trust-badge flex items-center gap-2 px-3 py-1.5 rounded-full">
+          <span class="iconify text-amber-400" data-icon="mdi:shield-check" data-width="16"></span>
+          <span class="text-xs text-amber-300/80 font-medium">Escrow Protected</span>
+        </div>
+        <div class="trust-badge flex items-center gap-2 px-3 py-1.5 rounded-full">
+          <span class="iconify text-amber-400" data-icon="mdi:map-marker-check" data-width="16"></span>
+          <span class="text-xs text-amber-300/80 font-medium">Data in Canada</span>
+        </div>
+        <div class="trust-badge flex items-center gap-2 px-3 py-1.5 rounded-full">
+          <span class="iconify text-amber-400" data-icon="mdi:lock" data-width="16"></span>
+          <span class="text-xs text-amber-300/80 font-medium">PIPEDA Compliant</span>
+        </div>
+        <div class="trust-badge flex items-center gap-2 px-3 py-1.5 rounded-full">
+          <span class="iconify text-amber-400" data-icon="mdi:account-check" data-width="16"></span>
+          <span class="text-xs text-amber-300/80 font-medium">Verified Sellers</span>
+        </div>
+      </div>
+
+      <div class="reveal stagger-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#products" class="group flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-white font-medium text-base hover:from-red-500 hover:to-red-600 transition-all shadow-lg shadow-red-900/30">
+          Start Shopping
+          <span class="iconify group-hover:translate-x-1 transition-transform" data-icon="mdi:arrow-right" data-width="20"></span>
+        </a>
+        <a href="#safety" class="flex items-center gap-3 px-8 py-4 rounded-2xl border border-neutral-800 text-stone-300 font-medium text-base hover:border-neutral-700 hover:text-stone-100 transition-all">
+          <span class="iconify" data-icon="mdi:shield-check-outline" data-width="20"></span>
+          How We Keep You Safe
+        </a>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="reveal stagger-5 mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+        <div class="text-center">
+          <div class="text-3xl md:text-4xl font-bold text-stone-100 stat-number" data-target="125000">0</div>
+          <div class="text-xs text-stone-500 uppercase tracking-[0.2em] mt-1">Listings</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl md:text-4xl font-bold text-stone-100 stat-number" data-target="38000">0</div>
+          <div class="text-xs text-stone-500 uppercase tracking-[0.2em] mt-1">Verified Sellers</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl md:text-4xl font-bold text-stone-100 stat-number" data-target="13">0</div>
+          <div class="text-xs text-stone-500 uppercase tracking-[0.2em] mt-1">Provinces</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl md:text-4xl font-bold text-stone-100 stat-number" data-target="0">0</div>
+          <div class="text-xs text-stone-500 uppercase tracking-[0.2em] mt-1">Fraud Incidents</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-stone-600">
+      <span class="text-xs uppercase tracking-[0.2em]">Scroll</span>
+      <div class="w-5 h-8 rounded-full border border-stone-700 flex items-start justify-center p-1">
+        <div class="w-1 h-2 rounded-full bg-red-500 animate-bounce"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Safety Section (Moved Up — Most Important) -->
+  <section id="safety" class="py-32 px-6 relative">
+    <div class="canada-flag-stripe w-full max-w-4xl mx-auto mb-20"></div>
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="reveal text-xs font-medium text-red-400 uppercase tracking-[0.3em]">Your Safety First</span>
+        <h2 class="reveal stagger-1 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mt-4">
+          Built <span class="gradient-text-red">Safe</span> by Design
+        </h2>
+        <p class="reveal stagger-2 text-stone-400 font-light text-lg mt-4 max-w-2xl mx-auto">Every transaction is protected. Your data stays in Canada. We follow the law — not just the minimum.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="reveal stagger-1 glass rounded-2xl p-8 hover-lift card-shine">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500/20 to-red-600/10 flex items-center justify-center mb-5">
+            <span class="iconify text-red-400" data-icon="mdi:shield-lock" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg mb-2">Escrow Payments</h3>
+          <p class="text-stone-400 font-light leading-relaxed text-sm">Your money is held safely until you receive and confirm your item. Sellers only get paid after you're satisfied. No exceptions.</p>
+        </div>
+
+        <div class="reveal stagger-2 glass rounded-2xl p-8 hover-lift card-shine">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500/20 to-red-600/10 flex items-center justify-center mb-5">
+            <span class="iconify text-red-400" data-icon="mdi:account-check" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg mb-2">Verified Sellers Only</h3>
+          <p class="text-stone-400 font-light leading-relaxed text-sm">Every seller must verify their government ID and address before listing. No anonymous accounts. No fake sellers.</p>
+        </div>
+
+        <div class="reveal stagger-3 glass rounded-2xl p-8 hover-lift card-shine">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500/20 to-red-600/10 flex items-center justify-center mb-5">
+            <span class="iconify text-red-400" data-icon="mdi:database" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg mb-2">Data Stays in Canada</h3>
+          <p class="text-stone-400 font-light leading-relaxed text-sm">All servers are in Canada. Your data never crosses the border. Compliant with PIPEDA and provincial privacy laws including Quebec's Law 25.</p>
+        </div>
+
+        <div class="reveal stagger-1 glass rounded-2xl p-8 hover-lift card-shine">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-5">
+            <span class="iconify text-amber-400" data-icon="mdi:gavel" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg mb-2">Dispute Protection</h3>
+          <p class="text-stone-400 font-light leading-relaxed text-sm">Item not as described? Never arrived? File a dispute within 14 days. We investigate and resolve — buyer or seller.</p>
+        </div>
+
+        <div class="reveal stagger-2 glass rounded-2xl p-8 hover-lift card-shine">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-5">
+            <span class="iconify text-amber-400" data-icon="mdi:currency-cad" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg mb-2">Canadian Dollars Only</h3>
+          <p class="text-stone-400 font-light leading-relaxed text-sm">No USD conversion surprises. No foreign exchange fees. Every price you see is the price you pay — in Canadian dollars.</p>
+        </div>
+
+        <div class="reveal stagger-3 glass rounded-2xl p-8 hover-lift card-shine">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-5">
+            <span class="iconify text-amber-400" data-icon="mdi:file-document-check" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg mb-2">Full Legal Compliance</h3>
+          <p class="text-stone-400 font-light leading-relaxed text-sm">PIPEDA compliant. Competition Act compliant. CRA tax reporting ready. Quebec Law 25 ready. We go beyond minimum requirements.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section id="categories" class="py-32 px-6 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="reveal text-xs font-medium text-amber-500 uppercase tracking-[0.3em]">Browse</span>
+        <h2 class="reveal stagger-1 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mt-4">
+          Shop by <span class="gradient-text">Category</span>
+        </h2>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <div class="reveal stagger-1 group glass rounded-2xl p-6 hover-lift card-shine cursor-pointer" onclick="filterByCategory('electronics')">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
+            <span class="iconify text-blue-400" data-icon="mdi:laptop" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg">Electronics</h3>
+          <p class="text-stone-500 text-sm mt-1">12,400+ items</p>
+        </div>
+        <div class="reveal stagger-2 group glass rounded-2xl p-6 hover-lift card-shine cursor-pointer" onclick="filterByCategory('fashion')">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500/20 to-pink-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
+            <span class="iconify text-pink-400" data-icon="mdi:tshirt-crew" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg">Fashion</h3>
+          <p class="text-stone-500 text-sm mt-1">28,300+ items</p>
+        </div>
+        <div class="reveal stagger-3 group glass rounded-2xl p-6 hover-lift card-shine cursor-pointer" onclick="filterByCategory('home')">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500/20 to-green-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
+            <span class="iconify text-green-400" data-icon="mdi:sofa" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg">Home & Garden</h3>
+          <p class="text-stone-500 text-sm mt-1">19,800+ items</p>
+        </div>
+        <div class="reveal stagger-4 group glass rounded-2xl p-6 hover-lift card-shine cursor-pointer" onclick="filterByCategory('sports')">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
+            <span class="iconify text-orange-400" data-icon="mdi:hockey-puck" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg">Sports</h3>
+          <p class="text-stone-500 text-sm mt-1">8,200+ items</p>
+        </div>
+        <div class="reveal stagger-1 group glass rounded-2xl p-6 hover-lift card-shine cursor-pointer" onclick="filterByCategory('vehicles')">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500/20 to-red-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
+            <span class="iconify text-red-400" data-icon="mdi:car" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg">Vehicles</h3>
+          <p class="text-stone-500 text-sm mt-1">5,600+ items</p>
+        </div>
+        <div class="reveal stagger-2 group glass rounded-2xl p-6 hover-lift card-shine cursor-pointer" onclick="filterByCategory('books')">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
+            <span class="iconify text-amber-400" data-icon="mdi:book-open-variant" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg">Books</h3>
+          <p class="text-stone-500 text-sm mt-1">15,100+ items</p>
+        </div>
+        <div class="reveal stagger-3 group glass rounded-2xl p-6 hover-lift card-shine cursor-pointer" onclick="filterByCategory('music')">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500/20 to-violet-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
+            <span class="iconify text-violet-400" data-icon="mdi:music-note" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg">Music</h3>
+          <p class="text-stone-500 text-sm mt-1">4,700+ items</p>
+        </div>
+        <div class="reveal stagger-4 group glass rounded-2xl p-6 hover-lift card-shine cursor-pointer" onclick="filterByCategory('outdoor')">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
+            <span class="iconify text-emerald-400" data-icon="mdi:pine-tree" data-width="28"></span>
+          </div>
+          <h3 class="text-stone-100 font-semibold text-lg">Outdoor</h3>
+          <p class="text-stone-500 text-sm mt-1">7,300+ items</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section id="products" class="py-32 px-6 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
+        <div>
+          <span class="reveal text-xs font-medium text-amber-500 uppercase tracking-[0.3em]">Marketplace</span>
+          <h2 class="reveal stagger-1 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mt-4">
+            Featured <span class="gradient-text">Listings</span>
+          </h2>
+        </div>
+        <div class="reveal stagger-2 flex flex-wrap gap-2 mt-6 md:mt-0">
+          <button class="cat-pill active px-4 py-2 rounded-full border border-neutral-800 text-sm text-stone-400 hover:text-stone-200 transition-all" onclick="filterProducts('all', this)">All</button>
+          <button class="cat-pill px-4 py-2 rounded-full border border-neutral-800 text-sm text-stone-400 hover:text-stone-200 transition-all" onclick="filterProducts('electronics', this)">Electronics</button>
+          <button class="cat-pill px-4 py-2 rounded-full border border-neutral-800 text-sm text-stone-400 hover:text-stone-200 transition-all" onclick="filterProducts('fashion', this)">Fashion</button>
+          <button class="cat-pill px-4 py-2 rounded-full border border-neutral-800 text-sm text-stone-400 hover:text-stone-200 transition-all" onclick="filterProducts('home', this)">Home</button>
+          <button class="cat-pill px-4 py-2 rounded-full border border-neutral-800 text-sm text-stone-400 hover:text-stone-200 transition-all" onclick="filterProducts('sports', this)">Sports</button>
+        </div>
+      </div>
+      <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+      <div class="text-center mt-12">
+        <button onclick="loadMoreProducts()" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl border border-neutral-800 text-stone-300 font-medium text-sm hover:border-neutral-700 hover:text-stone-100 transition-all">
+          Load More Listings
+          <span class="iconify" data-icon="mdi:arrow-down" data-width="18"></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Regions Section -->
+  <section id="regions" class="py-32 px-6 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="reveal text-xs font-medium text-amber-500 uppercase tracking-[0.3em]">Nationwide</span>
+        <h2 class="reveal stagger-1 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mt-4">
+          Every Province, <span class="gradient-text-warm">One Marketplace</span>
+        </h2>
+      </div>
+      <div class="reveal stagger-3 flex flex-wrap justify-center gap-3 max-w-4xl mx-auto" id="province-list"></div>
+      <div id="province-info" class="reveal stagger-4 mt-12 glass rounded-3xl p-8 max-w-2xl mx-auto text-center hidden">
+        <div class="text-5xl mb-4">🍁</div>
+        <h3 id="province-name" class="text-2xl font-bold text-stone-100"></h3>
+        <p id="province-desc" class="text-stone-400 font-light mt-2"></p>
+        <div class="flex items-center justify-center gap-6 mt-6">
+          <div><div id="province-listings" class="text-xl font-bold text-amber-400"></div><div class="text-xs text-stone-500 uppercase tracking-wider">Listings</div></div>
+          <div class="w-px h-10 bg-neutral-800"></div>
+          <div><div id="province-sellers" class="text-xl font-bold text-amber-400"></div><div class="text-xs text-stone-500 uppercase tracking-wider">Verified Sellers</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="py-32 px-6 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="reveal text-xs font-medium text-amber-500 uppercase tracking-[0.3em]">Simple</span>
+        <h2 class="reveal stagger-1 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mt-4">
+          How It <span class="gradient-text">Works</span>
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="reveal stagger-1 glass rounded-3xl p-8 text-center hover-lift card-shine relative">
+          <div class="absolute -top-4 -left-4 w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center text-white font-bold text-sm shadow-lg">1</div>
+          <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center mx-auto mb-6">
+            <span class="iconify text-amber-400" data-icon="mdi:magnify" data-width="36"></span>
+          </div>
+          <h3 class="text-xl font-semibold text-stone-100 mb-3">Find It</h3>
+          <p class="text-stone-400 font-light leading-relaxed text-sm">Search by category, province, or keyword. All prices in CAD.</p>
+        </div>
+        <div class="reveal stagger-2 glass rounded-3xl p-8 text-center hover-lift card-shine relative">
+          <div class="absolute -top-4 -left-4 w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center text-white font-bold text-sm shadow-lg">2</div>
+          <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center mx-auto mb-6">
+            <span class="iconify text-amber-400" data-icon="mdi:lock" data-width="36"></span>
+          </div>
+          <h3 class="text-xl font-semibold text-stone-100 mb-3">Pay Safely</h3>
+          <p class="text-stone-400 font-light leading-relaxed text-sm">Your payment goes into escrow. The seller never gets paid until you confirm delivery.</p>
+        </div>
+        <div class="reveal stagger-3 glass rounded-3xl p-8 text-center hover-lift card-shine relative">
+          <div class="absolute -top-4 -left-4 w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center text-white font-bold text-sm shadow-lg">3</div>
+          <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center mx-auto mb-6">
+            <span class="iconify text-amber-400" data-icon="mdi:truck-delivery-outline" data-width="36"></span>
+          </div>
+          <h3 class="text-xl font-semibold text-stone-100 mb-3">Get It</h3>
+          <p class="text-stone-400 font-light leading-relaxed text-sm">Seller ships via Canada Post. Track your package every step of the way.</p>
+        </div>
+        <div class="reveal stagger-4 glass rounded-3xl p-8 text-center hover-lift card-shine relative">
+          <div class="absolute -top-4 -left-4 w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center text-white font-bold text-sm shadow-lg">4</div>
+          <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center mx-auto mb-6">
+            <span class="iconify text-amber-400" data-icon="mdi:check-decagram" data-width="36"></span>
+          </div>
+          <h3 class="text-xl font-semibold text-stone-100 mb-3">Confirm</h3>
+          <p class="text-stone-400 font-light leading-relaxed text-sm">Inspect your item. Happy? Confirm delivery and the seller gets paid. Not happy? File a dispute.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sellers Section -->
+  <section id="sellers" class="py-32 px-6 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="reveal text-xs font-medium text-amber-500 uppercase tracking-[0.3em]">For Sellers</span>
+        <h2 class="reveal stagger-1 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mt-4">
+          Start Selling on <span class="gradient-text-warm">Canada Marketplace</span>
+        </h2>
+        <p class="reveal stagger-2 text-stone-400 font-light text-lg mt-4 max-w-2xl mx-auto">Low fees. Fast payouts. Reach buyers in every province.</p>
+      </div>
+      <div class="reveal stagger-3 glass rounded-3xl p-10 max-w-3xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center mb-10">
+          <div>
+            <div class="text-3xl font-bold text-amber-400">8%</div>
+            <div class="text-sm text-stone-500 mt-1">Marketplace Fee</div>
+            <div class="text-xs text-stone-600 mt-0.5">(drops to 5% for Gold sellers)</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-amber-400">2 days</div>
+            <div class="text-sm text-stone-500 mt-1">Payout Speed</div>
+            <div class="text-xs text-stone-600 mt-0.5">(after buyer confirms)</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-amber-400">$0</div>
+            <div class="text-sm text-stone-500 mt-1">Monthly Fees</div>
+            <div class="text-xs text-stone-600 mt-0.5">(no subscriptions, ever)</div>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button onclick="openSellModal()" class="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-white font-medium hover:from-red-500 hover:to-red-600 transition-all shadow-lg shadow-red-900/20">
+            <span class="iconify" data-icon="mdi:account-plus" data-width="20"></span>
+            Become a Verified Seller
+          </button>
+          <a href="/seller-terms" class="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border border-neutral-800 text-stone-300 font-medium hover:border-neutral-700 hover:text-stone-100 transition-all">
+            Read Seller Agreement
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="py-32 px-6 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="reveal text-xs font-medium text-amber-500 uppercase tracking-[0.3em]">Reviews</span>
+        <h2 class="reveal stagger-1 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mt-4">
+          What Canadians <span class="gradient-text">Say</span>
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="reveal stagger-1 glass rounded-2xl p-8 hover-lift">
+          <div class="flex items-center gap-1 mb-4">
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+          </div>
+          <p class="text-stone-300 font-light leading-relaxed mb-6">"The escrow system sold me. Bought a guitar from Halifax, it arrived in Vancouver perfectly. Money only released after I confirmed. No more Kijiji anxiety."</p>
+          <div class="flex items-center gap-3">
+            <img src="https://picsum.photos/seed/user-sarah-v2/48/48.jpg" class="w-10 h-10 rounded-full object-cover" alt="Sarah M." />
+            <div>
+              <div class="text-stone-100 text-sm font-medium">Sarah M.</div>
+              <div class="text-stone-500 text-xs">Vancouver, BC</div>
+            </div>
+          </div>
+        </div>
+        <div class="reveal stagger-2 glass rounded-2xl p-8 hover-lift">
+          <div class="flex items-center gap-1 mb-4">
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+          </div>
+          <p class="text-stone-300 font-light leading-relaxed mb-6">"As a seller, the ID verification builds trust instantly. Buyers know I'm real. Payouts hit my bank in 2 days. Already did $4,200 in my first month."</p>
+          <div class="flex items-center gap-3">
+            <img src="https://picsum.photos/seed/user-marc-v2/48/48.jpg" class="w-10 h-10 rounded-full object-cover" alt="Marc D." />
+            <div>
+              <div class="text-stone-100 text-sm font-medium">Marc D.</div>
+              <div class="text-stone-500 text-xs">Montréal, QC</div>
+            </div>
+          </div>
+        </div>
+        <div class="reveal stagger-3 glass rounded-2xl p-8 hover-lift">
+          <div class="flex items-center gap-1 mb-4">
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+            <span class="iconify text-amber-400" data-icon="mdi:star" data-width="18"></span>
+            <span class="iconify text-amber-400" data-icon="mdi:star-half-full" data-width="18"></span>
+          </div>
+          <p class="text-stone-300 font-light leading-relaxed mb-6">"Finally a marketplace that stores data in Canada. No US privacy laws applying to my info. The province filtering is genius — found winter tires in Winnipeg in seconds."</p>
+          <div class="flex items-center gap-3">
+            <img src="https://picsum.photos/seed/user-amy-v2/48/48.jpg" class="w-10 h-10 rounded-full object-cover" alt="Amy L." />
+            <div>
+              <div class="text-stone-100 text-sm font-medium">Amy L.</div>
+              <div class="text-stone-500 text-xs">Toronto, ON</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-32 px-6 relative">
+    <div class="max-w-4xl mx-auto">
+      <div class="reveal glass rounded-3xl p-12 md:p-16 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-amber-500/5 pointer-events-none"></div>
+        <div class="absolute -top-20 -right-20 w-60 h-60 bg-red-500/10 rounded-full blur-3xl animate-pulse-glow pointer-events-none"></div>
+        <div class="relative z-10">
+          <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-red-500/20 to-red-600/10 flex items-center justify-center mx-auto mb-8">
+            <span class="iconify text-red-400" data-icon="mdi:maple-leaf" data-width="40"></span>
+          </div>
+          <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+            Join <span class="gradient-text-warm">Canada Marketplace</span>
+          </h2>
+          <p class="text-stone-400 font-light text-lg max-w-xl mx-auto mb-10 leading-relaxed">
+            Built by Canadians, for Canadians. Your data stays here. Your money stays safe. Your marketplace.
+          </p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button onclick="openSellModal()" class="group flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-white font-medium text-base hover:from-red-500 hover:to-red-600 transition-all shadow-lg shadow-red-900/30">
+              Start Selling Today
+              <span class="iconify group-hover:translate-x-1 transition-transform" data-icon="mdi:arrow-right" data-width="20"></span>
+            </button>
+            <a href="#products" class="flex items-center gap-3 px-8 py-4 rounded-2xl border border-neutral-800 text-stone-300 font-medium text-base hover:border-neutral-700 hover:text-stone-100 transition-all">
+              Browse Listings
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-20 px-6 border-t border-neutral-800">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-16">
+        <div class="col-span-2 md:col-span-4 lg:col-span-1 mb-4 lg:mb-0">
+          <a href="https://www.canadamarketplace.ca" class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center text-white">
+              <span class="iconify" data-icon="mdi:maple-leaf" data-width="22"></span>
+            </div>
+            <div>
+              <span class="text-stone-100 font-semibold text-lg block leading-tight">Canada</span>
+              <span class="text-[10px] text-stone-500 uppercase tracking-[0.25em] leading-tight">Marketplace Inc.</span>
+            </div>
+          </a>
+          <p class="text-stone-500 text-sm font-light leading-relaxed">Canada's trusted marketplace. Data stored in Canada. PIPEDA compliant.</p>
+          <div class="flex items-center gap-3 mt-6">
+            <a href="#" class="w-9 h-9 rounded-lg border border-neutral-800 flex items-center justify-center text-stone-500 hover:text-red-400 hover:border-red-500/30 transition-all" aria-label="Twitter">
+              <span class="iconify" data-icon="mdi:twitter" data-width="16"></span>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-lg border border-neutral-800 flex items-center justify-center text-stone-500 hover:text-red-400 hover:border-red-500/30 transition-all" aria-label="Instagram">
+              <span class="iconify" data-icon="mdi:instagram" data-width="16"></span>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-lg border border-neutral-800 flex items-center justify-center text-stone-500 hover:text-red-400 hover:border-red-500/30 transition-all" aria-label="Facebook">
+              <span class="iconify" data-icon="mdi:facebook" data-width="16"></span>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-stone-100 font-semibold text-sm mb-4">Marketplace</h4>
+          <div class="flex flex-col gap-3">
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Browse All</a>
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Electronics</a>
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Fashion</a>
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Home & Garden</a>
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Vehicles</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-stone-100 font-semibold text-sm mb-4">Selling</h4>
+          <div class="flex flex-col gap-3">
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Become a Seller</a>
+            <a href="/seller-terms" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Seller Agreement</a>
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Seller Dashboard</a>
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Fee Schedule</a>
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Payout Info</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-stone-100 font-semibold text-sm mb-4">Trust & Safety</h4>
+          <div class="flex flex-col gap-3">
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">How Escrow Works</a>
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Buyer Protection</a>
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">File a Dispute</a>
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Safety Tips</a>
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Report an Issue</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-stone-100 font-semibold text-sm mb-4">Legal</h4>
+          <div class="flex flex-col gap-3">
+            <a href="/privacy" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Privacy Policy</a>
+            <a href="/terms" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Terms of Service</a>
+            <a href="/cookies" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Cookie Policy</a>
+            <a href="#" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">PIPEDA Compliance</a>
+            <a href="mailto:privacy@canadamarketplace.ca" class="text-stone-500 text-sm hover:text-stone-300 transition-colors">Privacy Officer</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-neutral-800">
+        <p class="text-stone-600 text-sm">© 2025 Canada Marketplace Inc. All rights reserved. Incorporated in Canada.</p>
+        <div class="flex items-center gap-4">
+          <span class="text-stone-600 text-xs">Accepted:</span>
+          <div class="flex items-center gap-2">
+            <span class="text-stone-500 text-xs font-medium">Visa</span>
+            <span class="text-stone-700">·</span>
+            <span class="text-stone-500 text-xs font-medium">Mastercard</span>
+            <span class="text-stone-700">·</span>
+            <span class="text-stone-500 text-xs font-medium">Interac</span>
+            <span class="text-stone-700">·</span>
+            <span class="text-stone-500 text-xs font-medium">Apple Pay</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center justify-center gap-4 mt-6">
+        <div class="flex items-center gap-1.5 text-stone-600 text-xs">
+          <span class="iconify" data-icon="mdi:shield-check" data-width="14"></span>
+          PIPEDA Compliant
+        </div>
+        <div class="flex items-center gap-1.5 text-stone-600 text-xs">
+          <span class="iconify" data-icon="mdi:database" data-width="14"></span>
+          Data in Canada
+        </div>
+        <div class="flex items-center gap-1.5 text-stone-600 text-xs">
+          <span class="iconify" data-icon="mdi:lock" data-width="14"></span>
+          SSL Encrypted
+        </div>
+        <div class="flex items-center gap-1.5 text-stone-600 text-xs">
+          <span class="iconify" data-icon="mdi:maple-leaf" data-width="14"></span>
+          100% Canadian Owned
+        </div>
+      </div>
+    </div>
   </footer>
+
+  <!-- Cart Side Panel -->
+  <div id="cart-overlay" class="fixed inset-0 bg-black/60 z-[60] hidden" onclick="toggleCart()"></div>
+  <div id="cart-panel" class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-neutral-900 border-l border-neutral-800 z-[70] hidden flex-col">
+    <div class="flex items-center justify-between p-6 border-b border-neutral-800">
+      <h3 class="text-lg font-semibold text-stone-100 flex items-center gap-2">
+        <span class="iconify text-red-400" data-icon="mdi:cart" data-width="22"></span>
+        Your Cart
+      </h3>
+      <button onclick="toggleCart()" class="w-9 h-9 rounded-lg border border-neutral-800 flex items-center justify-center text-stone-400 hover:text-stone-200 transition-colors" aria-label="Close cart">
+        <span class="iconify" data-icon="mdi:close" data-width="18"></span>
+      </button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto p-6">
+      <div id="cart-empty" class="flex flex-col items-center justify-center h-full text-center">
+        <span class="iconify text-stone-700 mb-4" data-icon="mdi:cart-off" data-width="64"></span>
+        <p class="text-stone-500 font-light">Your cart is empty</p>
+        <p class="text-stone-600 text-sm mt-1">Start browsing to add items</p>
+      </div>
+      <div id="cart-list" class="space-y-4 hidden"></div>
+    </div>
+    <div id="cart-footer" class="border-t border-neutral-800 p-6 hidden">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-stone-400 text-sm">Subtotal</span>
+        <span id="cart-subtotal" class="text-stone-200 font-medium">$0.00 CAD</span>
+      </div>
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-stone-400 text-sm">Shipping</span>
+        <span id="cart-shipping" class="text-stone-200 font-medium">Calculated at checkout</span>
+      </div>
+      <div class="flex items-center gap-2 mb-3">
+        <span class="iconify text-green-500" data-icon="mdi:shield-check" data-width="14"></span>
+        <span class="text-xs text-stone-500">Payment held in escrow until you confirm delivery</span>
+      </div>
+      <div class="flex items-center justify-between mb-6 pt-3 border-t border-neutral-800">
+        <span class="text-stone-100 font-semibold">Total</span>
+        <span id="cart-total" class="text-amber-400 font-bold text-lg">$0.00 CAD</span>
+      </div>
+      <button onclick="checkout()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-white font-medium hover:from-red-500 hover:to-red-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-red-900/20">
+        <span class="iconify" data-icon="mdi:lock" data-width="18"></span>
+        Secure Checkout
+      </button>
+      <p class="text-stone-600 text-xs text-center mt-3">PIPEDA compliant · Data in Canada · Buyer protection included</p>
+    </div>
+  </div>
+
+  <!-- Sell Modal -->
+  <div id="sell-overlay" class="fixed inset-0 bg-black/60 z-[60] hidden flex items-center justify-center p-6" onclick="closeSellModal()">
+    <div class="glass rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()" style="animation: fade-up 0.4s ease-out">
+      <div class="flex items-center justify-between mb-8">
+        <h3 class="text-xl font-bold text-stone-100">List an Item on Canada Marketplace</h3>
+        <button onclick="closeSellModal()" class="w-9 h-9 rounded-lg border border-neutral-800 flex items-center justify-center text-stone-400 hover:text-stone-200 transition-colors" aria-label="Close">
+          <span class="iconify" data-icon="mdi:close" data-width="18"></span>
+        </button>
+      </div>
+      <div class="trust-badge rounded-xl p-4 mb-6 flex items-start gap-3">
+        <span class="iconify text-amber-400 flex-shrink-0 mt-0.5" data-icon="mdi:information" data-width="18"></span>
+        <div class="text-xs text-amber-300/80 leading-relaxed">Selling requires ID verification. Your listing won't appear publicly until verified. Payments are held in escrow for buyer protection. 8% marketplace fee applies.</div>
+      </div>
+      <form onsubmit="submitListing(event)" class="space-y-5">
+        <div>
+          <label class="text-sm text-stone-400 mb-1 block">Item Title <span class="text-red-400">*</span></label>
+          <input type="text" required placeholder="e.g. Vintage Maple Leaf Jersey" class="w-full px-4 py-3 rounded-xl bg-neutral-800/50 border border-neutral-700 text-stone-200 placeholder-stone-600 outline-none focus:border-red-500/40 transition-colors text-sm" />
+        </div>
+        <div>
+          <label class="text-sm text-stone-400 mb-1 block">Category <span class="text-red-400">*</span></label>
+          <select required class="w-full px-4 py-3 rounded-xl bg-neutral-800/50 border border-neutral-700 text-stone-200 outline-none focus:border-red-500/40 transition-colors text-sm">
+            <option value="">Select category</option>
+            <option>Electronics</option><option>Fashion</option><option>Home & Garden</option>
+            <option>Sports</option><option>Vehicles</option><option>Books</option>
+            <option>Music</option><option>Outdoor</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm text-stone-400 mb-1 block">Price (CAD) <span class="text-red-400">*</span></label>
+            <input type="number" required placeholder="0.00" min="1" max="100000" step="0.01" class="w-full px-4 py-3 rounded-xl bg-neutral-800/50 border border-neutral-700 text-stone-200 placeholder-stone-600 outline-none focus:border-red-500/40 transition-colors text-sm" />
+          </div>
+          <div>
+            <label class="text-sm text-stone-400 mb-1 block">Province <span class="text-red-400">*</span></label>
+            <select required class="w-full px-4 py-3 rounded-xl bg-neutral-800/50 border border-neutral-700 text-stone-200 outline-none focus:border-red-500/40 transition-colors text-sm">
+              <option value="">Select</option>
+              <option>ON</option><option>QC</option><option>BC</option><option>AB</option>
+              <option>MB</option><option>SK</option><option>NS</option><option>NB</option>
+              <option>NL</option><option>PE</option><option>NT</option><option>YT</option><option>NU</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="text-sm text-stone-400 mb-1 block">Condition <span class="text-red-400">*</span></label>
+          <div class="flex flex-wrap gap-2">
+            <label class="cursor-pointer"><input type="radio" name="condition" value="new" class="hidden peer" required /><span class="px-4 py-2 rounded-lg border border-neutral-700 text-sm text-stone-400 peer-checked:bg-red-500/20 peer-checked:border-red-500/40 peer-checked:text-red-400 transition-all">New</span></label>
+            <label class="cursor-pointer"><input type="radio" name="condition" value="like-new" class="hidden peer" /><span class="px-4 py-2 rounded-lg border border-neutral-700 text-sm text-stone-400 peer-checked:bg-red-500/20 peer-checked:border-red-500/40 peer-checked:text-red-400 transition-all">Like New</span></label>
+            <label class="cursor-pointer"><input type="radio" name="condition" value="good" class="hidden peer" /><span class="px-4 py-2 rounded-lg border border-neutral-700 text-sm text-stone-400 peer-checked:bg-red-500/20 peer-checked:border-red-500/40 peer-checked:text-red-400 transition-all">Good</span></label>
+            <label class="cursor-pointer"><input type="radio" name="condition" value="fair" class="hidden peer" /><span class="px-4 py-2 rounded-lg border border-neutral-700 text-sm text-stone-400 peer-checked:bg-red-500/20 peer-checked:border-red-500/40 peer-checked:text-red-400 transition-all">Fair</span></label>
+          </div>
+        </div>
+        <div>
+          <label class="text-sm text-stone-400 mb-1 block">Description <span class="text-red-400">*</span></label>
+          <textarea rows="3" required placeholder="Be accurate — misleading descriptions violate our Terms of Service." class="w-full px-4 py-3 rounded-xl bg-neutral-800/50 border border-neutral-700 text-stone-200 placeholder-stone-600 outline-none focus:border-red-500/40 transition-colors text-sm resize-none"></textarea>
+        </div>
+        <p class="text-xs text-stone-600">By listing, you agree to the <a href="/seller-terms" class="text-stone-400 underline">Seller Agreement</a> and confirm this item can be legally sold in Canada.</p>
+        <button type="submit" class="w-full py-4 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-white font-medium hover:from-red-500 hover:to-red-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-red-900/20">
+          <span class="iconify" data-icon="mdi:check" data-width="20"></span>
+          Submit for Review
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-[80] flex flex-col gap-3"></div>
+
+  <script>
+    const products = [
+      { id: 1, name: 'MacBook Pro M3 14"', price: 1899, category: 'electronics', condition: 'Like New', province: 'ON', city: 'Toronto', img: 'macbook-pro-m3-canada', seller: 'MapleTech', verified: true, rating: 4.9, shipping: true },
+      { id: 2, name: 'Canada Goose Chilliwack Bomber', price: 649, category: 'fashion', condition: 'Good', province: 'QC', city: 'Montréal', img: 'canada-goose-jacket-mtl', seller: 'Maison Belle', verified: true, rating: 4.8, shipping: true },
+      { id: 3, name: 'Mid-Century Modern Sofa', price: 1250, category: 'home', condition: 'Good', province: 'BC', city: 'Vancouver', img: 'modern-sofa-van', seller: 'WestCoast Home', verified: true, rating: 4.7, shipping: false },
+      { id: 4, name: 'Wayne Gretzky Signed Jersey', price: 3200, category: 'sports', condition: 'Like New', province: 'AB', city: 'Edmonton', img: 'gretzky-jersey-edm', seller: 'Prairie Outfitters', verified: true, rating: 5.0, shipping: true },
+      { id: 5, name: 'Canon EOS R6 Mark II', price: 2149, category: 'electronics', condition: 'New', province: 'ON', city: 'Ottawa', img: 'canon-r6-ottawa', seller: 'MapleTech', verified: true, rating: 4.9, shipping: true },
+      { id: 6, name: 'Handmade Maple Dining Table', price: 890, category: 'home', condition: 'New', province: 'NB', city: 'Fredericton', img: 'maple-table-fred', seller: 'Maritime Crafts', verified: true, rating: 4.6, shipping: false },
+      { id: 7, name: "Arc'teryx Beta AR Jacket", price: 580, category: 'outdoor', condition: 'Like New', province: 'BC', city: 'Whistler', img: 'arcteryx-whistler', seller: 'Mountain Supply', verified: true, rating: 4.9, shipping: true },
+      { id: 8, name: 'Vintage 1967 Stanley Cup Print', price: 175, category: 'sports', condition: 'Fair', province: 'ON', city: 'Toronto', img: 'stanley-cup-67-print', seller: 'Hockey Memorabilia', verified: true, rating: 4.5, shipping: true },
+      { id: 9, name: 'Lululemon Define Jacket', price: 98, category: 'fashion', condition: 'Good', province: 'BC', city: 'Vancouver', img: 'lululemon-van-define', seller: 'WestCoast Threads', verified: true, rating: 4.8, shipping: true },
+      { id: 10, name: 'Sonos Era 300 Speaker', price: 399, category: 'electronics', condition: 'New', province: 'QC', city: 'Montréal', img: 'sonos-300-mtl', seller: 'Audio QC', verified: true, rating: 4.7, shipping: true },
+      { id: 11, name: 'MEC Backpacking Tent 2P', price: 320, category: 'outdoor', condition: 'Good', province: 'AB', city: 'Calgary', img: 'mec-tent-calgary', seller: 'Prairie Outfitters', verified: true, rating: 4.8, shipping: true },
+      { id: 12, name: 'Margaret Atwood Signed First Edition', price: 450, category: 'books', condition: 'Like New', province: 'ON', city: 'Toronto', img: 'atwood-signed-tor', seller: 'CanLit Books', verified: true, rating: 5.0, shipping: true },
+    ];
+
+    const provinces = [
+      { abbr: 'ON', name: 'Ontario', listings: 32400, sellers: 11200, desc: 'Home to Toronto and Ottawa — the heart of Canadian commerce.' },
+      { abbr: 'QC', name: 'Quebec', listings: 21800, sellers: 7600, desc: 'Vibrant culture in Montréal and Québec City.' },
+      { abbr: 'BC', name: 'British Columbia', listings: 19500, sellers: 6800, desc: 'West Coast lifestyle from Vancouver to Victoria.' },
+      { abbr: 'AB', name: 'Alberta', listings: 14200, sellers: 4900, desc: 'Rocky Mountain gateway — Calgary and Edmonton.' },
+      { abbr: 'MB', name: 'Manitoba', listings: 5800, sellers: 2100, desc: 'Prairie charm in Winnipeg and beyond.' },
+      { abbr: 'SK', name: 'Saskatchewan', listings: 4200, sellers: 1500, desc: 'Land of living skies — Regina and Saskatoon.' },
+      { abbr: 'NS', name: 'Nova Scotia', listings: 5100, sellers: 1800, desc: 'Maritime hospitality in Halifax.' },
+      { abbr: 'NB', name: 'New Brunswick', listings: 3200, sellers: 1100, desc: 'Bilingual charm in Fredericton and Saint John.' },
+      { abbr: 'NL', name: 'Newfoundland & Labrador', listings: 2800, sellers: 900, desc: "The rugged East Coast — St. John's." },
+      { abbr: 'PE', name: 'Prince Edward Island', listings: 1600, sellers: 600, desc: 'Island beauty and Anne of Green Gables country.' },
+      { abbr: 'NT', name: 'Northwest Territories', listings: 800, sellers: 300, desc: 'Northern lights and Yellowknife.' },
+      { abbr: 'YT', name: 'Yukon', listings: 600, sellers: 200, desc: 'Wilderness frontier — Whitehorse.' },
+      { abbr: 'NU', name: 'Nunavut', listings: 400, sellers: 150, desc: 'Arctic landscapes — Iqaluit.' },
+    ];
+
+    let cart = [];
+    let displayedProducts = 8;
+    let currentFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
+      renderProvinces();
+      initScrollReveal();
+      initCounters();
+    });
+
+    function renderProducts() {
+      const grid = document.getElementById('product-grid');
+      const filtered = currentFilter === 'all' ? products : products.filter(p => p.category === currentFilter);
+      const toShow = filtered.slice(0, displayedProducts);
+      grid.innerHTML = toShow.map((p, i) => `
+        <div class="product-card glass rounded-2xl overflow-hidden hover-lift card-shine reveal active" style="animation: fade-up 0.5s ease-out ${i * 0.05}s both">
+          <div class="relative overflow-hidden aspect-[4/3]">
+            <img src="https://picsum.photos/seed/${p.img}/400/300.jpg" alt="${p.name}" class="product-img w-full h-full object-cover" loading="lazy" />
+            <div class="absolute top-3 left-3 flex gap-2">
+              <span class="px-2 py-1 rounded-lg glass text-[11px] font-medium text-stone-200">${p.condition}</span>
+              ${p.shipping ? '<span class="px-2 py-1 rounded-lg bg-green-500/20 text-[11px] font-medium text-green-300 border border-green-500/30">🚚 Ships</span>' : '<span class="px-2 py-1 rounded-lg bg-stone-800/80 text-[11px] font-medium text-stone-400">📍 Pickup</span>'}
+            </div>
+            ${p.verified ? '<div class="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-lg glass text-[10px] font-medium text-amber-300"><span class="iconify" data-icon="mdi:check-decagram" data-width="12"></span>Verified</div>' : ''}
+            <button onclick="toggleWishlist(${p.id}, event)" class="absolute bottom-3 right-3 w-8 h-8 rounded-lg glass flex items-center justify-center text-stone-400 hover:text-red-400 transition-colors" aria-label="Add to wishlist">
+              <span class="iconify" data-icon="mdi:heart-outline" data-width="16" id="wish-${p.id}"></span>
+            </button>
+          </div>
+          <div class="p-5">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-[11px] text-stone-500 flex items-center gap-1">
+                <span class="iconify text-red-400" data-icon="mdi:map-marker" data-width="12"></span>
+                ${p.city}, ${p.province}
+              </span>
+            </div>
+            <h3 class="text-stone-100 font-semibold text-sm leading-snug mb-2 line-clamp-2">${p.name}</h3>
+            <div class="flex items-center gap-1 mb-3">
+              <span class="iconify text-amber-400" data-icon="mdi:star" data-width="14"></span>
+              <span class="text-xs text-stone-400">${p.rating} · ${p.seller}</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-lg font-bold text-amber-400">$${p.price.toLocaleString()} <span class="text-xs font-normal text-stone-500">CAD</span></span>
+              <button onclick="addToCart(${p.id})" class="px-3 py-2 rounded-xl bg-neutral-800 hover:bg-red-600 hover:text-white text-stone-300 text-xs font-medium transition-all flex items-center gap-1">
+                <span class="iconify" data-icon="mdi:cart-plus" data-width="14"></span>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterProducts(category, btn) {
+      currentFilter = category; displayedProducts = 8;
+      document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderProducts();
+    }
+
+    function filterByCategory(cat) {
+      currentFilter = cat; displayedProducts = 8;
+      document.querySelectorAll('.cat-pill').forEach(p => { p.classList.remove('active'); if (p.textContent.trim().toLowerCase().includes(cat)) p.classList.add('active'); });
+      renderProducts();
+      document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function loadMoreProducts() { displayedProducts += 4; renderProducts(); }
+
+    function addToCart(id) {
+      const p = products.find(x => x.id === id);
+      const existing = cart.find(c => c.id === id);
+      if (existing) existing.qty++; else cart.push({ ...p, qty: 1 });
+      updateCartUI();
+      showToast(`${p.name} added to cart`, 'success');
+    }
+
+    function removeFromCart(id) { cart = cart.filter(c => c.id !== id); updateCartUI(); }
+
+    function changeQty(id, delta) {
+      const item = cart.find(c => c.id === id);
+      if (item) { item.qty += delta; if (item.qty <= 0) { removeFromCart(id); return; } }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const badge = document.getElementById('cart-badge');
+      const totalItems = cart.reduce((s, c) => s + c.qty, 0);
+      const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
+      if (totalItems > 0) { badge.textContent = totalItems; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
+      const emptyEl = document.getElementById('cart-empty'), listEl = document.getElementById('cart-list'), footerEl = document.getElementById('cart-footer');
+      if (cart.length === 0) { emptyEl.classList.remove('hidden'); listEl.classList.add('hidden'); footerEl.classList.add('hidden'); }
+      else {
+        emptyEl.classList.add('hidden'); listEl.classList.remove('hidden'); footerEl.classList.remove('hidden');
+        listEl.innerHTML = cart.map(c => `
+          <div class="flex gap-4 p-3 rounded-xl bg-neutral-800/30 border border-neutral-800">
+            <img src="https://picsum.photos/seed/${c.img}/100/100.jpg" class="w-16 h-16 rounded-lg object-cover flex-shrink-0" alt="" />
+            <div class="flex-1 min-w-0">
+              <h4 class="text-sm text-stone-200 font-medium truncate">${c.name}</h4>
+              <p class="text-xs text-stone-500 mt-0.5">${c.city}, ${c.province}</p>
+              <div class="flex items-center justify-between mt-2">
+                <div class="flex items-center gap-2">
+                  <button onclick="changeQty(${c.id}, -1)" class="w-6 h-6 rounded bg-neutral-700 flex items-center justify-center text-stone-400 hover:text-white text-xs">−</button>
+                  <span class="text-sm text-stone-200 w-4 text-center">${c.qty}</span>
+                  <button onclick="changeQty(${c.id}, 1)" class="w-6 h-6 rounded bg-neutral-700 flex items-center justify-center text-stone-400 hover:text-white text-xs">+</button>
+                </div>
+                <span class="text-sm font-semibold text-amber-400">$${(c.price * c.qty).toLocaleString()}</span>
+              </div>
+            </div>
+            <button onclick="removeFromCart(${c.id})" class="text-stone-600 hover:text-red-400 transition-colors self-start"><span class="iconify" data-icon="mdi:close" data-width="16"></span></button>
+          </div>`).join('');
+        document.getElementById('cart-subtotal').textContent = `$${subtotal.toLocaleString()}.00 CAD`;
+        const sc = subtotal >= 200 ? 0 : 14.99;
+        document.getElementById('cart-shipping').textContent = sc === 0 ? 'FREE' : `$${sc.toFixed(2)} CAD`;
+        document.getElementById('cart-total').textContent = `$${(subtotal + sc).toLocaleString(undefined, {minimumFractionDigits: 2})} CAD`;
+      }
+    }
+
+    function toggleCart() {
+      const overlay = document.getElementById('cart-overlay'), panel = document.getElementById('cart-panel');
+      if (panel.classList.contains('hidden')) { overlay.classList.remove('hidden'); panel.classList.remove('hidden'); panel.style.display = 'flex'; panel.classList.add('cart-panel-enter'); panel.classList.remove('cart-panel-exit'); }
+      else { panel.classList.remove('cart-panel-enter'); panel.classList.add('cart-panel-exit'); overlay.classList.add('hidden'); setTimeout(() => { panel.classList.add('hidden'); panel.style.display = ''; }, 300); }
+    }
+
+    function checkout() {
+      if (cart.length === 0) return;
+      const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+      cart = []; updateCartUI(); toggleCart();
+      showToast(`Payment initiated — $${total.toLocaleString()}.00 CAD. Funds held in escrow until delivery confirmed. 🍁`, 'success');
+    }
+
+    const wishlist = new Set();
+    function toggleWishlist(id, e) {
+      e.stopPropagation(); const icon = document.getElementById(`wish-${id}`);
+      if (wishlist.has(id)) { wishlist.delete(id); icon.setAttribute('data-icon', 'mdi:heart-outline'); icon.parentElement.classList.remove('text-red-400'); icon.parentElement.classList.add('text-stone-400'); showToast('Removed from wishlist', 'info'); }
+      else { wishlist.add(id); icon.setAttribute('data-icon', 'mdi:heart'); icon.parentElement.classList.add('text-red-400'); icon.parentElement.classList.remove('text-stone-400'); showToast('Added to wishlist ❤️', 'success'); }
+    }
+
+    function renderProvinces() {
+      document.getElementById('province-list').innerHTML = provinces.map(p => `<button class="province-tag px-4 py-2 rounded-full border border-neutral-800 text-sm text-stone-400" onclick="showProvince('${p.abbr}', this)">${p.abbr}</button>`).join('');
+    }
+
+    function showProvince(abbr, btn) {
+      const p = provinces.find(pr => pr.abbr === abbr); if (!p) return;
+      document.querySelectorAll('.province-tag').forEach(t => t.classList.remove('active')); if (btn) btn.classList.add('active');
+      const info = document.getElementById('province-info'); info.classList.remove('hidden');
+      document.getElementById('province-name').textContent = p.name;
+      document.getElementById('province-desc').textContent = p.desc;
+      document.getElementById('province-listings').textContent = p.listings.toLocaleString();
+      document.getElementById('province-sellers').textContent = p.sellers.toLocaleString();
+    }
+
+    function toggleSearch() {
+      const bar = document.getElementById('search-bar'); bar.classList.toggle('hidden');
+      if (!bar.classList.contains('hidden')) document.getElementById('search-input').focus();
+    }
+
+    function handleSearch(query) {
+      const r = document.getElementById('search-results');
+      if (query.length < 2) { r.classList.add('hidden'); return; }
+      const q = query.toLowerCase();
+      const m = products.filter(p => p.name.toLowerCase().includes(q) || p.category.includes(q) || p.city.toLowerCase().includes(q) || p.province.toLowerCase().includes(q) || p.seller.toLowerCase().includes(q)).slice(0, 5);
+      r.innerHTML = m.length === 0 ? '<p class="text-stone-500 text-sm py-2">No results found</p>' : m.map(p => `
+        <button onclick="addToCart(${p.id}); toggleSearch();" class="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-neutral-800/50 transition-colors text-left">
+          <img src="https://picsum.photos/seed/${p.img}/60/60.jpg" class="w-10 h-10 rounded-lg object-cover" alt="" />
+          <div class="flex-1 min-w-0"><div class="text-sm text-stone-200 truncate">${p.name}</div><div class="text-xs text-stone-500">${p.city}, ${p.province}</div></div>
+          <span class="text-sm font-semibold text-amber-400 flex-shrink-0">$${p.price.toLocaleString()}</span>
+        </button>`).join('');
+      r.classList.remove('hidden');
+    }
+
+    function openSellModal() { document.getElementById('sell-overlay').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    function closeSellModal() { document.getElementById('sell-overlay').classList.add('hidden'); document.body.style.overflow = ''; }
+    function submitListing(e) { e.preventDefault(); closeSellModal(); showToast('Listing submitted! It will appear after ID verification. 🍁', 'success'); e.target.reset(); }
+
+    function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
+
+    function showToast(msg, type = 'info') {
+      const c = document.getElementById('toast-container');
+      const t = document.createElement('div');
+      const col = type === 'success' ? 'border-green-500/30 bg-green-500/10' : 'border-amber-500/30 bg-amber-500/10';
+      const ic = type === 'success' ? 'mdi:check-circle' : 'mdi:information';
+      const icol = type === 'success' ? 'text-green-400' : 'text-amber-400';
+      t.className = `toast glass rounded-xl px-5 py-4 flex items-center gap-3 max-w-sm border ${col}`;
+      t.innerHTML = `<span class="iconify ${icol} flex-shrink-0" data-icon="${ic}" data-width="20"></span><span class="text-sm text-stone-200">${msg}</span>`;
+      c.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(100%)'; t.style.transition = 'all 0.3s ease-in'; setTimeout(() => t.remove(), 300); }, 4000);
+    }
+
+    function initScrollReveal() {
+      const o = new IntersectionObserver(e => { e.forEach(en => { if (en.isIntersecting) en.target.classList.add('active'); }); }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+      document.querySelectorAll('.reveal').forEach(el => o.observe(el));
+    }
+
+    function initCounters() {
+      const o = new IntersectionObserver(e => { e.forEach(en => { if (en.isIntersecting) { animateCounter(en.target, parseInt(en.target.dataset.target)); o.unobserve(en.target); } }); }, { threshold: 0.5 });
+      document.querySelectorAll('.stat-number').forEach(el => o.observe(el));
+    }
+
+    function animateCounter(el, target) {
+      const dur = 2000, start = performance.now(), fmt = target >= 1000;
+      function update(now) {
+        const p = Math.min((now - start) / dur, 1), eased = 1 - Math.pow(1 - p, 4), cur = Math.round(eased * target);
+        if (fmt) el.textContent = cur >= 1000 ? (cur / 1000).toFixed(cur >= 10000 ? 0 : 1) + 'K+' : cur;
+        else el.textContent = cur + (target === 0 ? '' : '+');
+        if (p < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    document.querySelectorAll('#mobile-menu a').forEach(a => a.addEventListener('click', () => document.getElementById('mobile-menu').classList.add('hidden')));
+  </script>
 </body>
 </html>
