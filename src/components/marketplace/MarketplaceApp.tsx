@@ -46,6 +46,7 @@ import ShippingPage from './pages/ShippingPage'
 import FaqPage from './pages/FaqPage'
 import NotificationsPage from './pages/NotificationsPage'
 import MessagingPage from './MessagingPage'
+import WishlistPage from './pages/WishlistPage'
 import type { PageView } from '@/lib/store'
 
 function PageRenderer() {
@@ -72,6 +73,7 @@ function PageRenderer() {
     case 'faq': return <FaqPage />
     case 'notifications': return <NotificationsPage />
     case 'messaging': return <MessagingPage />
+    case 'wishlist': return <WishlistPage />
     case 'profile': return <ProfilePage />
     case 'forgot-password': return <ForgotPasswordPage />
     case 'dashboard': return <SellerDashboard />

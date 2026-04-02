@@ -4,7 +4,6 @@ import { optionalAuth } from "@/lib/auth-guard"
 
 export async function GET(req: NextRequest) {
   try {
-    // Public route — get user context if available, but don't require it
     const auth = await optionalAuth(req)
 
     const { searchParams } = new URL(req.url)
@@ -18,19 +17,33 @@ export async function GET(req: NextRequest) {
     const storeId = searchParams.get("storeId")
     const featured = searchParams.get("featured")
     const status = searchParams.get("status")
+    const condition = searchParams.get("condition")
+    const minPrice = searchParams.get("minPrice")
+    const maxPrice = searchParams.get("maxPrice")
+    const rating = searchParams.get("rating")
 
     const where: any = { status: status || "ACTIVE" }
 
     if (category) {
-      where.category = { slug: category }
+      const cats = category.split(",").map(c => c.trim())
+      if (cats.length === 1) {
+        where.category = { slug: cats[0] }
+      } else {
+        where.category = { slug: { in: cats } }
+      }
     }
     if (province) {
-      where.province = province
+      const provs = province.split(",").map(p => p.trim())
+      if (provs.length === 1) {
+        where.province = provs[0]
+      } else {
+        where.province = { in: provs }
+      }
     }
     if (search) {
       where.OR = [
-        { title: { contains: search } },
-        { description: { contains: search } },
+        { title: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
       ]
     }
     if (store) {
@@ -42,11 +55,25 @@ export async function GET(req: NextRequest) {
     if (featured === "true") {
       where.isFeatured = true
     }
+    if (condition) {
+      const conditions = condition.split(",").map(c => c.trim().toUpperCase())
+      where.condition = { in: conditions }
+    }
+    if (minPrice || maxPrice) {
+      where.price = {}
+      if (minPrice) where.price.gte = parseFloat(minPrice)
+      if (maxPrice) where.price.lte = parseFloat(maxPrice)
+    }
+    if (rating) {
+      const minRating = parseFloat(rating)
+      where.store = { ...(where.store || {}), rating: { gte: minRating } }
+    }
 
     const orderBy: any = { createdAt: "desc" }
-    if (sort === "price-low") orderBy.price = "asc"
-    if (sort === "price-high") orderBy.price = "desc"
+    if (sort === "price-low" || sort === "price_asc") orderBy.price = "asc"
+    if (sort === "price-high" || sort === "price_desc") orderBy.price = "desc"
     if (sort === "popular") orderBy.views = "desc"
+    if (sort === "rating") orderBy.createdAt = "desc"
 
     const [products, total] = await Promise.all([
       db.product.findMany({
@@ -55,6 +82,7 @@ export async function GET(req: NextRequest) {
           category: true,
           store: { select: { id: true, name: true, slug: true, rating: true } },
           _count: { select: { reviews: true } },
+          variants: { orderBy: { position: 'asc' } },
         },
         orderBy,
         skip: (page - 1) * limit,
@@ -63,8 +91,24 @@ export async function GET(req: NextRequest) {
       db.product.count({ where }),
     ])
 
+    // If sorting by rating, do it in-memory since SQLite doesn't support avg rating sort
+    let sortedProducts = products
+    if (sort === "rating") {
+      const productIds = products.map(p => p.id)
+      const reviewCounts = await db.review.groupBy({
+        by: ["productId"],
+        where: { productId: { in: productIds } },
+        _avg: { rating: true },
+      })
+      const ratingMap: Record<string, number> = {}
+      reviewCounts.forEach(rc => {
+        if (rc._avg.rating) ratingMap[rc.productId] = rc._avg.rating
+      })
+      sortedProducts = [...products].sort((a, b) => (ratingMap[b.id] || 0) - (ratingMap[a.id] || 0))
+    }
+
     return NextResponse.json({
-      products,
+      products: sortedProducts,
       total,
       pages: Math.ceil(total / limit),
       page,

@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigation, useCart, useAuth } from '@/lib/store'
+import { useNavigation, useCart, useAuth, useWishlist } from '@/lib/store'
+import { useTranslation } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -9,8 +10,8 @@ import {
 } from '@/components/ui/select'
 import { CATEGORIES, PROVINCES } from '@/lib/types'
 import {
-  Search, SlidersHorizontal, X, Package, Star, ShoppingCart, MapPin,
-  ChevronLeft, ChevronRight, Grid3X3, List, ArrowUpDown
+  Search, SlidersHorizontal, X, Package, Star, ShoppingCart, MapPin, Heart,
+  ChevronLeft, ChevronRight, ArrowUpDown, ChevronDown
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -20,13 +21,32 @@ interface Product {
   store: { id: string; name: string; slug: string; rating: number }
   _count: { reviews: number }
   province?: string; city?: string
+  variants?: Array<{ id: string; name: string; value: string; priceDelta: number | null; stock: number | null }>
 }
+
+const CONDITIONS = [
+  { value: 'NEW', label: 'New' },
+  { value: 'LIKE_NEW', label: 'Like New' },
+  { value: 'EXCELLENT', label: 'Excellent' },
+  { value: 'GOOD', label: 'Good' },
+  { value: 'FAIR', label: 'Fair' },
+  { value: 'USED', label: 'Used' },
+]
+
+const RATING_OPTIONS = [
+  { value: '0', label: 'Any Rating' },
+  { value: '4', label: '4+ Stars' },
+  { value: '3', label: '3+ Stars' },
+  { value: '2', label: '2+ Stars' },
+]
 
 export default function BrowsePage() {
   const { navigate, pageParams } = useNavigation()
   const { addItem } = useCart()
   const { user } = useAuth()
+  const { isWished, toggleItem } = useWishlist()
   const { openAuthModal } = useNavigation()
+  const { t } = useTranslation()
   const [products, setProducts] = useState<Product[]>([])
   const [total, setTotal] = useState(0)
   const [pages, setPages] = useState(1)
@@ -38,7 +58,15 @@ export default function BrowsePage() {
   const [province, setProvince] = useState(pageParams.province || '')
   const [sort, setSort] = useState('newest')
   const [condition, setCondition] = useState('')
+  const [minPrice, setMinPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('')
+  const [rating, setRating] = useState('0')
   const [showFilters, setShowFilters] = useState(false)
+  const [showMoreProvinces, setShowMoreProvinces] = useState(false)
+  const [selectedConditions, setSelectedConditions] = useState<string[]>([])
+
+  const topProvinces = PROVINCES.slice(0, 5)
+  const moreProvinces = PROVINCES.slice(5)
 
   const limit = 24
 
@@ -52,6 +80,10 @@ export default function BrowsePage() {
       params.set('sort', sort)
       params.set('page', page.toString())
       params.set('limit', limit.toString())
+      if (selectedConditions.length > 0) params.set('condition', selectedConditions.join(','))
+      if (minPrice) params.set('minPrice', minPrice)
+      if (maxPrice) params.set('maxPrice', maxPrice)
+      if (rating && rating !== '0') params.set('rating', rating)
 
       const res = await fetch(`/api/products?${params.toString()}`)
       if (res.ok) {
@@ -62,9 +94,11 @@ export default function BrowsePage() {
       }
     } catch {}
     setLoading(false)
-  }, [category, province, search, sort, page])
+  }, [category, province, search, sort, page, selectedConditions, minPrice, maxPrice, rating])
 
-  // fetchProducts already has all deps via useCallback
+  useEffect(() => {
+    fetchProducts()
+  }, [fetchProducts])
 
   const getImages = (imagesStr: string) => {
     try { return JSON.parse(imagesStr) } catch { return [] }
@@ -87,74 +121,176 @@ export default function BrowsePage() {
   }
 
   const clearFilters = () => {
-    setSearch(''); setCategory(''); setProvince(''); setSort('newest'); setCondition('')
+    setSearch(''); setCategory(''); setProvince(''); setSort('newest')
+    setSelectedConditions([]); setMinPrice(''); setMaxPrice(''); setRating('0')
+    setPage(1)
   }
 
-  const hasActiveFilters = category || province || search || condition
+  const toggleCondition = (cond: string) => {
+    setSelectedConditions(prev =>
+      prev.includes(cond) ? prev.filter(c => c !== cond) : [...prev, cond]
+    )
+    setPage(1)
+  }
+
+  const activeFilterCount = [
+    category, province, search, selectedConditions.length > 0, minPrice, maxPrice, rating !== '0'
+  ].filter(Boolean).length
+
+  const hasActiveFilters = activeFilterCount > 0
 
   const filterContent = (
     <div className="space-y-6">
+      {/* Category */}
       <div>
-        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">Category</h3>
-        <Select value={category || "all"} onValueChange={(v) => setCategory(v === "all" ? "" : v)}>
-          <SelectTrigger className="bg-white/5 border-white/10 text-stone-200 h-10 rounded-xl">
-            <SelectValue placeholder="All Categories" />
-          </SelectTrigger>
-          <SelectContent className="bg-neutral-900 border-white/10">
-            <SelectItem value="all" className="text-stone-300">All Categories</SelectItem>
-            {CATEGORIES.map((c) => (
-              <SelectItem key={c.slug} value={c.slug} className="text-stone-300">{c.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('filters.category')}</h3>
+        <div className="space-y-1.5 max-h-48 overflow-y-auto">
+          {CATEGORIES.map((c) => (
+            <label key={c.slug} className="flex items-center gap-2.5 cursor-pointer group">
+              <input
+                type="radio"
+                name="category"
+                checked={category === c.slug}
+                onChange={() => { setCategory(category === c.slug ? '' : c.slug); setPage(1) }}
+                className="w-3.5 h-3.5 accent-red-500"
+              />
+              <span className="text-sm text-stone-300 group-hover:text-stone-100">{c.name}</span>
+            </label>
+          ))}
+        </div>
       </div>
+
+      {/* Price Range */}
       <div>
-        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">Province</h3>
-        <Select value={province || "all"} onValueChange={(v) => setProvince(v === "all" ? "" : v)}>
-          <SelectTrigger className="bg-white/5 border-white/10 text-stone-200 h-10 rounded-xl">
-            <SelectValue placeholder="All Provinces" />
-          </SelectTrigger>
-          <SelectContent className="bg-neutral-900 border-white/10 max-h-64">
-            <SelectItem value="all" className="text-stone-300">All Provinces</SelectItem>
-            {PROVINCES.map((p) => (
-              <SelectItem key={p.slug} value={p.slug} className="text-stone-300">{p.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('filters.priceRange')}</h3>
+        <div className="flex items-center gap-2">
+          <Input
+            type="number"
+            placeholder="Min"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            className="w-full bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 h-9 rounded-lg text-sm"
+            min="0"
+          />
+          <span className="text-stone-600 text-sm">—</span>
+          <Input
+            type="number"
+            placeholder="Max"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            className="w-full bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 h-9 rounded-lg text-sm"
+            min="0"
+          />
+        </div>
       </div>
+
+      {/* Condition */}
       <div>
-        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">Condition</h3>
-        <Select value={condition || "all"} onValueChange={(v) => setCondition(v === "all" ? "" : v)}>
-          <SelectTrigger className="bg-white/5 border-white/10 text-stone-200 h-10 rounded-xl">
-            <SelectValue placeholder="Any Condition" />
-          </SelectTrigger>
-          <SelectContent className="bg-neutral-900 border-white/10">
-            <SelectItem value="all" className="text-stone-300">Any Condition</SelectItem>
-            <SelectItem value="NEW" className="text-stone-300">New</SelectItem>
-            <SelectItem value="LIKE_NEW" className="text-stone-300">Like New</SelectItem>
-            <SelectItem value="GOOD" className="text-stone-300">Good</SelectItem>
-            <SelectItem value="FAIR" className="text-stone-300">Fair</SelectItem>
-            <SelectItem value="USED" className="text-stone-300">Used</SelectItem>
-          </SelectContent>
-        </Select>
+        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('filters.condition')}</h3>
+        <div className="space-y-1.5">
+          {CONDITIONS.map((c) => (
+            <label key={c.value} className="flex items-center gap-2.5 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={selectedConditions.includes(c.value)}
+                onChange={() => toggleCondition(c.value)}
+                className="w-3.5 h-3.5 accent-red-500 rounded"
+              />
+              <span className="text-sm text-stone-300 group-hover:text-stone-100">{c.label}</span>
+            </label>
+          ))}
+        </div>
       </div>
+
+      {/* Seller Rating */}
       <div>
-        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">Sort By</h3>
-        <Select value={sort} onValueChange={setSort}>
+        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('filters.sellerRating')}</h3>
+        <div className="space-y-1.5">
+          {RATING_OPTIONS.map((r) => (
+            <button
+              key={r.value}
+              onClick={() => { setRating(r.value); setPage(1) }}
+              className={`flex items-center gap-2 w-full text-left px-2 py-1.5 rounded-lg transition-all ${
+                rating === r.value ? 'bg-red-500/10 text-red-300' : 'text-stone-300 hover:bg-white/5'
+              }`}
+            >
+              {r.value !== '0' && (
+                <div className="flex">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <Star key={i} className="w-3 h-3 text-red-300 fill-red-300" />
+                  ))}
+                  {parseInt(r.value) < 5 && <Star className="w-3 h-3 text-neutral-700" />}
+                </div>
+              )}
+              <span className="text-sm">{r.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Location */}
+      <div>
+        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('filters.location')}</h3>
+        <div className="space-y-1.5">
+          {topProvinces.map((p) => (
+            <label key={p.slug} className="flex items-center gap-2.5 cursor-pointer group">
+              <input
+                type="radio"
+                name="province"
+                checked={province === p.slug}
+                onChange={() => { setProvince(province === p.slug ? '' : p.slug); setPage(1) }}
+                className="w-3.5 h-3.5 accent-red-500"
+              />
+              <span className="text-sm text-stone-300 group-hover:text-stone-100">{p.name}</span>
+            </label>
+          ))}
+          {showMoreProvinces && (
+            <>
+              <div className="border-t border-white/5 my-2" />
+              {moreProvinces.map((p) => (
+                <label key={p.slug} className="flex items-center gap-2.5 cursor-pointer group">
+                  <input
+                    type="radio"
+                    name="province"
+                    checked={province === p.slug}
+                    onChange={() => { setProvince(province === p.slug ? '' : p.slug); setPage(1) }}
+                    className="w-3.5 h-3.5 accent-red-500"
+                  />
+                  <span className="text-sm text-stone-300 group-hover:text-stone-100">{p.name}</span>
+                </label>
+              ))}
+            </>
+          )}
+          <button
+            onClick={() => setShowMoreProvinces(!showMoreProvinces)}
+            className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 mt-1"
+          >
+            <ChevronDown className={`w-3 h-3 transition-transform ${showMoreProvinces ? 'rotate-180' : ''}`} />
+            {showMoreProvinces ? t('common.showLess') : t('common.showMore')}
+          </button>
+        </div>
+      </div>
+
+      {/* Sort By */}
+      <div>
+        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('browse.sortBy')}</h3>
+        <Select value={sort} onValueChange={(v) => { setSort(v); setPage(1) }}>
           <SelectTrigger className="bg-white/5 border-white/10 text-stone-200 h-10 rounded-xl">
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-neutral-900 border-white/10">
-            <SelectItem value="newest" className="text-stone-300">Newest First</SelectItem>
-            <SelectItem value="price-low" className="text-stone-300">Price: Low to High</SelectItem>
-            <SelectItem value="price-high" className="text-stone-300">Price: High to Low</SelectItem>
-            <SelectItem value="popular" className="text-stone-300">Most Popular</SelectItem>
+            <SelectItem value="newest" className="text-stone-300">{t('filters.sortNewest')}</SelectItem>
+            <SelectItem value="price-low" className="text-stone-300">{t('filters.sortPriceLow')}</SelectItem>
+            <SelectItem value="price-high" className="text-stone-300">{t('filters.sortPriceHigh')}</SelectItem>
+            <SelectItem value="popular" className="text-stone-300">{t('filters.sortPopular')}</SelectItem>
+            <SelectItem value="rating" className="text-stone-300">{t('filters.sortRating')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
+
       {hasActiveFilters && (
         <Button variant="ghost" onClick={clearFilters} className="text-red-400 hover:bg-red-500/10 text-xs w-full justify-start">
-          <X className="w-3 h-3 mr-1" /> Clear All Filters
+          <X className="w-3 h-3 mr-1" /> {t('filters.clearAll')}
         </Button>
       )}
     </div>
@@ -172,7 +308,7 @@ export default function BrowsePage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && setPage(1)}
-                placeholder="Search products..."
+                placeholder={t('browse.title') + '...'}
                 className="pl-10 bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 h-12 rounded-xl focus:border-red-500/50"
               />
               {search && (
@@ -187,18 +323,24 @@ export default function BrowsePage() {
               className="border-white/10 text-stone-300 hover:bg-white/5 lg:hidden"
             >
               <SlidersHorizontal className="w-4 h-4 mr-2" />
-              Filters
+              {t('browse.filters')}
+              {activeFilterCount > 0 && (
+                <span className="ml-1.5 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+                  {activeFilterCount}
+                </span>
+              )}
             </Button>
-            <Select value={sort} onValueChange={setSort}>
-              <SelectTrigger className="w-44 bg-white/5 border-white/10 text-stone-200 h-12 rounded-xl hidden lg:flex">
+            <Select value={sort} onValueChange={(v) => { setSort(v); setPage(1) }}>
+              <SelectTrigger className="w-48 bg-white/5 border-white/10 text-stone-200 h-12 rounded-xl hidden lg:flex">
                 <ArrowUpDown className="w-4 h-4 mr-2 text-stone-500" />
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-neutral-900 border-white/10">
-                <SelectItem value="newest">Newest</SelectItem>
-                <SelectItem value="price-low">Price: Low to High</SelectItem>
-                <SelectItem value="price-high">Price: High to Low</SelectItem>
-                <SelectItem value="popular">Most Popular</SelectItem>
+                <SelectItem value="newest">{t('filters.sortNewest')}</SelectItem>
+                <SelectItem value="price-low">{t('filters.sortPriceLow')}</SelectItem>
+                <SelectItem value="price-high">{t('filters.sortPriceHigh')}</SelectItem>
+                <SelectItem value="popular">{t('filters.sortPopular')}</SelectItem>
+                <SelectItem value="rating">{t('filters.sortRating')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -207,18 +349,38 @@ export default function BrowsePage() {
           {hasActiveFilters && (
             <div className="flex flex-wrap gap-2 mt-3">
               {category && (
-                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => setCategory('')}>
+                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => { setCategory(''); setPage(1) }}>
                   {CATEGORIES.find(c => c.slug === category)?.name || category} <X className="w-3 h-3" />
                 </Badge>
               )}
               {province && (
-                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => setProvince('')}>
+                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => { setProvince(''); setPage(1) }}>
                   {PROVINCES.find(p => p.slug === province)?.name || province} <X className="w-3 h-3" />
                 </Badge>
               )}
               {search && (
-                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => setSearch('')}>
+                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => { setSearch(''); setPage(1) }}>
                   &quot;{search}&quot; <X className="w-3 h-3" />
+                </Badge>
+              )}
+              {selectedConditions.map(c => (
+                <Badge key={c} variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => toggleCondition(c)}>
+                  {c.replace('_', ' ')} <X className="w-3 h-3" />
+                </Badge>
+              ))}
+              {minPrice && (
+                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => setMinPrice('')}>
+                  ${minPrice}+ <X className="w-3 h-3" />
+                </Badge>
+              )}
+              {maxPrice && (
+                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => setMaxPrice('')}>
+                  &lt;${maxPrice} <X className="w-3 h-3" />
+                </Badge>
+              )}
+              {rating !== '0' && (
+                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => { setRating('0'); setPage(1) }}>
+                  {rating}+ ★ <X className="w-3 h-3" />
                 </Badge>
               )}
             </div>
@@ -231,7 +393,14 @@ export default function BrowsePage() {
           {/* Desktop Sidebar */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="sticky top-24 rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-white/5 p-5">
-              <h3 className="text-sm font-semibold text-stone-200 mb-4">Filters</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-semibold text-stone-200">{t('browse.filters')}</h3>
+                {activeFilterCount > 0 && (
+                  <span className="w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </div>
               {filterContent}
             </div>
           </aside>
@@ -241,10 +410,16 @@ export default function BrowsePage() {
             <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm lg:hidden" onClick={() => setShowFilters(false)}>
               <div className="absolute bottom-0 left-0 right-0 bg-neutral-900 border-t border-white/10 rounded-t-3xl p-6 max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-stone-100">Filters</h3>
+                  <h3 className="text-lg font-semibold text-stone-100">{t('browse.filters')}</h3>
                   <button onClick={() => setShowFilters(false)} className="p-2 text-stone-400"><X className="w-5 h-5" /></button>
                 </div>
                 {filterContent}
+                <Button
+                  onClick={() => setShowFilters(false)}
+                  className="w-full mt-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl"
+                >
+                  {t('filters.apply')}
+                </Button>
               </div>
             </div>
           )}
@@ -253,7 +428,7 @@ export default function BrowsePage() {
           <div className="flex-1">
             <div className="flex items-center justify-between mb-6">
               <p className="text-sm text-stone-500">
-                {loading ? 'Loading...' : `${total} product${total !== 1 ? 's' : ''} found`}
+                {loading ? t('common.loading') : `${total} product${total !== 1 ? 's' : ''} found`}
               </p>
             </div>
 
@@ -272,10 +447,10 @@ export default function BrowsePage() {
             ) : products.length === 0 ? (
               <div className="text-center py-20 rounded-2xl bg-neutral-900/60 border border-white/5">
                 <Package className="w-16 h-16 text-stone-700 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-stone-400 mb-2">No products found</h3>
-                <p className="text-sm text-stone-600 mb-4">Try adjusting your filters or search terms</p>
+                <h3 className="text-lg font-medium text-stone-400 mb-2">{t('browse.noResults')}</h3>
+                <p className="text-sm text-stone-600 mb-4">{t('filters.noResultsDesc')}</p>
                 <Button variant="outline" onClick={clearFilters} className="border-white/10 text-stone-300">
-                  Clear Filters
+                  {t('filters.clearAll')}
                 </Button>
               </div>
             ) : (
@@ -284,6 +459,11 @@ export default function BrowsePage() {
                   {products.map((product) => {
                     const images = getImages(product.images)
                     const hasDiscount = product.comparePrice && product.comparePrice > product.price
+                    const hasVariants = product.variants && product.variants.length > 0
+                    // Calculate price range for products with variants
+                    const minVariantPrice = hasVariants ? product.price + Math.min(...product.variants!.map(v => v.priceDelta || 0)) : product.price
+                    const maxVariantPrice = hasVariants ? product.price + Math.max(...product.variants!.map(v => v.priceDelta || 0)) : product.price
+                    const hasPriceRange = hasVariants && minVariantPrice !== maxVariantPrice
                     return (
                       <div key={product.id} className="rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-white/5 hover:border-white/10 overflow-hidden transition-all group">
                         <button onClick={() => navigate('product-detail', { id: product.id })} className="block w-full">
@@ -293,14 +473,20 @@ export default function BrowsePage() {
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-stone-700"><Package className="w-12 h-12" /></div>
                             )}
+                            <button
+                              onClick={(e) => { e.stopPropagation(); toggleItem({ productId: product.id, title: product.title, price: product.price, image: getImages(product.images)[0], storeName: product.store.name, storeSlug: product.store.slug }) }}
+                              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-stone-300 hover:text-red-400 transition-all z-10"
+                            >
+                              <Heart className={`w-4 h-4 ${isWished(product.id) ? 'fill-red-500 text-red-500' : ''}`} />
+                            </button>
+                            <Badge className="absolute top-3 left-3 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-lg">
+                              {product.condition}
+                            </Badge>
                             {hasDiscount && (
-                              <Badge className="absolute top-3 left-3 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-lg">
+                              <Badge className="absolute top-12 left-3 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-lg">
                                 -{Math.round(((product.comparePrice! - product.price) / product.comparePrice!) * 100)}%
                               </Badge>
                             )}
-                            <Badge className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-stone-300 text-[10px] px-2 py-0.5 rounded-lg border-0">
-                              {product.condition}
-                            </Badge>
                           </div>
                           <div className="p-4">
                             <h3 className="text-sm font-medium text-stone-200 truncate group-hover:text-stone-100">{product.title}</h3>
@@ -314,11 +500,18 @@ export default function BrowsePage() {
                               <span className="text-[10px] text-stone-600">({product._count.reviews})</span>
                             </div>
                             <div className="flex items-center gap-2 mt-2">
-                              <span className="text-base font-bold text-red-400">${product.price.toFixed(2)}</span>
-                              {hasDiscount && (
+                              <span className="text-base font-bold text-red-400">
+                                {hasPriceRange ? `$${minVariantPrice.toFixed(2)} - $${maxVariantPrice.toFixed(2)}` : `$${product.price.toFixed(2)}`}
+                              </span>
+                              {hasDiscount && !hasVariants && (
                                 <span className="text-xs text-stone-600 line-through">${product.comparePrice!.toFixed(2)}</span>
                               )}
                             </div>
+                            {hasVariants && (
+                              <Badge className="mt-1.5 bg-white/5 text-stone-400 text-[10px] px-2 py-0.5 rounded-lg border-0">
+                                Multiple options
+                              </Badge>
+                            )}
                             {product.province && (
                               <div className="flex items-center gap-1 mt-1.5 text-[10px] text-stone-600">
                                 <MapPin className="w-3 h-3" /> {product.city}{product.province ? `, ${product.province}` : ''}
@@ -332,7 +525,7 @@ export default function BrowsePage() {
                             size="sm"
                             className="w-full bg-gradient-to-r from-red-600/80 to-red-700/80 hover:from-red-500 hover:to-red-600 text-white rounded-xl h-9 text-xs"
                           >
-                            <ShoppingCart className="w-3.5 h-3.5 mr-1.5" /> Add to Cart
+                            <ShoppingCart className="w-3.5 h-3.5 mr-1.5" /> {t('browse.addToCart')}
                           </Button>
                         </div>
                       </div>

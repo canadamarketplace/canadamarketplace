@@ -104,6 +104,7 @@ model Product {
   orderItems    OrderItem[]
   reviews       Review[]
   cartItems     CartItem[]
+  variants      ProductVariant[]
 }
 
 model Order {
@@ -185,6 +186,24 @@ model Dispute {
   order         Order     @relation(fields: [orderId], references: [id])
   buyer         User      @relation("DisputeBuyer", fields: [buyerId], references: [id])
   seller        User      @relation("DisputeSeller", fields: [sellerId], references: [id])
+}
+
+model ProductVariant {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  name        String
+  value       String
+  priceDelta  Float?
+  stock       Int?
+  
+  sku         String?  @unique
+  position    Int      @default(0)
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([productId])
 }
 
 model CartItem {

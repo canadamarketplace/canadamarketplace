@@ -31,7 +31,8 @@
     "users": "Users",
     "products": "Products",
     "disputes": "Disputes",
-    "settings": "Settings"
+    "settings": "Settings",
+    "wishlist": "Wishlist"
   },
   "footer": {
     "tagline": "Canada's trusted marketplace. Built safe by design for Canadians, by Canadians.",
@@ -397,7 +398,9 @@
   },
   "search": {
     "placeholder": "Search products across Canada...",
-    "popularSearches": "Popular Searches"
+    "popularSearches": "Popular Searches",
+    "searchFor": "Search for",
+    "noResults": "No results found"
   },
   "common": {
     "loading": "Loading...",
@@ -679,5 +682,39 @@
     "ctaDesc": "Our support team is here to help. Reach out to us and we'll get back to you as soon as possible.",
     "ctaContact": "Contact Support",
     "ctaBrowse": "Browse Products"
+  },
+  "wishlist": {
+    "title": "My Wishlist",
+    "empty": "Your wishlist is empty",
+    "emptyDesc": "Save items you love to find them later",
+    "startShopping": "Start Shopping",
+    "moveAllToCart": "Move All to Cart",
+    "clearAll": "Clear All",
+    "item": "item",
+    "items": "items",
+    "added": "Added to wishlist",
+    "removed": "Removed from wishlist"
+  },
+  "filters": {
+    "category": "Category",
+    "priceRange": "Price Range",
+    "condition": "Condition",
+    "sellerRating": "Seller Rating",
+    "location": "Location",
+    "sortNewest": "Newest First",
+    "sortPriceLow": "Price: Low to High",
+    "sortPriceHigh": "Price: High to Low",
+    "sortPopular": "Most Popular",
+    "sortRating": "Best Rating",
+    "clearAll": "Clear All Filters",
+    "apply": "Apply Filters",
+    "noResultsDesc": "Try adjusting your filters or search terms"
+  },
+  "variants": {
+    "selectOption": "Select {name}",
+    "multipleOptions": "Multiple options",
+    "onlyLeft": "Only {count} left!",
+    "outOfStock": "Out of Stock",
+    "selected": "{value} · {price}"
   }
 }

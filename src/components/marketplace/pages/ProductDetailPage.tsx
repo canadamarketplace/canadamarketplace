@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useNavigation, useCart, useAuth } from '@/lib/store'
+import { useNavigation, useCart, useAuth, useWishlist } from '@/lib/store'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -10,6 +10,10 @@ import {
   Heart, Share2, Store, Clock, Truck, CheckCircle2, ThumbsUp, User, ChevronRight, MessageCircle
 } from 'lucide-react'
 import { toast } from 'sonner'
+
+interface ProductVariant {
+  id: string; name: string; value: string; priceDelta: number | null; stock: number | null; sku: string | null; position: number
+}
 
 interface Product {
   id: string; title: string; slug: string; description: string
@@ -23,16 +27,19 @@ interface Product {
   _count: { reviews: number }
   avgRating: number
   category: { name: string; slug: string }
+  variants?: ProductVariant[]
 }
 
 export default function ProductDetailPage() {
   const { navigate, pageParams } = useNavigation()
   const { addItem } = useCart()
   const { user } = useAuth()
+  const { isWished, toggleItem } = useWishlist()
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [selectedImage, setSelectedImage] = useState(0)
   const [relatedProducts, setRelatedProducts] = useState<any[]>([])
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({})
 
   const fetchProduct = async (id: string) => {
     setLoading(true)
@@ -65,6 +72,49 @@ export default function ProductDetailPage() {
     try { return JSON.parse(imagesStr) } catch { return [] }
   }
 
+  // Group variants by name
+  const variantGroups = product?.variants?.length ? (() => {
+    const groups: Record<string, ProductVariant[]> = {}
+    product.variants!.forEach(v => {
+      if (!groups[v.name]) groups[v.name] = []
+      groups[v.name].push(v)
+    })
+    return groups
+  })() : {}
+
+  const variantNames = Object.keys(variantGroups)
+
+  // Initialize selected variants to first option
+  useEffect(() => {
+    if (product?.variants?.length && Object.keys(selectedVariants).length === 0) {
+      const initial: Record<string, string> = {}
+      Object.keys(variantGroups).forEach(name => {
+        initial[name] = variantGroups[name][0].id
+      })
+      setSelectedVariants(initial)
+    }
+  }, [product?.variants])
+
+  // Calculate current price delta
+  const currentPriceDelta = Object.values(selectedVariants).reduce((sum, variantId) => {
+    const variant = product?.variants?.find(v => v.id === variantId)
+    return sum + (variant?.priceDelta || 0)
+  }, 0)
+
+  const effectivePrice = (product?.price || 0) + currentPriceDelta
+
+  // Get stock from selected variants
+  const selectedVariantStock = Object.values(selectedVariants).reduce((min, variantId) => {
+    const variant = product?.variants?.find(v => v.id === variantId)
+    const stock = variant?.stock || product?.stock || 0
+    return Math.min(min, stock)
+  }, product?.stock || 999)
+
+  const selectedVariantInfo = Object.values(selectedVariants).map(variantId => {
+    const variant = product?.variants?.find(v => v.id === variantId)
+    return variant?.value || ''
+  }).filter(Boolean).join(' / ')
+
   const handleAddToCart = () => {
     if (!product) return
     if (!user) {
@@ -72,10 +122,11 @@ export default function ProductDetailPage() {
       toast.error('Please sign in to add to cart')
       return
     }
+    const titleWithVariant = selectedVariantInfo ? `${product.title} (${selectedVariantInfo})` : product.title
     addItem({
       productId: product.id,
-      title: product.title,
-      price: product.price,
+      title: titleWithVariant,
+      price: effectivePrice,
       image: getImages(product.images)[0] || undefined,
       storeName: product.store.name,
       storeId: product.store.id,
@@ -98,6 +149,20 @@ export default function ProductDetailPage() {
   }
 
   const hasDiscount = product?.comparePrice && product.comparePrice > product.price
+  const wished = product ? isWished(product.id) : false
+
+  const handleToggleWishlist = () => {
+    if (!product) return
+    toggleItem({
+      productId: product.id,
+      title: product.title,
+      price: product.price,
+      image: getImages(product.images)[0],
+      storeName: product.store.name,
+      storeSlug: product.store.slug,
+    })
+    toast.success(wished ? 'Removed from wishlist' : 'Added to wishlist')
+  }
 
   if (loading) {
     return (
@@ -182,11 +247,14 @@ export default function ProductDetailPage() {
             {product.category.name} · {product.sold} sold · {product.views} views
           </p>
 
-          <div className="flex items-baseline gap-3 mb-6">
-            <span className="text-3xl font-bold text-red-400">${product.price.toFixed(2)}</span>
+          <div className="flex items-baseline gap-3 mb-4">
+            <span className="text-3xl font-bold text-red-400">${effectivePrice.toFixed(2)}</span>
+            {currentPriceDelta !== 0 && (
+              <span className="text-sm text-stone-600">Base: ${product.price.toFixed(2)}</span>
+            )}
             {hasDiscount && (
               <>
-                <span className="text-lg text-stone-600 line-through">${product.comparePrice!.toFixed(2)}</span>
+                <span className="text-lg text-stone-600 line-through">${(product.comparePrice! + currentPriceDelta).toFixed(2)}</span>
                 <Badge className="bg-red-500 text-white text-xs">
                   Save {Math.round(((product.comparePrice! - product.price) / product.comparePrice!) * 100)}%
                 </Badge>
@@ -194,6 +262,43 @@ export default function ProductDetailPage() {
             )}
             <span className="text-sm text-stone-600">CAD</span>
           </div>
+
+          {/* Variant Selector */}
+          {variantNames.length > 0 && (
+            <div className="mb-6 space-y-4">
+              {variantNames.map(name => (
+                <div key={name}>
+                  <label className="text-sm font-medium text-stone-300 mb-2 block">{name}: <span className="text-stone-100">{selectedVariants[name] ? product?.variants?.find(v => v.id === selectedVariants[name])?.value : ''}</span></label>
+                  <div className="flex flex-wrap gap-2">
+                    {variantGroups[name].map(variant => {
+                      const isSelected = selectedVariants[name] === variant.id
+                      return (
+                        <button
+                          key={variant.id}
+                          onClick={() => setSelectedVariants(prev => ({ ...prev, [name]: variant.id }))}
+                          className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border ${
+                            isSelected
+                              ? 'bg-red-500/10 text-red-300 border-red-500/40'
+                              : 'bg-white/5 text-stone-400 border-white/10 hover:border-white/20 hover:text-stone-200'
+                          }`}
+                        >
+                          {variant.value}
+                          {variant.priceDelta && variant.priceDelta !== 0 && (
+                            <span className={`ml-1.5 text-xs ${variant.priceDelta > 0 ? 'text-red-400' : 'text-green-400'}`}>
+                              {variant.priceDelta > 0 ? '+' : ''}{variant.priceDelta.toFixed(0)}
+                            </span>
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
+              {selectedVariantInfo && (
+                <p className="text-xs text-stone-500">{selectedVariantInfo} · ${effectivePrice.toFixed(2)}</p>
+              )}
+            </div>
+          )}
 
           <p className="text-sm text-stone-400 leading-relaxed mb-6 whitespace-pre-wrap">{product.description}</p>
 
@@ -214,8 +319,13 @@ export default function ProductDetailPage() {
               <MessageCircle className="w-5 h-5 mr-2" />
               {user && user.id === product.store.seller.id ? 'Your Listing' : 'Message Seller'}
             </Button>
-            <Button variant="outline" size="lg" className="border-white/10 text-stone-400 hover:bg-white/5 rounded-xl h-12">
-              <Heart className="w-5 h-5" />
+            <Button
+              onClick={handleToggleWishlist}
+              variant="outline"
+              size="lg"
+              className={`border-white/10 rounded-xl h-12 ${wished ? 'text-red-500 hover:text-red-400 border-red-500/30 hover:bg-red-500/10' : 'text-stone-400 hover:bg-white/5'}`}
+            >
+              <Heart className={`w-5 h-5 ${wished ? 'fill-red-500' : ''}`} />
             </Button>
             <Button variant="outline" size="lg" className="border-white/10 text-stone-400 hover:bg-white/5 rounded-xl h-12">
               <Share2 className="w-5 h-5" />

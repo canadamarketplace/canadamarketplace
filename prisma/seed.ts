@@ -207,6 +207,89 @@ async function seed() {
   }
   console.log(`  ✅ ${products.length} products`)
 
+  // Create Product Variants
+  const variantData: Record<number, Array<{ name: string; value: string; priceDelta: number; stock: number }>> = {
+    0: [ // MacBook Pro - Storage
+      { name: 'Storage', value: '256GB', priceDelta: 0, stock: 5 },
+      { name: 'Storage', value: '512GB', priceDelta: 200, stock: 3 },
+      { name: 'Storage', value: '1TB', priceDelta: 500, stock: 2 },
+    ],
+    1: [ // Sony Headphones - Color
+      { name: 'Color', value: 'Black', priceDelta: 0, stock: 8 },
+      { name: 'Color', value: 'Silver', priceDelta: 0, stock: 4 },
+      { name: 'Color', value: 'Blue', priceDelta: 10, stock: 3 },
+    ],
+    2: [ // iPad Air - Storage
+      { name: 'Storage', value: '128GB', priceDelta: -100, stock: 6 },
+      { name: 'Storage', value: '256GB', priceDelta: 0, stock: 5 },
+      { name: 'Storage', value: '512GB', priceDelta: 200, stock: 3 },
+    ],
+    3: [ // Samsung Galaxy - Storage
+      { name: 'Storage', value: '256GB', priceDelta: 0, stock: 4 },
+      { name: 'Storage', value: '512GB', priceDelta: 150, stock: 3 },
+      { name: 'Storage', value: '1TB', priceDelta: 350, stock: 2 },
+    ],
+    6: [ // Canada Goose - Size
+      { name: 'Size', value: 'S', priceDelta: 0, stock: 3 },
+      { name: 'Size', value: 'M', priceDelta: 0, stock: 5 },
+      { name: 'Size', value: 'L', priceDelta: 0, stock: 4 },
+      { name: 'Size', value: 'XL', priceDelta: 20, stock: 2 },
+    ],
+    7: [ // Lululemon - Size
+      { name: 'Size', value: '4', priceDelta: 0, stock: 4 },
+      { name: 'Size', value: '6', priceDelta: 0, stock: 5 },
+      { name: 'Size', value: '8', priceDelta: 0, stock: 3 },
+      { name: 'Size', value: '10', priceDelta: 0, stock: 2 },
+      { name: 'Size', value: '12', priceDelta: 0, stock: 1 },
+    ],
+    14: [ // Hockey Stick - Flex
+      { name: 'Flex', value: '75', priceDelta: 0, stock: 5 },
+      { name: 'Flex', value: '85', priceDelta: 0, stock: 5 },
+      { name: 'Flex', value: '100', priceDelta: 10, stock: 3 },
+    ],
+    15: [ // Running Shoes - Size
+      { name: 'Size', value: '9', priceDelta: 0, stock: 3 },
+      { name: 'Size', value: '10', priceDelta: 0, stock: 5 },
+      { name: 'Size', value: '11', priceDelta: 0, stock: 4 },
+      { name: 'Size', value: '12', priceDelta: 0, stock: 2 },
+    ],
+    16: [ // Mountain Bike - Size
+      { name: 'Size', value: 'M', priceDelta: 0, stock: 2 },
+      { name: 'Size', value: 'L', priceDelta: 0, stock: 3 },
+      { name: 'Size', value: 'XL', priceDelta: 50, stock: 1 },
+    ],
+    23: [ // Acoustic Guitar - Color
+      { name: 'Color', value: 'Natural', priceDelta: 0, stock: 4 },
+      { name: 'Color', value: 'Black', priceDelta: 10, stock: 3 },
+      { name: 'Color', value: 'Sunburst', priceDelta: 20, stock: 2 },
+    ],
+    25: [ // Fender Stratocaster - Color
+      { name: 'Color', value: 'Polar White', priceDelta: 0, stock: 2 },
+      { name: 'Color', value: 'Olympic White', priceDelta: 0, stock: 1 },
+      { name: 'Color', value: '3-Color Sunburst', priceDelta: 30, stock: 1 },
+    ],
+  }
+
+  let variantCount = 0
+  for (const [productIndex, variants] of Object.entries(variantData)) {
+    const product = products[parseInt(productIndex)]
+    if (!product) continue
+    for (let i = 0; i < variants.length; i++) {
+      await db.productVariant.create({
+        data: {
+          productId: product.id,
+          name: variants[i].name,
+          value: variants[i].value,
+          priceDelta: variants[i].priceDelta,
+          stock: variants[i].stock,
+          position: i,
+        },
+      })
+      variantCount++
+    }
+  }
+  console.log(`  ✅ ${variantCount} product variants`)
+
   // Create Orders
   const orderStatuses = ["PAID", "SHIPPED", "DELIVERED", "PENDING", "CANCELLED", "DISPUTED"]
   const orders = []

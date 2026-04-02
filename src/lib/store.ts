@@ -53,6 +53,7 @@ export type PageView =
   | "admin-product-detail"
   | "admin-order-detail"
   | "admin-dispute-detail"
+  | "wishlist"
 
 interface NavigationState {
   currentPage: PageView
@@ -93,6 +94,7 @@ function pageToUrlBase(page: PageView, params: Record<string, string>): string {
     "seller-guide": "/seller-guide",
     "shipping": "/shipping",
     "faq": "/faq",
+    "wishlist": "/wishlist",
     "notifications": "/notifications",
     "messaging": "/messages",
     "profile": "/profile",
@@ -154,6 +156,7 @@ export function urlToPage(pathname: string, search: string): { page: PageView; p
   if (cleanPath === "/seller-guide") return { page: "seller-guide", params: {} }
   if (cleanPath === "/shipping") return { page: "shipping", params: {} }
   if (cleanPath === "/faq") return { page: "faq", params: {} }
+  if (cleanPath === "/wishlist") return { page: "wishlist", params: {} }
   if (cleanPath === "/notifications") return { page: "notifications", params: {} }
   if (cleanPath === "/messages") return { page: "messaging", params: {} }
   if (cleanPath === "/profile") return { page: "profile", params: {} }
@@ -243,6 +246,56 @@ interface CartState {
   total: () => number
   itemCount: () => number
 }
+
+interface WishlistItem {
+  productId: string
+  title: string
+  price: number
+  image?: string
+  storeName: string
+  storeSlug: string
+  addedAt: number
+}
+
+interface WishlistState {
+  items: WishlistItem[]
+  addItem: (item: WishlistItem) => void
+  removeItem: (productId: string) => void
+  isWished: (productId: string) => boolean
+  toggleItem: (item: WishlistItem) => void
+  clearWishlist: () => void
+  itemCount: () => number
+}
+
+export const useWishlist = create<WishlistState>((set, get) => ({
+  items: typeof window !== 'undefined' ? (() => {
+    try { const saved = localStorage.getItem('cm-wishlist'); return saved ? JSON.parse(saved) : [] }
+    catch { return [] }
+  })() : [],
+  addItem: (item) => {
+    const exists = get().items.find(i => i.productId === item.productId)
+    if (!exists) {
+      const updated = [...get().items, { ...item, addedAt: Date.now() }]
+      set({ items: updated })
+      try { localStorage.setItem('cm-wishlist', JSON.stringify(updated)) } catch {}
+    }
+  },
+  removeItem: (productId) => {
+    const updated = get().items.filter(i => i.productId !== productId)
+    set({ items: updated })
+    try { localStorage.setItem('cm-wishlist', JSON.stringify(updated)) } catch {}
+  },
+  isWished: (productId) => get().items.some(i => i.productId === productId),
+  toggleItem: (item) => {
+    if (get().isWished(item.productId)) get().removeItem(item.productId)
+    else get().addItem(item)
+  },
+  clearWishlist: () => {
+    set({ items: [] })
+    try { localStorage.removeItem('cm-wishlist') } catch {}
+  },
+  itemCount: () => get().items.length,
+}))
 
 export const useCart = create<CartState>((set, get) => ({
   items: [],

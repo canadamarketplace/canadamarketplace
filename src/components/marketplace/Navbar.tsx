@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import {
   Search, ShoppingCart, Menu, X, User, LogOut, LayoutDashboard, Package, Store, CreditCard,
-  Shield, Settings, ChevronDown, MapPin, Bell, MessageCircle
+  Shield, Settings, ChevronDown, MapPin, Bell, MessageCircle, Heart
 } from 'lucide-react'
 import NotificationBell from './NotificationBell'
 import LanguageSwitcher from './LanguageSwitcher'
@@ -51,6 +51,7 @@ export default function Navbar() {
   ]
 
   const buyerLinks = [
+    { label: t('nav.wishlist'), icon: Heart, onClick: () => navigate('wishlist') },
     { label: t('nav.myOrders'), icon: Package, onClick: () => navigate('orders') },
     { label: t('nav.messages'), icon: MessageCircle, onClick: () => navigate('messaging') },
     { label: t('nav.notifications'), icon: Bell, onClick: () => navigate('notifications') },

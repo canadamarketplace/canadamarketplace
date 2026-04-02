@@ -397,7 +397,43 @@
   },
   "search": {
     "placeholder": "Rechercher des produits partout au Canada...",
-    "popularSearches": "Recherches populaires"
+    "popularSearches": "Recherches populaires",
+    "searchFor": "Rechercher",
+    "noResults": "Aucun résultat trouvé"
+  },
+  "wishlist": {
+    "title": "Mes favoris",
+    "empty": "Votre liste de favoris est vide",
+    "emptyDesc": "Enregistrez les articles que vous aimez pour les retrouver plus tard",
+    "startShopping": "Commencer à magasiner",
+    "moveAllToCart": "Tout ajouter au panier",
+    "clearAll": "Tout effacer",
+    "item": "article",
+    "items": "articles",
+    "added": "Ajouté aux favoris",
+    "removed": "Retiré des favoris"
+  },
+  "filters": {
+    "category": "Catégorie",
+    "priceRange": "Fourchette de prix",
+    "condition": "État",
+    "sellerRating": "Évaluation du vendeur",
+    "location": "Emplacement",
+    "sortNewest": "Plus récents",
+    "sortPriceLow": "Prix : croissant",
+    "sortPriceHigh": "Prix : décroissant",
+    "sortPopular": "Plus populaires",
+    "sortRating": "Meilleure évaluation",
+    "clearAll": "Effacer tous les filtres",
+    "apply": "Appliquer les filtres",
+    "noResultsDesc": "Essayez d'ajuster vos filtres ou vos termes de recherche"
+  },
+  "variants": {
+    "selectOption": "Choisir {name}",
+    "multipleOptions": "Plusieurs options",
+    "onlyLeft": "Plus que {count} en stock!",
+    "outOfStock": "Rupture de stock",
+    "selected": "{value} · {price}"
   },
   "common": {
     "loading": "Chargement...",

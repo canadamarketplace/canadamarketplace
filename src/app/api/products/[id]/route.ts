@@ -24,6 +24,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
           take: 10,
         },
         _count: { select: { reviews: true } },
+        variants: { orderBy: { position: 'asc' } },
       },
     })
     if (!product) return NextResponse.json({ error: "Product not found" }, { status: 404 })
