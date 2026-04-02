@@ -1,5 +1,6 @@
 'use client'
 import { useNavigation, useCart, useAuth } from '@/lib/store'
+import { useTranslation } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
@@ -10,6 +11,7 @@ export default function CartSidebar() {
   const { isCartOpen, toggleCart, navigate } = useNavigation()
   const { items, removeItem, updateQuantity, total, clearCart } = useCart()
   const { user } = useAuth()
+  const { t } = useTranslation()
   const subtotal = total()
   const fee = Math.round(subtotal * 0.08 * 100) / 100
   const cartTotal = subtotal + fee
@@ -18,11 +20,11 @@ export default function CartSidebar() {
     if (!user) {
       toggleCart()
       useNavigation.getState().openAuthModal('login')
-      toast.error('Please sign in to checkout')
+      toast.error(t('cart.pleaseSignIn'))
       return
     }
     if (items.length === 0) {
-      toast.error('Your cart is empty')
+      toast.error(t('cart.empty'))
       return
     }
     toggleCart()
@@ -45,8 +47,8 @@ export default function CartSidebar() {
           <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
             <div className="flex items-center gap-2">
               <ShoppingBag className="w-5 h-5 text-red-500" />
-              <h2 className="text-lg font-bold text-stone-100">Your Cart</h2>
-              <span className="text-xs text-stone-500 bg-white/5 px-2 py-0.5 rounded-full">{items.length} items</span>
+              <h2 className="text-lg font-bold text-stone-100">{t('cart.title')}</h2>
+              <span className="text-xs text-stone-500 bg-white/5 px-2 py-0.5 rounded-full">{items.length} {items.length === 1 ? t('cart.item') : t('cart.items')}</span>
             </div>
             <button onClick={toggleCart} className="p-2 text-stone-400 hover:text-stone-100 rounded-lg hover:bg-white/5 transition-all">
               <X className="w-5 h-5" />
@@ -60,14 +62,14 @@ export default function CartSidebar() {
                 <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
                   <ShoppingBag className="w-8 h-8 text-stone-600" />
                 </div>
-                <p className="text-stone-400 font-medium mb-1">Your cart is empty</p>
-                <p className="text-xs text-stone-600 mb-4">Add some products to get started</p>
+                <p className="text-stone-400 font-medium mb-1">{t('cart.empty')}</p>
+                <p className="text-xs text-stone-600 mb-4">{t('cart.emptyDesc')}</p>
                 <Button
                   onClick={() => { toggleCart(); navigate('browse') }}
                   variant="outline"
                   className="border-white/10 text-stone-300 hover:bg-white/5 rounded-xl"
                 >
-                  Browse Products
+                  {t('cart.browseProducts')}
                 </Button>
               </div>
             ) : (
@@ -86,7 +88,7 @@ export default function CartSidebar() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-stone-200 truncate">{item.title}</p>
                       <p className="text-xs text-stone-500 truncate">{item.storeName}</p>
-                      <p className="text-sm font-bold text-red-400 mt-1">${item.price.toFixed(2)} CAD</p>
+                      <p className="text-sm font-bold text-red-400 mt-1">${item.price.toFixed(2)} {t('common.currency')}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity - 1)}
@@ -104,7 +106,7 @@ export default function CartSidebar() {
                       </div>
                     </div>
                     <button
-                      onClick={() => { removeItem(item.productId); toast.success('Item removed') }}
+                      onClick={() => { removeItem(item.productId); toast.success(t('common.itemRemoved')) }}
                       className="p-1.5 text-stone-600 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all self-start"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -120,30 +122,30 @@ export default function CartSidebar() {
             <div className="border-t border-white/5 px-6 py-4 space-y-3">
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <span className="text-stone-500">Subtotal</span>
+                  <span className="text-stone-500">{t('cart.subtotal')}</span>
                   <span className="text-stone-300">${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-stone-500">Marketplace fee (8%)</span>
+                  <span className="text-stone-500">{t('cart.marketplaceFee')}</span>
                   <span className="text-stone-300">${fee.toFixed(2)}</span>
                 </div>
                 <Separator className="bg-white/5" />
                 <div className="flex justify-between">
-                  <span className="text-sm font-semibold text-stone-200">Total</span>
-                  <span className="text-lg font-bold text-stone-100">${cartTotal.toFixed(2)} <span className="text-xs text-stone-500">CAD</span></span>
+                  <span className="text-sm font-semibold text-stone-200">{t('cart.total')}</span>
+                  <span className="text-lg font-bold text-stone-100">${cartTotal.toFixed(2)} <span className="text-xs text-stone-500">{t('common.currency')}</span></span>
                 </div>
               </div>
               <Button
                 onClick={handleCheckout}
                 className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl h-11"
               >
-                Checkout <ArrowRight className="w-4 h-4 ml-2" />
+                {t('cart.checkout')} <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
               <button
-                onClick={() => { clearCart(); toast.success('Cart cleared') }}
+                onClick={() => { clearCart(); toast.success(t('common.cartCleared')) }}
                 className="w-full text-xs text-stone-600 hover:text-red-400 py-1 text-center transition-colors"
               >
-                Clear cart
+                {t('cart.clearCart')}
               </button>
             </div>
           )}

@@ -1,22 +1,24 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useNavigation, useAuth, useCart } from '@/lib/store'
+import { useTranslation } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import {
   Search, ShoppingCart, Menu, X, User, LogOut, LayoutDashboard, Package, Store, CreditCard,
-  Shield, Settings, ChevronDown, Leaf, MapPin, Plus, FileText, AlertTriangle, Gavel, ClipboardList,
-  Bell, MessageCircle
+  Shield, Settings, ChevronDown, MapPin, Bell, MessageCircle
 } from 'lucide-react'
 import NotificationBell from './NotificationBell'
+import LanguageSwitcher from './LanguageSwitcher'
 import { PROVINCES } from '@/lib/types'
 
 export default function Navbar() {
   const { navigate, isMobileMenuOpen, toggleMobileMenu, isSearchOpen, toggleSearch, openAuthModal } = useNavigation()
   const { user, logout } = useAuth()
   const { toggleCart, itemCount } = useCart()
+  const { t } = useTranslation()
   const [scrolled, setScrolled] = useState(false)
   const count = itemCount()
 
@@ -27,53 +29,53 @@ export default function Navbar() {
   }, [])
 
   const navLinks = [
-    { label: 'Browse', onClick: () => navigate('browse') },
-    { label: 'Categories', onClick: () => navigate('category') },
-    { label: 'Regions', onClick: () => navigate('regions') },
-    { label: 'Seller Locator', onClick: () => navigate('seller-locator') },
-    { label: 'How It Works', onClick: () => navigate('safety') },
-    { label: 'For Sellers', onClick: () => navigate('sellers') },
+    { label: t('nav.browse'), onClick: () => navigate('browse') },
+    { label: t('nav.categories'), onClick: () => navigate('category') },
+    { label: t('nav.regions'), onClick: () => navigate('regions') },
+    { label: t('nav.sellerLocator'), onClick: () => navigate('seller-locator') },
+    { label: t('nav.howItWorks'), onClick: () => navigate('safety') },
+    { label: t('nav.forSellers'), onClick: () => navigate('sellers') },
   ]
 
   const infoLinks = [
-    { label: 'About Us', page: 'about' as const },
-    { label: 'Contact', page: 'contact' as const },
+    { label: t('nav.aboutUs'), page: 'about' as const },
+    { label: t('nav.contact'), page: 'contact' as const },
   ]
 
   const legalLinks = [
-    { label: 'Terms of Service', page: 'terms' as const },
-    { label: 'Privacy Policy', page: 'privacy' as const },
-    { label: 'Cookie Policy', page: 'cookies' as const },
-    { label: 'Seller Agreement', page: 'seller-terms' as const },
-    { label: 'Dispute Policy', page: 'dispute-policy' as const },
+    { label: t('nav.termsOfService'), page: 'terms' as const },
+    { label: t('nav.privacyPolicy'), page: 'privacy' as const },
+    { label: t('nav.cookiePolicy'), page: 'cookies' as const },
+    { label: t('nav.sellerAgreement'), page: 'seller-terms' as const },
+    { label: t('nav.disputePolicy'), page: 'dispute-policy' as const },
   ]
 
   const buyerLinks = [
-    { label: 'My Orders', icon: Package, onClick: () => navigate('orders') },
-    { label: 'Messages', icon: MessageCircle, onClick: () => navigate('messaging') },
-    { label: 'Notifications', icon: Bell, onClick: () => navigate('notifications') },
-    { label: 'Cart', icon: ShoppingCart, onClick: () => toggleCart() },
-    { label: 'Profile', icon: User, onClick: () => navigate('profile') },
+    { label: t('nav.myOrders'), icon: Package, onClick: () => navigate('orders') },
+    { label: t('nav.messages'), icon: MessageCircle, onClick: () => navigate('messaging') },
+    { label: t('nav.notifications'), icon: Bell, onClick: () => navigate('notifications') },
+    { label: t('nav.cart'), icon: ShoppingCart, onClick: () => toggleCart() },
+    { label: t('nav.profile'), icon: User, onClick: () => navigate('profile') },
   ]
 
   const sellerLinks = [
-    { label: 'Dashboard', icon: LayoutDashboard, onClick: () => navigate('dashboard') },
-    { label: 'My Products', icon: Package, onClick: () => navigate('my-products') },
-    { label: 'Orders', icon: ClipboardList, onClick: () => navigate('my-orders') },
-    { label: 'Messages', icon: MessageCircle, onClick: () => navigate('messaging') },
-    { label: 'Notifications', icon: Bell, onClick: () => navigate('notifications') },
-    { label: 'Store Settings', icon: Store, onClick: () => navigate('my-store') },
-    { label: 'Payouts', icon: CreditCard, onClick: () => navigate('my-payouts') },
-    { label: 'Profile', icon: User, onClick: () => navigate('profile') },
+    { label: t('nav.dashboard'), icon: LayoutDashboard, onClick: () => navigate('dashboard') },
+    { label: t('nav.myProducts'), icon: Package, onClick: () => navigate('my-products') },
+    { label: t('nav.orders'), icon: () => null, onClick: () => navigate('my-orders') },
+    { label: t('nav.messages'), icon: MessageCircle, onClick: () => navigate('messaging') },
+    { label: t('nav.notifications'), icon: Bell, onClick: () => navigate('notifications') },
+    { label: t('nav.storeSettings'), icon: Store, onClick: () => navigate('my-store') },
+    { label: t('nav.payouts'), icon: CreditCard, onClick: () => navigate('my-payouts') },
+    { label: t('nav.profile'), icon: User, onClick: () => navigate('profile') },
   ]
 
   const adminLinks = [
-    { label: 'Dashboard', icon: LayoutDashboard, onClick: () => navigate('admin-dashboard') },
-    { label: 'Users', icon: User, onClick: () => navigate('admin-users') },
-    { label: 'Products', icon: Package, onClick: () => navigate('admin-products') },
-    { label: 'Orders', icon: ClipboardList, onClick: () => navigate('admin-orders') },
-    { label: 'Disputes', icon: AlertTriangle, onClick: () => navigate('admin-disputes') },
-    { label: 'Settings', icon: Settings, onClick: () => navigate('admin-settings') },
+    { label: t('nav.dashboard'), icon: LayoutDashboard, onClick: () => navigate('admin-dashboard') },
+    { label: t('nav.users'), icon: User, onClick: () => navigate('admin-users') },
+    { label: t('nav.products'), icon: Package, onClick: () => navigate('admin-products') },
+    { label: t('nav.orders'), icon: () => null, onClick: () => navigate('admin-orders') },
+    { label: t('nav.disputes'), icon: Shield, onClick: () => navigate('admin-disputes') },
+    { label: t('nav.settings'), icon: Settings, onClick: () => navigate('admin-settings') },
   ]
 
   const roleLinks = user?.role === 'ADMIN' ? adminLinks : user?.role === 'SELLER' ? sellerLinks : buyerLinks
@@ -123,6 +125,8 @@ export default function Navbar() {
                 <Search className="w-5 h-5" />
               </Button>
 
+              <LanguageSwitcher />
+
               {user && <NotificationBell />}
 
               <button
@@ -166,7 +170,7 @@ export default function Navbar() {
                     <DropdownMenuSeparator className="bg-white/10" />
                     <DropdownMenuItem onClick={logout} className="text-red-400 hover:bg-red-500/10 cursor-pointer">
                       <LogOut className="w-4 h-4 mr-2" />
-                      Sign Out
+                      {t('nav.signOut')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -177,13 +181,13 @@ export default function Navbar() {
                     onClick={() => openAuthModal('login')}
                     className="text-stone-300 hover:bg-white/5 hover:text-stone-100"
                   >
-                    Sign In
+                    {t('nav.signIn')}
                   </Button>
                   <Button
                     onClick={() => openAuthModal('register')}
                     className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white shadow-lg shadow-red-500/20"
                   >
-                    Get Started
+                    {t('nav.getStarted')}
                   </Button>
                 </div>
               )}
@@ -232,7 +236,7 @@ export default function Navbar() {
                     className="w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 rounded-lg flex items-center gap-3"
                   >
                     <LogOut className="w-4 h-4" />
-                    Sign Out
+                    {t('nav.signOut')}
                   </button>
                 </>
               ) : (
@@ -242,18 +246,18 @@ export default function Navbar() {
                     className="flex-1 border-white/10 text-stone-300"
                     onClick={() => { openAuthModal('login'); toggleMobileMenu() }}
                   >
-                    Sign In
+                    {t('nav.signIn')}
                   </Button>
                   <Button
                     className="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white"
                     onClick={() => { openAuthModal('register'); toggleMobileMenu() }}
                   >
-                    Get Started
+                    {t('nav.getStarted')}
                   </Button>
                 </div>
               )}
               <div className="border-t border-white/5 my-2" />
-              <p className="px-4 py-2 text-[10px] text-stone-600 uppercase tracking-wider font-medium">Company</p>
+              <p className="px-4 py-2 text-[10px] text-stone-600 uppercase tracking-wider font-medium">{t('nav.company')}</p>
               {infoLinks.map((link) => (
                 <button
                   key={link.label}
@@ -264,7 +268,7 @@ export default function Navbar() {
                 </button>
               ))}
               <div className="border-t border-white/5 my-2" />
-              <p className="px-4 py-2 text-[10px] text-stone-600 uppercase tracking-wider font-medium">Legal</p>
+              <p className="px-4 py-2 text-[10px] text-stone-600 uppercase tracking-wider font-medium">{t('nav.legal')}</p>
               {legalLinks.map((link) => (
                 <button
                   key={link.label}

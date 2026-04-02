@@ -1,6 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import { useNavigation, urlToPage } from '@/lib/store'
+import { useLocale } from '@/lib/i18n'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import AuthModal from './AuthModal'
@@ -92,18 +93,34 @@ function PageRenderer() {
 
 export default function MarketplaceApp() {
   const { navigate } = useNavigation()
+  const { setLocale } = useLocale()
 
   // Sync URL on page load (handle direct links / refresh)
   useEffect(() => {
+    // Detect locale from URL and set it
+    const pathname = window.location.pathname
+    if (pathname.startsWith('/fr') || pathname.startsWith('/fr/')) {
+      setLocale('fr')
+    } else {
+      setLocale('en')
+    }
+
     const { page, params } = urlToPage(window.location.pathname, window.location.search)
     if (page !== "home" || window.location.pathname !== "/") {
       navigate(page, params)
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
   // Handle browser back/forward buttons
   useEffect(() => {
     const handlePopState = () => {
+      // Detect locale from URL on popstate
+      const pathname = window.location.pathname
+      if (pathname.startsWith('/fr') || pathname.startsWith('/fr/')) {
+        useLocale.getState().setLocale('fr')
+      } else {
+        useLocale.getState().setLocale('en')
+      }
       const { page, params } = urlToPage(window.location.pathname, window.location.search)
       useNavigation.setState({ currentPage: page, pageParams: params })
       window.scrollTo(0, 0)

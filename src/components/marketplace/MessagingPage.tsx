@@ -1,6 +1,7 @@
 'use client'
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { useNavigation, useAuth } from '@/lib/store'
+import { useState, useEffect, useRef } from 'react'
+import { useNavigation } from '@/lib/store'
+import { useTranslation } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -92,6 +93,7 @@ const ROLE_COLORS: Record<string, string> = {
 export default function MessagingPage() {
   const { user } = useAuth()
   const { navigate, pageParams } = useNavigation()
+  const { t } = useTranslation()
   const [conversations, setConversations] = useState<ConversationSummary[]>([])
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null)
   const [fullConversation, setFullConversation] = useState<FullConversation | null>(null)
@@ -261,12 +263,12 @@ export default function MessagingPage() {
           prev.map((m) => (m.id === optimisticMessage.id ? data.message : m))
         )
       } else {
-        toast.error('Failed to send message')
+        toast.error(t('messaging.failedToSend'))
         // Remove optimistic message on failure
         setMessages((prev) => prev.filter((m) => m.id !== optimisticMessage.id))
       }
     } catch (error) {
-      toast.error('Failed to send message')
+      toast.error(t('messaging.failedToSend'))
       setMessages((prev) => prev.filter((m) => m.id !== optimisticMessage.id))
     } finally {
       setSendingMessage(false)
@@ -295,10 +297,10 @@ export default function MessagingPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
           <MessageCircle className="w-16 h-16 text-stone-700 mb-4" />
-          <h2 className="text-xl font-semibold text-stone-300 mb-2">Sign in to message sellers</h2>
-          <p className="text-stone-500 mb-6">You need an account to send messages</p>
+          <h2 className="text-xl font-semibold text-stone-300 mb-2">{t('messaging.signInToMessage')}</h2>
+          <p className="text-stone-500 mb-6">{t('messaging.signInToMessageDesc')}</p>
           <Button onClick={() => useNavigation.getState().openAuthModal('login')} className="bg-red-600 hover:bg-red-700 text-white rounded-xl">
-            Sign In
+            {t('nav.signIn')}
           </Button>
         </div>
       </div>
@@ -309,9 +311,9 @@ export default function MessagingPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
       {/* Page Header */}
       <div className="flex items-center gap-3 mb-6">
-        <h1 className="text-2xl font-bold text-stone-100">Messages</h1>
+        <h1 className="text-2xl font-bold text-stone-100">{t('messaging.title')}</h1>
         <Badge className="bg-red-500/10 text-red-400 border-red-500/20 border">
-          {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
+          {conversations.length} {conversations.length !== 1 ? t('messaging.conversations_plural') : t('messaging.conversations')}
         </Badge>
       </div>
 
@@ -327,7 +329,7 @@ export default function MessagingPage() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" />
               <Input
-                placeholder="Search conversations..."
+                placeholder={t('messaging.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 bg-neutral-800 border-white/10 text-stone-100 placeholder:text-stone-600 rounded-xl h-10"
@@ -340,18 +342,18 @@ export default function MessagingPage() {
             {loading ? (
               <div className="flex flex-col items-center justify-center py-16">
                 <div className="w-8 h-8 border-2 border-red-500/30 border-t-red-500 rounded-full animate-spin" />
-                <p className="text-sm text-stone-500 mt-3">Loading conversations...</p>
+                <p className="text-sm text-stone-500 mt-3">{t('messaging.loadingConversations')}</p>
               </div>
             ) : filteredConversations.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 px-4">
                 <MessageCircle className="w-12 h-12 text-stone-700 mb-3" />
                 <p className="text-stone-400 font-medium mb-1">
-                  {searchQuery ? 'No conversations found' : 'No conversations yet'}
+                  {searchQuery ? t('messaging.noConversationsFound') : t('messaging.noConversations')}
                 </p>
                 <p className="text-sm text-stone-600 text-center">
                   {searchQuery
-                    ? 'Try a different search term'
-                    : 'Start a conversation by messaging a seller from a product page'}
+                    ? t('messaging.tryDifferentSearch')
+                    : t('messaging.noConversationsDesc')}
                 </p>
               </div>
             ) : (
@@ -391,7 +393,7 @@ export default function MessagingPage() {
                       </div>
                       <div className="flex items-center gap-2 mt-0.5">
                         <p className={`text-xs truncate flex-1 ${conv.unreadCount > 0 ? 'text-stone-300 font-medium' : 'text-stone-500'}`}>
-                          {conv.lastMessage || 'No messages yet'}
+                          {conv.lastMessage || ''}
                         </p>
                         {conv.unreadCount > 0 && (
                           <span className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0" />
@@ -445,9 +447,9 @@ export default function MessagingPage() {
                   {messages.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-16">
                       <MessageCircle className="w-12 h-12 text-stone-700 mb-3" />
-                      <p className="text-stone-400 font-medium">No messages yet</p>
+                      <p className="text-stone-400 font-medium">{t('messaging.noMessagesYet')}</p>
                       <p className="text-sm text-stone-600 mt-1">
-                        Say hello to {fullConversation.otherParticipant.name}!
+                        {t('messaging.sayHelloTo', { name: fullConversation.otherParticipant.name })}
                       </p>
                     </div>
                   ) : (
@@ -487,8 +489,8 @@ export default function MessagingPage() {
                               </span>
                               {msg.isOwn && (
                                 msg.isRead
-                                  ? <span className="text-[10px] text-blue-400">Read</span>
-                                  : <span className="text-[10px] text-stone-600">Sent</span>
+                                  ? <span className="text-[10px] text-blue-400">{t('messaging.read')}</span>
+                                  : <span className="text-[10px] text-stone-600">{t('messaging.sent')}</span>
                               )
                             }
                             </div>
@@ -506,7 +508,7 @@ export default function MessagingPage() {
                 <div className="flex items-center gap-2 max-w-3xl mx-auto">
                   <Input
                     ref={inputRef}
-                    placeholder={`Message ${fullConversation.otherParticipant.name}...`}
+                    placeholder={t('messaging.message', { name: fullConversation.otherParticipant.name })}
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -533,16 +535,16 @@ export default function MessagingPage() {
               <div className="w-20 h-20 rounded-2xl bg-neutral-800/60 border border-white/5 flex items-center justify-center mb-5">
                 <MessageCircle className="w-10 h-10 text-stone-600" />
               </div>
-              <h3 className="text-lg font-semibold text-stone-300 mb-2">Select a conversation</h3>
+              <h3 className="text-lg font-semibold text-stone-300 mb-2">{t('messaging.selectConversation')}</h3>
               <p className="text-sm text-stone-500 text-center max-w-sm">
-                Choose a conversation from the list or start a new one by messaging a seller from any product page.
+                {t('messaging.selectConversationDesc')}
               </p>
               <Button
                 variant="outline"
                 onClick={() => navigate('browse')}
                 className="mt-5 border-white/10 text-stone-400 hover:bg-white/5 hover:text-stone-200 rounded-xl"
               >
-                Browse Products
+                {t('browse.title')}
               </Button>
             </div>
           )}

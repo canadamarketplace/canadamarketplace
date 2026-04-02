@@ -1,5 +1,6 @@
 "use client"
 import { create } from "zustand"
+import { getLocalePrefix, stripLocalePrefix } from './i18n'
 
 export type PageView =
   | "home"
@@ -67,8 +68,8 @@ interface NavigationState {
   closeAuthModal: () => void
 }
 
-// Map page names to URL paths
-function pageToUrl(page: PageView, params: Record<string, string>): string {
+// Map page names to URL paths (without locale prefix)
+function pageToUrlBase(page: PageView, params: Record<string, string>): string {
   const base: Record<string, string> = {
     "home": "/",
     "browse": "/browse",
@@ -113,52 +114,60 @@ function pageToUrl(page: PageView, params: Record<string, string>): string {
   return base[page] || "/"
 }
 
-// Map URL paths back to page names
+// Exported function: page name to URL with locale prefix
+export function pageToUrl(page: PageView, params: Record<string, string>): string {
+  const basePath = pageToUrlBase(page, params)
+  return getLocalePrefix() + basePath
+}
+
+// Map URL paths back to page names (strips locale prefix)
 export function urlToPage(pathname: string, search: string): { page: PageView; params: Record<string, string> } {
+  // Strip locale prefix from URL
+  const { cleanPath } = stripLocalePrefix(pathname)
   const params = new URLSearchParams(search)
-  if (pathname === "/" || pathname === "") return { page: "home", params: {} }
-  if (pathname === "/browse") {
+  if (cleanPath === "/" || cleanPath === "") return { page: "home", params: {} }
+  if (cleanPath === "/browse") {
     const category = params.get("category")
     if (category) return { page: "category", params: { category } }
     if (params.get("regions")) return { page: "regions", params: {} }
     return { page: "browse", params: {} }
   }
-  if (pathname.startsWith("/product/")) return { page: "product-detail", params: { id: pathname.split("/")[2] } }
-  if (pathname.startsWith("/store/")) return { page: "storefront", params: { slug: pathname.split("/")[2] } }
-  if (pathname === "/how-it-works") return { page: "safety", params: {} }
-  if (pathname === "/become-seller" || pathname === "/sellers") return { page: "become-seller", params: {} }
-  if (pathname === "/cart") return { page: "cart", params: {} }
-  if (pathname === "/checkout") return { page: "checkout", params: {} }
-  if (pathname === "/orders") return { page: "orders", params: {} }
-  if (pathname.startsWith("/orders/")) return { page: "order-detail", params: { id: pathname.split("/")[2] } }
-  if (pathname.startsWith("/disputes/new")) return { page: "file-dispute", params: { orderId: params.get("order") || "" } }
-  if (pathname === "/seller-locator") return { page: "seller-locator", params: {} }
-  if (pathname === "/notifications") return { page: "notifications", params: {} }
-  if (pathname === "/messages") return { page: "messaging", params: {} }
-  if (pathname === "/profile") return { page: "profile", params: {} }
-  if (pathname === "/forgot-password") return { page: "forgot-password", params: {} }
-  if (pathname.startsWith("/seller/dashboard")) return { page: "dashboard", params: {} }
-  if (pathname === "/seller/products") return { page: "my-products", params: {} }
-  if (pathname.startsWith("/seller/products/new")) return { page: "add-product", params: {} }
-  if (pathname.startsWith("/seller/products/") && pathname.endsWith("/edit")) return { page: "edit-product", params: { id: pathname.split("/")[3] } }
-  if (pathname.startsWith("/seller/orders")) return { page: "my-orders", params: {} }
-  if (pathname.startsWith("/seller/store")) return { page: "my-store", params: {} }
-  if (pathname.startsWith("/seller/payouts")) return { page: "my-payouts", params: {} }
-  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
-    const sub = pathname.replace("/admin/", "").replace("/admin", "")
+  if (cleanPath.startsWith("/product/")) return { page: "product-detail", params: { id: cleanPath.split("/")[2] } }
+  if (cleanPath.startsWith("/store/")) return { page: "storefront", params: { slug: cleanPath.split("/")[2] } }
+  if (cleanPath === "/how-it-works") return { page: "safety", params: {} }
+  if (cleanPath === "/become-seller" || cleanPath === "/sellers") return { page: "become-seller", params: {} }
+  if (cleanPath === "/cart") return { page: "cart", params: {} }
+  if (cleanPath === "/checkout") return { page: "checkout", params: {} }
+  if (cleanPath === "/orders") return { page: "orders", params: {} }
+  if (cleanPath.startsWith("/orders/")) return { page: "order-detail", params: { id: cleanPath.split("/")[2] } }
+  if (cleanPath.startsWith("/disputes/new")) return { page: "file-dispute", params: { orderId: params.get("order") || "" } }
+  if (cleanPath === "/seller-locator") return { page: "seller-locator", params: {} }
+  if (cleanPath === "/notifications") return { page: "notifications", params: {} }
+  if (cleanPath === "/messages") return { page: "messaging", params: {} }
+  if (cleanPath === "/profile") return { page: "profile", params: {} }
+  if (cleanPath === "/forgot-password") return { page: "forgot-password", params: {} }
+  if (cleanPath.startsWith("/seller/dashboard")) return { page: "dashboard", params: {} }
+  if (cleanPath === "/seller/products") return { page: "my-products", params: {} }
+  if (cleanPath.startsWith("/seller/products/new")) return { page: "add-product", params: {} }
+  if (cleanPath.startsWith("/seller/products/") && cleanPath.endsWith("/edit")) return { page: "edit-product", params: { id: cleanPath.split("/")[3] } }
+  if (cleanPath.startsWith("/seller/orders")) return { page: "my-orders", params: {} }
+  if (cleanPath.startsWith("/seller/store")) return { page: "my-store", params: {} }
+  if (cleanPath.startsWith("/seller/payouts")) return { page: "my-payouts", params: {} }
+  if (cleanPath === "/admin" || cleanPath.startsWith("/admin/")) {
+    const sub = cleanPath.replace("/admin/", "").replace("/admin", "")
     const pageMap: Record<string, PageView> = {
       "": "admin-dashboard", "users": "admin-users", "products": "admin-products",
       "orders": "admin-orders", "disputes": "admin-disputes", "settings": "admin-settings"
     }
     return { page: pageMap[sub] || "admin-dashboard", params: {} }
   }
-  if (pathname === "/terms") return { page: "terms", params: {} }
-  if (pathname === "/privacy") return { page: "privacy", params: {} }
-  if (pathname === "/cookies") return { page: "cookies", params: {} }
-  if (pathname === "/seller-terms") return { page: "seller-terms", params: {} }
-  if (pathname === "/dispute-policy") return { page: "dispute-policy", params: {} }
-  if (pathname === "/contact") return { page: "contact", params: {} }
-  if (pathname === "/about") return { page: "about", params: {} }
+  if (cleanPath === "/terms") return { page: "terms", params: {} }
+  if (cleanPath === "/privacy") return { page: "privacy", params: {} }
+  if (cleanPath === "/cookies") return { page: "cookies", params: {} }
+  if (cleanPath === "/seller-terms") return { page: "seller-terms", params: {} }
+  if (cleanPath === "/dispute-policy") return { page: "dispute-policy", params: {} }
+  if (cleanPath === "/contact") return { page: "contact", params: {} }
+  if (cleanPath === "/about") return { page: "about", params: {} }
   return { page: "home", params: {} }
 }
 
@@ -197,7 +206,7 @@ export const useNavigation = create<NavigationState>((set, get) => ({
       window.scrollTo(0, 0)
     } else {
       set({ currentPage: "home", pageParams: {} })
-      window.history.pushState({}, "", "/")
+      window.history.pushState({}, "", getLocalePrefix() + "/")
       window.scrollTo(0, 0)
     }
   },

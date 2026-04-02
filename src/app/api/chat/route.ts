@@ -4,8 +4,9 @@ const SYSTEM_PROMPT = `You are Maple, the friendly AI shopping assistant for Can
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, cartItems, currentPage, user } = await req.json()
+    const { messages, cartItems, currentPage, user, locale } = await req.json()
     const lastMsg = messages?.[messages.length - 1]?.content?.toLowerCase() || ""
+    const isFrench = locale === 'fr'
 
     // Build context for smarter responses
     let contextStr = ""
@@ -22,8 +23,9 @@ export async function POST(req: NextRequest) {
       contextStr += `\nCart is empty`
     }
     contextStr += `\nCurrent page: ${currentPage}`
+    contextStr += `\nLanguage: ${isFrench ? 'French (Quebec)' : 'English'}`
 
-    const response = generateResponse(lastMsg, contextStr)
+    const response = generateResponse(lastMsg, contextStr, isFrench)
     return NextResponse.json(response)
   } catch (error: any) {
     console.error("Chat API error:", error)
@@ -34,8 +36,13 @@ export async function POST(req: NextRequest) {
   }
 }
 
-function generateResponse(lastMsg: string, context: string) {
-  // Help with finding products
+function generateResponse(lastMsg: string, context: string, isFrench: boolean) {
+  // French responses
+  if (isFrench) {
+    return generateFrenchResponse(lastMsg, context)
+  }
+
+  // English responses (default)
   if (lastMsg.includes("laptop") || lastMsg.includes("computer") || lastMsg.includes("pc")) {
     return {
       message: "Great choice! We've got some awesome electronics from verified Canadian sellers. Let me show you our full electronics collection — you'll find laptops, desktops, and accessories at competitive prices. All purchases are protected by our escrow system! 💻",
@@ -183,6 +190,158 @@ function generateResponse(lastMsg: string, context: string) {
       { label: "Browse All Products", action: "browse" },
       { label: "How It Works", action: "safety" },
       { label: "Register Now", action: "register" },
+    ],
+  }
+}
+
+function generateFrenchResponse(lastMsg: string, context: string) {
+  if (lastMsg.includes("ordinateur") || lastMsg.includes("portable") || lastMsg.includes("pc")) {
+    return {
+      message: "Excellent choix! Nous avons de superbes articles électroniques de vendeurs canadiens vérifiés. Laissez-moi vous montrer notre collection d'électronique — vous y trouverez des ordinateurs portables, des ordinateurs de bureau et des accessoires à des prix compétitifs. Tous les achats sont protégés par notre système de séquestre! 💻",
+      actions: [{ label: "Explorer l'électronique", action: "browse", params: { category: "electronics" } }],
+    }
+  }
+
+  if (lastMsg.includes("téléphone") || lastMsg.includes("iphone") || lastMsg.includes("samsung") || lastMsg.includes("android")) {
+    return {
+      message: "Vous cherchez un nouveau téléphone? Nous avons une belle sélection de vendeurs canadiens vérifiés! Consultez notre section électronique pour les derniers téléphones intelligents, coques et accessoires. Le tout en dollars canadiens avec retours gratuits dans les 14 jours! 📱",
+      actions: [{ label: "Explorer l'électronique", action: "browse", params: { category: "electronics" } }],
+    }
+  }
+
+  if (lastMsg.includes("vêtement") || lastMsg.includes("mode") || lastMsg.includes("chemise") || lastMsg.includes("robe") || lastMsg.includes("soulier") || lastMsg.includes("chaussure")) {
+    return {
+      message: "Vous allez adorer notre section mode! Nous avons des vêtements, chaussures et accessoires de marques et vendeurs canadiens. Du quotidien à la mode haut de gamme — le tout en CAD avec protection des acheteurs! 👗",
+      actions: [{ label: "Explorer la mode", action: "browse", params: { category: "fashion" } }],
+    }
+  }
+
+  if (lastMsg.includes("maison") || lastMsg.includes("jardin") || lastMsg.includes("meuble") || lastMsg.includes("cuisine") || lastMsg.includes("décor")) {
+    return {
+      message: "Faites briller votre maison! Notre section Maison et jardin a tout ce dont vous avez besoin, des meubles aux essentiels de cuisine, en passant par les outils de jardinage et la décoration. Le tout de vendeurs canadiens vérifiés! 🏠",
+      actions: [{ label: "Explorer Maison et jardin", action: "browse", params: { category: "home-garden" } }],
+    }
+  }
+
+  if (lastMsg.includes("sport") || lastMsg.includes("hockey") || lastMsg.includes("exercice") || lastMsg.includes("gym") || lastMsg.includes("conditionnement")) {
+    return {
+      message: "Équipement de hockey, matériel d'entraînement, équipement d'aventure en plein air — nous avons tout! Consultez notre section sports pour tout ce dont un Canadien actif a besoin. Go Jets go! 🏒",
+      actions: [{ label: "Explorer les sports", action: "browse", params: { category: "sports" } }],
+    }
+  }
+
+  // Browse/shop in French
+  if (lastMsg.includes("explor") || lastMsg.includes("magasin") || lastMsg.includes("produit") || lastMsg.includes("cherch") || lastMsg.includes("regard")) {
+    return {
+      message: "Je serais ravi de vous aider à explorer notre place de marché! Nous avons des milliers de produits dans les catégories Électronique, Mode, Maison et jardin, Sports, Véhicules, Livres, Musique et Plein air. Le tout en dollars canadiens avec protection des acheteurs! 🍁",
+      actions: [
+        { label: "Explorer tous les produits", action: "browse" },
+        { label: "Explorer l'électronique", action: "browse", params: { category: "electronics" } },
+        { label: "Explorer la mode", action: "browse", params: { category: "fashion" } },
+      ],
+    }
+  }
+
+  // Cart/checkout in French
+  if (lastMsg.includes("panier") || lastMsg.includes("commande") || lastMsg.includes("payer") || lastMsg.includes("achat")) {
+    return {
+      message: "Rendez-vous à votre panier pour examiner vos articles et passer la commande quand vous êtes prêt. Voici comment ça fonctionne:\n\n1. Examinez les articles de votre panier\n2. Entrez vos informations de livraison (adresse, ville, province, code postal)\n3. Passez votre commande — le paiement est conservé en séquestre\n4. Le vendeur expédie votre article\n5. Confirmez la réception → le vendeur est payé\n\nTous les paiements sont protégés par notre système de séquestre! 🛡️",
+      actions: [{ label: "Voir mon panier", action: "cart" }],
+    }
+  }
+
+  // Selling in French
+  if (lastMsg.includes("vendre") || lastMsg.includes("vendeur") || lastMsg.includes("boutique") || lastMsg.includes("commenc") || lastMsg.includes("créer")) {
+    return {
+      message: "Devenir vendeur sur Canada Marketplace est facile! Voici ce que vous obtenez:\n\n✅ Votre propre boutique personnalisable\n✅ Analyses de ventes et tableau de bord\n✅ Système de versement sécurisé (direct à votre banque)\n✅ Frais de plateforme: seulement 8% (5% pour les vendeurs Gold)\n✅ Accès à des millions d'acheteurs canadiens\n\nTous les vendeurs sont vérifiés pour garder la plateforme sécurisée. Inscrivez-vous dès aujourd'hui!",
+      actions: [
+        { label: "Devenir vendeur", action: "become-seller" },
+        { label: "S'inscrire", action: "register" },
+      ],
+    }
+  }
+
+  // Registration in French
+  if (lastMsg.includes("inscr") || lastMsg.includes("compte") || lastMsg.includes("rejoindr") || lastMsg.includes("enregistr")) {
+    return {
+      message: "Bienvenue! Rejoindre Canada Marketplace est gratuit et ne prend qu'une minute. Vous pouvez vous inscrire comme acheteur pour commencer à magasiner, ou comme vendeur pour commencer à vendre. Tous les comptes incluent la protection par séquestre et la conformité à la LPRPDE! 🍁",
+      actions: [
+        { label: "S'inscrire", action: "register" },
+        { label: "Devenir vendeur", action: "become-seller" },
+      ],
+    }
+  }
+
+  // Safety in French
+  if (lastMsg.includes("sécur") || lastMsg.includes("séquestre") || lastMsg.includes("protég") || lastMsg.includes("escroq") || lastMsg.includes("confiance")) {
+    return {
+      message: "Votre sécurité est notre priorité numéro 1! Voici comment nous vous protégeons:\n\n🔒 **Paiements par séquestre** — Votre argent est conservé en toute sécurité jusqu'à ce que vous confirmiez la réception\n✅ **Vendeurs vérifiés** — Tous les vendeurs passent par une vérification d'identité\n🛡️ **Résolution des litiges** — Signalez un litige dans les 14 jours si quelque chose ne va pas\n🇨🇦 **Données au Canada** — Conforme à la LPRPDE, vos données restent au Canada\n💳 **Paiements sécurisés** — Traitement conforme PCI DSS\n\nVotre argent est TOUJOURS en sécurité avec nous!",
+      actions: [
+        { label: "Explorer les produits", action: "browse" },
+        { label: "Comment ça marche", action: "safety" },
+      ],
+    }
+  }
+
+  // Shipping in French
+  if (lastMsg.includes("livrais") || lastMsg.includes("expédi") || lastMsg.includes("suivi") || lastMsg.includes("postes canada")) {
+    return {
+      message: "Nous travaillons avec Postes Canada et d'autres transporteurs de confiance pour la livraison dans les 13 provinces et territoires. Voici ce que vous devez savoir:\n\n📦 La plupart des commandes sont expédiées sous 1-3 jours ouvrables\n📍 Suivez votre colis en temps réel depuis votre page de commandes\n🔄 Retours gratuits dans les 14 jours suivant la livraison\n❄️ Oui, nous livrons aussi dans les territoires!\n\nTous les frais de livraison sont affichés à la commande — pas de frais cachés!",
+      actions: [{ label: "Voir mes commandes", action: "orders" }],
+    }
+  }
+
+  // Orders in French
+  if (lastMsg.includes("commande") || lastMsg.includes("statut") || lastMsg.includes("où")) {
+    return {
+      message: "Pour vérifier le statut de votre commande, rendez-vous à la page Commandes où vous pouvez voir le suivi en temps réel de tous vos achats. Chaque commande affiche son statut actuel: En traitement → Expédiée → Livrée. Vous recevrez aussi des notifications par courriel à chaque étape! 📦",
+      actions: [{ label: "Voir mes commandes", action: "orders" }],
+    }
+  }
+
+  // Disputes in French
+  if (lastMsg.includes("litige") || lastMsg.includes("rembours") || lastMsg.includes("retour") || lastMsg.includes("plainte") || lastMsg.includes("cassé") || lastMsg.includes("endommagé") || lastMsg.includes("mauvais")) {
+    return {
+      message: "Nous sommes désolés d'apprendre cela! Voici comment fonctionne notre processus de litige:\n\n1. Allez à votre commande et cliquez « Signaler un litige »\n2. Décrivez le problème et téléversez des photos au besoin\n3. Notre équipe admin examine sous 48 heures\n4. Si approuvé, vous recevez un remboursement intégral du séquestre\n\nVous avez 14 jours après la livraison pour signaler un litige. Nous sommes là pour arranger les choses! 🤝",
+      actions: [{ label: "Voir mes commandes", action: "orders" }],
+    }
+  }
+
+  // Fees in French
+  if (lastMsg.includes("frais") || lastMsg.includes("coût") || lastMsg.includes("commission") || lastMsg.includes("prix")) {
+    return {
+      message: "Voici notre structure de frais transparente:\n\n🛒 **Pour les acheteurs**: Aucuns frais! Le prix affiché est le prix payé\n🏪 **Pour les vendeurs**: Frais de plateforme de 8% (5% pour les vendeurs Gold)\n💳 **Traitement des paiements**: Frais Stripe standard applicables\n💰 **Versements**: Direct à votre compte bancaire, traité chaque semaine\n\nAucuns frais cachés, jamais!",
+      actions: [{ label: "Devenir vendeur", action: "become-seller" }],
+    }
+  }
+
+  // Greetings in French
+  if (lastMsg.includes("bonjour") || lastMsg.includes("salut") || lastMsg.includes("hello") || lastMsg.includes("hi") || lastMsg.includes("allo") || lastMsg === "") {
+    return {
+      message: "Bonjour! Bienvenue sur Canada Marketplace! 🍁 Je suis Érable, votre assistant d'achat IA. Je suis ici pour vous aider à trouver exactement ce que vous cherchez, de manière sécuritaire.\n\nTout sur notre plateforme est en dollars canadiens, vos paiements sont protégés par séquestre, et tous les vendeurs sont vérifiés. Pas mal, hein?\n\nQue cherchez-vous aujourd'hui?",
+      actions: [
+        { label: "Explorer tous les produits", action: "browse" },
+        { label: "S'inscrire", action: "register" },
+        { label: "Comment ça marche", action: "safety" },
+      ],
+    }
+  }
+
+  // Thanks in French
+  if (lastMsg.includes("merci") || lastMsg.includes("thank") || lastMsg.includes("remerci")) {
+    return {
+      message: "De rien! C'est ça que je suis ici, hein? Si vous avez besoin d'autre chose, n'hésitez pas à demander. Bonnes achats! 🍁",
+      actions: [{ label: "Explorer les produits", action: "browse" }],
+    }
+  }
+
+  // Default French response
+  return {
+    message: "Je serais ravi de vous aider avec ça! Je peux vous aider avec:\n\n🛍️ Trouver des produits dans toutes les catégories\n🛒 Questions sur le panier et la commande\n🏪 Devenir vendeur\n🔒 Séquestre et sécurité\n📦 Livraison et suivi\n🤝 Litiges et retours\n\nQue souhaitez-vous savoir de plus?",
+    actions: [
+      { label: "Explorer tous les produits", action: "browse" },
+      { label: "Comment ça marche", action: "safety" },
+      { label: "S'inscrire", action: "register" },
     ],
   }
 }

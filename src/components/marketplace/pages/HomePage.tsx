@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigation } from '@/lib/store'
+import { useTranslation } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -27,6 +28,7 @@ interface Product {
 
 export default function HomePage({ scrollTo }: { scrollTo?: string }) {
   const { navigate, openAuthModal } = useNavigation()
+  const { t } = useTranslation()
   const [featured, setFeatured] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [animateStats, setAnimateStats] = useState(false)
@@ -73,19 +75,19 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
   }
 
   const stats = [
-    { value: '125K+', label: 'Listings', icon: Package },
-    { value: '38K+', label: 'Verified Sellers', icon: Users },
-    { value: '13', label: 'Provinces', icon: MapPin },
-    { value: '0', label: 'Fraud Cases', icon: Shield },
+    { value: '125K+', label: t('home.listings'), icon: Package },
+    { value: '38K+', label: t('home.verifiedSellers'), icon: Users },
+    { value: '13', label: t('home.provinces'), icon: MapPin },
+    { value: '0', label: t('home.fraudCases'), icon: Shield },
   ]
 
   const safetyFeatures = [
-    { icon: Lock, title: 'Escrow Protection', desc: 'Your payment is held securely until you confirm receipt. No risk of losing money.' },
-    { icon: CheckCircle2, title: 'Verified Sellers', desc: 'Every seller goes through our verification process. Only trusted merchants on our platform.' },
-    { icon: Globe, title: 'Data in Canada', desc: 'All your data is stored and processed in Canada, following PIPEDA and Canadian privacy laws.' },
-    { icon: Scale, title: 'Dispute Protection', desc: 'Built-in dispute resolution system. We mediate issues to ensure fair outcomes for both parties.' },
-    { icon: DollarSign, title: 'CAD Only', desc: 'No currency conversion fees. All transactions are in Canadian dollars.' },
-    { icon: FileText, title: 'Legal Compliance', desc: 'Fully compliant with Canadian e-commerce laws, tax regulations, and consumer protection.' },
+    { icon: Lock, title: t('home.escrowProtection'), desc: t('home.escrowProtectionDesc') },
+    { icon: CheckCircle2, title: t('home.verifiedSellersBadge'), desc: t('home.verifiedSellersDesc') },
+    { icon: Globe, title: t('home.dataInCanada'), desc: t('home.dataInCanadaDesc') },
+    { icon: Scale, title: t('home.disputeProtection'), desc: t('home.disputeProtectionDesc') },
+    { icon: DollarSign, title: t('home.cadOnly'), desc: t('home.cadOnlyDesc') },
+    { icon: FileText, title: t('home.legalCompliance'), desc: t('home.legalComplianceDesc') },
   ]
 
   const categoryIcons: Record<string, any> = {
@@ -94,16 +96,10 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
   }
 
   const steps = [
-    { icon: Search, title: 'Find It', desc: 'Browse thousands of products from verified Canadian sellers across all 13 provinces.' },
-    { icon: CreditCard, title: 'Pay Safely', desc: 'Your payment is held in escrow until you receive and confirm your order.' },
-    { icon: Truck, title: 'Get It', desc: 'Fast shipping across Canada with tracking provided for every order.' },
-    { icon: ThumbsUp, title: 'Confirm', desc: 'Review and confirm receipt. Release payment only when you are satisfied.' },
-  ]
-
-  const testimonials = [
-    { name: 'Sarah M.', location: 'Toronto, ON', text: 'Amazing platform! Found exactly what I was looking for and the escrow system gave me peace of mind. Will definitely use again.', rating: 5, avatar: 'S' },
-    { name: 'Mike R.', location: 'Vancouver, BC', text: 'As a seller, Canada Marketplace has been fantastic. The low fees and fast payouts make it my go-to platform.', rating: 5, avatar: 'M' },
-    { name: 'Emily L.', location: 'Calgary, AB', text: 'Love that everything is in CAD and data stays in Canada. Finally a marketplace built for Canadians!', rating: 5, avatar: 'E' },
+    { icon: Search, title: t('home.findIt'), desc: t('home.findItDesc') },
+    { icon: CreditCard, title: t('home.paySafely'), desc: t('home.paySafelyDesc') },
+    { icon: Truck, title: t('home.getIt'), desc: t('home.getItDesc') },
+    { icon: ThumbsUp, title: t('home.confirm'), desc: t('home.confirmDesc') },
   ]
 
   const StatCounter = ({ value, suffix = '' }: { value: number; suffix?: string }) => {
@@ -138,22 +134,21 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
             {/* Trust Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-amber-500/5 border border-amber-500/20 mb-8">
               <Shield className="w-4 h-4 text-amber-400" />
-              <span className="text-xs font-medium text-amber-400">Trusted by 38,000+ Canadian sellers</span>
+              <span className="text-xs font-medium text-amber-400">{t('home.trustedBy')}</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight mb-6">
               <span className="bg-gradient-to-r from-stone-100 via-stone-200 to-stone-400 bg-clip-text text-transparent">
-                Buy & Sell Across
+                {t('home.heroTitle')}
               </span>
               <br />
               <span className="bg-gradient-to-r from-red-400 via-red-500 to-amber-500 bg-clip-text text-transparent">
-                Canada
+                {t('home.heroTitleHighlight')}
               </span>
             </h1>
 
             <p className="text-base sm:text-lg lg:text-xl text-stone-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Canada&apos;s most trusted marketplace. Escrow protection, verified sellers,
-              and all transactions in CAD. Built safe by design.
+              {t('home.heroSubtitle')}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
@@ -162,7 +157,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                 size="lg"
                 className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-2xl px-8 h-12 text-base shadow-lg shadow-red-500/20 hover:shadow-red-500/40 transition-shadow"
               >
-                Start Shopping
+                {t('home.startShopping')}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
@@ -172,7 +167,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                 className="border-white/10 hover:bg-white/5 text-stone-300 rounded-2xl px-8 h-12 text-base"
               >
                 <Store className="w-5 h-5 mr-2" />
-                Start Selling
+                {t('home.startSelling')}
               </Button>
             </div>
 
@@ -181,14 +176,14 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
               {stats.map((stat) => (
                 <div key={stat.label} className="text-center">
                   <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-stone-100">
-                    {stat.label === 'Fraud Cases' ? (
-                      <span className="text-green-400">
-                        <StatCounter value={0} />
-                      </span>
-                    ) : stat.value.includes('K') ? (
+                    {stat.value.includes('K') ? (
                       <StatCounter value={parseInt(stat.value)} />
                     ) : (
-                      stat.value
+                      stat.value === '0' ? (
+                        <span className="text-green-400">
+                          <StatCounter value={0} />
+                        </span>
+                      ) : stat.value
                     )}
                   </div>
                   <p className="text-xs sm:text-sm text-stone-500 mt-1">{stat.label}</p>
@@ -205,15 +200,15 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
           <div className="text-center mb-12">
             <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 mb-4">
               <Shield className="w-3.5 h-3.5 mr-1.5" />
-              Safety First
+              {t('home.safetyFirst')}
             </Badge>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
               <span className="bg-gradient-to-r from-stone-100 to-stone-300 bg-clip-text text-transparent">
-                Built Safe by Design
+                {t('home.builtSafeByDesign')}
               </span>
             </h2>
             <p className="text-stone-400 max-w-xl mx-auto">
-              Every transaction is protected. Every seller is verified. Your data stays in Canada.
+              {t('home.safetyDesc')}
             </p>
           </div>
 
@@ -239,10 +234,10 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-stone-100 to-stone-300 bg-clip-text text-transparent">
-                Browse by Category
+                {t('home.browseByCategory')}
               </span>
             </h2>
-            <p className="text-stone-400">Explore thousands of products across every category</p>
+            <p className="text-stone-400">{t('home.browseByCategoryDesc')}</p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -258,7 +253,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                     <Icon className="w-5 h-5 text-red-400" />
                   </div>
                   <h3 className="text-sm font-semibold text-stone-200 mb-1">{cat.name}</h3>
-                  <p className="text-xs text-stone-600">{cat.count.toLocaleString()} items</p>
+                  <p className="text-xs text-stone-600">{cat.count.toLocaleString()} {t('home.items')}</p>
                 </button>
               )
             })}
@@ -273,17 +268,17 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
             <div>
               <h2 className="text-3xl sm:text-4xl font-bold">
                 <span className="bg-gradient-to-r from-stone-100 to-stone-300 bg-clip-text text-transparent">
-                  Featured Products
+                  {t('home.featuredProducts')}
                 </span>
               </h2>
-              <p className="text-stone-400 mt-1">Handpicked by our team</p>
+              <p className="text-stone-400 mt-1">{t('home.handpicked')}</p>
             </div>
             <Button
               variant="outline"
               onClick={() => navigate('browse')}
               className="border-white/10 text-stone-400 hover:bg-white/5 hover:text-stone-200 rounded-xl hidden sm:flex"
             >
-              View All <ChevronRight className="w-4 h-4 ml-1" />
+              {t('home.viewAll')} <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
 
@@ -302,7 +297,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
           ) : featured.length === 0 ? (
             <div className="text-center py-16 rounded-2xl bg-neutral-900/60 border border-white/5">
               <Package className="w-12 h-12 text-stone-700 mx-auto mb-4" />
-              <p className="text-stone-500">No featured products yet</p>
+              <p className="text-stone-500">{t('home.noFeaturedProducts')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -358,7 +353,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
 
           <div className="mt-6 text-center sm:hidden">
             <Button variant="outline" onClick={() => navigate('browse')} className="border-white/10 text-stone-400 rounded-xl">
-              View All Products
+              {t('home.viewAllProducts')}
             </Button>
           </div>
         </div>
@@ -370,10 +365,10 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-stone-100 to-stone-300 bg-clip-text text-transparent">
-                Shop Across Canada
+                {t('home.shopAcrossCanada')}
               </span>
             </h2>
-            <p className="text-stone-400">Products and sellers from all 13 provinces and territories</p>
+            <p className="text-stone-400">{t('home.shopAcrossCanadaDesc')}</p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-3">
@@ -402,13 +397,13 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 mb-4">
                   <MapPinned className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="text-xs font-medium text-amber-400 uppercase tracking-wider">Interactive Map</span>
+                  <span className="text-xs font-medium text-amber-400 uppercase tracking-wider">{t('home.interactiveMap')}</span>
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold text-stone-100 mb-3">
-                  Find Sellers on the <span className="bg-gradient-to-r from-amber-400 to-red-400 bg-clip-text text-transparent">Map</span>
+                  {t('home.findSellersOnMap').split(' ').slice(0, -1).join(' ')} <span className="bg-gradient-to-r from-amber-400 to-red-400 bg-clip-text text-transparent">Map</span>
                 </h2>
                 <p className="text-stone-400 leading-relaxed mb-6">
-                  Explore our interactive map to discover verified sellers across all 13 Canadian provinces. Search by city, filter by province, and click any marker to visit their storefront instantly.
+                  {t('home.findSellersOnMapDesc')}
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <Button
@@ -416,14 +411,14 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                     className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold rounded-2xl px-6 shadow-lg shadow-amber-500/20"
                   >
                     <Map className="w-4 h-4 mr-2" />
-                    Open Seller Locator
+                    {t('home.openSellerLocator')}
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => navigate('browse')}
                     className="border-white/10 text-stone-300 hover:bg-white/5 rounded-2xl px-6"
                   >
-                    Browse All Products
+                    {t('home.viewAllProducts')}
                   </Button>
                 </div>
               </div>
@@ -440,7 +435,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                     <span className="text-lg mb-1 block">{loc.icon}</span>
                     <p className="text-xs font-medium text-stone-200 truncate">{loc.city}</p>
                     <p className="text-[10px] text-stone-600">{loc.province}</p>
-                    <p className="text-[10px] text-amber-400 mt-1">{loc.sellers > 0 ? `${loc.sellers} seller${loc.sellers > 1 ? 's' : ''}` : 'Coming soon'}</p>
+                    <p className="text-[10px] text-amber-400 mt-1">{loc.sellers > 0 ? `${loc.sellers} ${t('home.sellers')}` : t('home.comingSoon')}</p>
                   </div>
                 ))}
               </div>
@@ -455,10 +450,10 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-stone-100 to-stone-300 bg-clip-text text-transparent">
-                How It Works
+                {t('home.howItWorks')}
               </span>
             </h2>
-            <p className="text-stone-400">Simple, safe, and Canadian</p>
+            <p className="text-stone-400">{t('home.simpleSafeCanadian')}</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -481,45 +476,6 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 lg:py-24 bg-[#050505]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-stone-100 to-stone-300 bg-clip-text text-transparent">
-                Loved by Canadians
-              </span>
-            </h2>
-            <p className="text-stone-400">See what our community has to say</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t) => (
-              <Card key={t.name} className="bg-neutral-900/60 backdrop-blur-xl border-white/5 rounded-2xl">
-                <CardContent className="p-6">
-                  <div className="flex gap-0.5 mb-4">
-                    {Array.from({ length: t.rating }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
-                    ))}
-                  </div>
-                  <Quote className="w-6 h-6 text-stone-700 mb-3" />
-                  <p className="text-sm text-stone-400 leading-relaxed mb-4">{t.text}</p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-amber-500 flex items-center justify-center text-sm font-bold text-white">
-                      {t.avatar}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-stone-200">{t.name}</p>
-                      <p className="text-xs text-stone-600">{t.location}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Seller CTA */}
       <section ref={sellerCtaRef} id="seller-cta" className="py-20 lg:py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(245,158,11,0.06)_0%,_transparent_60%)]" />
@@ -530,31 +486,31 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                 <div>
                   <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 mb-4">
                     <Award className="w-3.5 h-3.5 mr-1.5" />
-                    For Sellers
+                    {t('home.forSellers')}
                   </Badge>
                   <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                     <span className="bg-gradient-to-r from-amber-400 to-red-400 bg-clip-text text-transparent">
-                      Start Selling Today
+                      {t('home.startSellingToday')}
                     </span>
                   </h2>
                   <p className="text-stone-400 mb-6 leading-relaxed">
-                    Join thousands of Canadian sellers on our trusted platform. Low fees, fast payouts, and built-in buyer protection.
+                    {t('home.startSellingTodayDesc')}
                   </p>
                   <Button
                     onClick={() => openAuthModal('register-seller')}
                     size="lg"
                     className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold rounded-2xl px-8 shadow-lg shadow-amber-500/20"
                   >
-                    Create Your Store
+                    {t('home.createYourStore')}
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
                   {[
-                    { value: '8%', label: 'Marketplace Fee', icon: TrendingUp },
-                    { value: '2 Days', label: 'Payout Speed', icon: Timer },
-                    { value: '$0', label: 'Monthly Fee', icon: DollarSign },
+                    { value: '8%', label: t('home.marketplaceFee'), icon: TrendingUp },
+                    { value: '2 Days', label: t('home.payoutSpeed'), icon: Timer },
+                    { value: '$0', label: t('home.monthlyFee'), icon: DollarSign },
                   ].map((item) => (
                     <div key={item.label} className="text-center p-4 rounded-2xl bg-white/[0.02] border border-white/5">
                       <item.icon className="w-5 h-5 text-amber-400 mx-auto mb-2" />

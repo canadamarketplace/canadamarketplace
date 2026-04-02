@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useAuth, useNavigation } from '@/lib/store'
+import { useTranslation } from '@/lib/i18n'
 import {
   Bell,
   Package,
@@ -36,7 +37,7 @@ function getTypeIcon(type: string) {
   return typeIcons[type] || { icon: Bell, color: 'text-stone-400', bg: 'bg-white/5' }
 }
 
-function formatRelativeTime(dateStr: string): string {
+function formatRelativeTime(dateStr: string, t: (key: string, params?: Record<string, string | number>) => string): string {
   const date = new Date(dateStr)
   const now = new Date()
   const diffMs = now.getTime() - date.getTime()
@@ -46,18 +47,19 @@ function formatRelativeTime(dateStr: string): string {
   const diffDays = Math.floor(diffHours / 24)
   const diffWeeks = Math.floor(diffDays / 7)
 
-  if (diffSecs < 60) return 'Just now'
-  if (diffMins < 60) return `${diffMins}m ago`
-  if (diffHours < 24) return `${diffHours}h ago`
-  if (diffDays === 1) return 'Yesterday'
-  if (diffDays < 7) return `${diffDays}d ago`
-  if (diffWeeks < 4) return `${diffWeeks}w ago`
+  if (diffSecs < 60) return t('notifications.justNow')
+  if (diffMins < 60) return t('notifications.minutesAgo', { count: diffMins })
+  if (diffHours < 24) return t('notifications.hoursAgo', { count: diffHours })
+  if (diffDays === 1) return t('notifications.yesterday')
+  if (diffDays < 7) return t('notifications.daysAgo', { count: diffDays })
+  if (diffWeeks < 4) return t('notifications.weeksAgo', { count: diffWeeks })
   return date.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' })
 }
 
 export default function NotificationBell() {
   const { user } = useAuth()
   const { navigate } = useNavigation()
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
@@ -170,6 +172,7 @@ export default function NotificationBell() {
         ref={bellRef}
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-stone-400 hover:text-stone-100 rounded-lg hover:bg-white/5 transition-all"
+        aria-label={t('notifications.title')}
       >
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && (
@@ -187,7 +190,7 @@ export default function NotificationBell() {
         >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-            <h3 className="text-sm font-semibold text-stone-100">Notifications</h3>
+            <h3 className="text-sm font-semibold text-stone-100">{t('notifications.title')}</h3>
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
@@ -195,7 +198,7 @@ export default function NotificationBell() {
                 className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
               >
                 <CheckCheck className="w-3.5 h-3.5" />
-                {markingAll ? 'Marking...' : 'Mark all read'}
+                {markingAll ? t('notifications.marking') : t('notifications.markAllRead')}
               </button>
             )}
           </div>
@@ -205,8 +208,8 @@ export default function NotificationBell() {
             {notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 px-4">
                 <BellOff className="w-10 h-10 text-stone-600 mb-3" />
-                <p className="text-sm text-stone-500">No notifications</p>
-                <p className="text-xs text-stone-600 mt-1">We&apos;ll let you know when something arrives</p>
+                <p className="text-sm text-stone-500">{t('notifications.noNotifications')}</p>
+                <p className="text-xs text-stone-600 mt-1">{t('notifications.noNotificationsDesc')}</p>
               </div>
             ) : (
               <div>
@@ -239,7 +242,7 @@ export default function NotificationBell() {
                           {notification.message}
                         </p>
                         <p className="text-[11px] text-stone-600 mt-1">
-                          {formatRelativeTime(notification.createdAt)}
+                          {formatRelativeTime(notification.createdAt, t)}
                         </p>
                       </div>
                     </button>
@@ -259,7 +262,7 @@ export default function NotificationBell() {
                 }}
                 className="w-full flex items-center justify-center gap-1 px-4 py-2.5 text-xs text-red-400 hover:text-red-300 hover:bg-white/5 transition-colors"
               >
-                View All Notifications
+                {t('notifications.viewAll')}
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>

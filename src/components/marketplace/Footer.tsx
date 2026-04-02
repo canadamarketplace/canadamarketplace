@@ -1,51 +1,53 @@
 'use client'
 import { useNavigation } from '@/lib/store'
+import { useTranslation } from '@/lib/i18n'
 import { Leaf, Twitter, Github, Mail } from 'lucide-react'
 
 export default function Footer() {
   const { navigate } = useNavigation()
+  const { t } = useTranslation()
 
   const sections = [
     {
-      title: 'Marketplace',
+      title: t('footer.marketplace'),
       links: [
-        { label: 'Browse Products', page: 'browse' as const },
-        { label: 'Categories', page: 'category' as const },
-        { label: 'Regions', page: 'regions' as const },
-        { label: 'Seller Locator', page: 'seller-locator' as const },
-        { label: 'How It Works', page: 'safety' as const },
+        { label: t('footer.browseProducts'), page: 'browse' as const },
+        { label: t('footer.categories'), page: 'category' as const },
+        { label: t('footer.regions'), page: 'regions' as const },
+        { label: t('footer.sellerLocator'), page: 'seller-locator' as const },
+        { label: t('footer.howItWorks'), page: 'safety' as const },
       ],
     },
     {
-      title: 'Company',
+      title: t('footer.company'),
       links: [
-        { label: 'About Us', page: 'about' as const },
-        { label: 'Contact Us', page: 'contact' as const },
-        { label: 'How It Works', page: 'safety' as const },
+        { label: t('footer.aboutUs'), page: 'about' as const },
+        { label: t('footer.contactUs'), page: 'contact' as const },
+        { label: t('footer.howItWorks'), page: 'safety' as const },
       ],
     },
     {
-      title: 'Selling',
+      title: t('footer.selling'),
       links: [
-        { label: 'Become a Seller', page: 'become-seller' as const },
-        { label: 'Seller Agreement', page: 'seller-terms' as const },
-        { label: 'Fees & Payouts', page: 'become-seller' as const },
+        { label: t('footer.becomeASeller'), page: 'become-seller' as const },
+        { label: t('footer.sellerAgreement'), page: 'seller-terms' as const },
+        { label: t('footer.feesAndPayouts'), page: 'become-seller' as const },
       ],
     },
     {
-      title: 'Support',
+      title: t('footer.support'),
       links: [
-        { label: 'Help Center', page: 'safety' as const },
-        { label: 'Dispute Policy', page: 'dispute-policy' as const },
-        { label: 'File a Dispute', page: 'file-dispute' as const },
+        { label: t('footer.helpCenter'), page: 'safety' as const },
+        { label: t('footer.disputePolicy'), page: 'dispute-policy' as const },
+        { label: t('footer.fileADispute'), page: 'file-dispute' as const },
       ],
     },
     {
-      title: 'Legal',
+      title: t('footer.legal'),
       links: [
-        { label: 'Terms of Service', page: 'terms' as const },
-        { label: 'Privacy Policy', page: 'privacy' as const },
-        { label: 'Cookie Policy', page: 'cookies' as const },
+        { label: t('footer.termsOfService'), page: 'terms' as const },
+        { label: t('footer.privacyPolicy'), page: 'privacy' as const },
+        { label: t('footer.cookiePolicy'), page: 'cookies' as const },
       ],
     },
   ]
@@ -61,7 +63,7 @@ export default function Footer() {
               <span className="text-sm font-bold text-stone-100">Canada<span className="text-red-500">Marketplace</span></span>
             </div>
             <p className="text-xs text-stone-500 leading-relaxed mb-4">
-              Canada&apos;s trusted marketplace. Built safe by design for Canadians, by Canadians.
+              {t('footer.tagline')}
             </p>
             <div className="flex gap-3">
               <button className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-stone-400 hover:text-stone-200 transition-colors">
@@ -98,11 +100,11 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-stone-600">
-            &copy; {new Date().getFullYear()} Canada Marketplace. All rights reserved.
+            &copy; {new Date().getFullYear()} Canada Marketplace. {t('footer.allRightsReserved')}
           </p>
           <div className="flex items-center gap-1 text-xs text-stone-600">
             <span>🍁</span>
-            <span>Data hosted in Canada</span>
+            <span>{t('footer.dataHosted')}</span>
           </div>
         </div>
       </div>

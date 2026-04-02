@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useNavigation, useAuth } from '@/lib/store'
+import { useTranslation } from '@/lib/i18n'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
@@ -16,6 +17,7 @@ import { toast } from 'sonner'
 export default function AuthModal() {
   const { isAuthModalOpen, closeAuthModal, authModalTab, navigate } = useNavigation()
   const { setUser } = useAuth()
+  const { t } = useTranslation()
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -51,7 +53,7 @@ export default function AuthModal() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!loginEmail || !loginPassword) {
-      toast.error('Please enter email and password')
+      toast.error(t('common.pleaseEnterEmailPassword'))
       return
     }
     setLoading(true)
@@ -66,13 +68,13 @@ export default function AuthModal() {
         setUser(user)
         closeAuthModal()
         resetForms()
-        toast.success('Welcome back!')
+        toast.success(t('common.welcomeBack'))
       } else {
         const data = await res.json()
-        toast.error(data.error || 'Invalid credentials')
+        toast.error(data.error || t('common.invalidCredentials'))
       }
     } catch {
-      toast.error('Login failed. Please try again.')
+      toast.error(t('common.loginFailed'))
     }
     setLoading(false)
   }
@@ -80,7 +82,7 @@ export default function AuthModal() {
   const handleBuyerRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!regName || !regEmail || !regPassword) {
-      toast.error('Please fill all required fields')
+      toast.error(t('common.fillRequiredFields'))
       return
     }
     setLoading(true)
@@ -93,13 +95,13 @@ export default function AuthModal() {
       if (res.ok) {
         const user = await res.json()
         setSuccess(true)
-        toast.success('Account created! You can now sign in.')
+        toast.success(t('common.accountCreated'))
       } else {
         const data = await res.json()
-        toast.error(data.error || 'Registration failed')
+        toast.error(data.error || t('common.registrationFailed'))
       }
     } catch {
-      toast.error('Registration failed')
+      toast.error(t('common.registrationFailed'))
     }
     setLoading(false)
   }
@@ -107,7 +109,7 @@ export default function AuthModal() {
   const handleSellerRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!sellerName || !sellerEmail || !sellerPassword || !storeName) {
-      toast.error('Please fill all required fields')
+      toast.error(t('common.fillRequiredFields'))
       return
     }
     setLoading(true)
@@ -123,13 +125,13 @@ export default function AuthModal() {
       if (res.ok) {
         const user = await res.json()
         setSuccess(true)
-        toast.success('Seller account created! You can now sign in.')
+        toast.success(t('common.sellerAccountCreated'))
       } else {
         const data = await res.json()
-        toast.error(data.error || 'Registration failed')
+        toast.error(data.error || t('common.registrationFailed'))
       }
     } catch {
-      toast.error('Registration failed')
+      toast.error(t('common.registrationFailed'))
     }
     setLoading(false)
   }
@@ -144,36 +146,36 @@ export default function AuthModal() {
             <img src="/logo.png" alt="Canada Marketplace" className="w-full h-full object-cover" />
           </div>
           <DialogTitle className="text-xl font-bold text-stone-100">
-            {success ? 'Welcome!' : 'Join Canada Marketplace'}
+            {success ? t('auth.welcome') : t('auth.welcomeTitle')}
           </DialogTitle>
           <p className="text-sm text-stone-400 mt-1">
-            {success ? 'Your account has been created successfully.' : 'Canada&apos;s trusted marketplace'}
+            {success ? t('auth.accountCreatedDesc') : t('auth.welcomeSubtitle')}
           </p>
         </div>
 
         {success ? (
           <div className="p-6 text-center">
             <CheckCircle2 className="w-16 h-16 text-green-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-stone-100 mb-2">Account Created!</h3>
-            <p className="text-sm text-stone-400 mb-4">Please sign in with your new account.</p>
+            <h3 className="text-lg font-semibold text-stone-100 mb-2">{t('auth.accountCreated')}</h3>
+            <p className="text-sm text-stone-400 mb-4">{t('auth.accountCreatedDesc')}</p>
             <Button
               onClick={() => { resetForms(); }}
               className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl h-11"
             >
-              Go to Sign In
+              {t('auth.goToSignIn')}
             </Button>
           </div>
         ) : (
           <Tabs defaultValue={authModalTab} className="mt-0">
             <TabsList className="w-full grid grid-cols-3 bg-transparent border-b border-white/5 h-12 rounded-none p-0">
               <TabsTrigger value="login" className="rounded-none data-[state=active]:bg-transparent data-[state=active]:text-red-400 data-[state=active]:border-b-2 data-[state=active]:border-red-500 text-stone-500 h-12 rounded-t-none text-sm">
-                Sign In
+                {t('auth.login')}
               </TabsTrigger>
               <TabsTrigger value="register" className="rounded-none data-[state=active]:bg-transparent data-[state=active]:text-red-400 data-[state=active]:border-b-2 data-[state=active]:border-red-500 text-stone-500 h-12 rounded-t-none text-sm">
-                Buyer
+                {t('auth.buyer')}
               </TabsTrigger>
               <TabsTrigger value="register-seller" className="rounded-none data-[state=active]:bg-transparent data-[state=active]:text-red-400 data-[state=active]:border-b-2 data-[state=active]:border-red-500 text-stone-500 h-12 rounded-t-none text-sm">
-                Seller
+                {t('auth.seller')}
               </TabsTrigger>
             </TabsList>
 
@@ -181,7 +183,7 @@ export default function AuthModal() {
             <TabsContent value="login" className="p-6 mt-0">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Email</Label>
+                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.email')}</Label>
                   <Input
                     type="email"
                     value={loginEmail}
@@ -192,13 +194,13 @@ export default function AuthModal() {
                   />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Password</Label>
+                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.password')}</Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? 'text' : 'password'}
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
-                      placeholder="Enter password"
+                      placeholder="••••••••"
                       className={`${inputClass} pr-10`}
                       required
                     />
@@ -216,7 +218,7 @@ export default function AuthModal() {
                       onClick={() => { closeAuthModal(); resetForms(); navigate('forgot-password') }}
                       className="text-xs text-stone-500 hover:text-red-400 transition-colors"
                     >
-                      Forgot password?
+                      {t('auth.forgotPassword')}
                     </button>
                   </div>
                 </div>
@@ -226,14 +228,14 @@ export default function AuthModal() {
                   className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl h-11"
                 >
                   {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                  Sign In
+                  {t('auth.login')}
                 </Button>
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-white/5" />
                   </div>
                   <div className="relative flex justify-center text-xs">
-                    <span className="px-3 bg-neutral-900 text-stone-500">Demo Accounts</span>
+                    <span className="px-3 bg-neutral-900 text-stone-500">{t('auth.demoAccounts')}</span>
                   </div>
                 </div>
                 <div className="space-y-1.5">
@@ -249,7 +251,7 @@ export default function AuthModal() {
                       className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-stone-400 transition-colors"
                     >
                       <span>{demo.label}: {demo.email}</span>
-                      <span className="text-stone-600 text-[10px]">Use Demo</span>
+                      <span className="text-stone-600 text-[10px]">{t('auth.useDemo')}</span>
                     </button>
                   ))}
                 </div>
@@ -260,35 +262,35 @@ export default function AuthModal() {
             <TabsContent value="register" className="p-6 mt-0">
               <form onSubmit={handleBuyerRegister} className="space-y-4">
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Full Name *</Label>
+                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.name')} *</Label>
                   <Input value={regName} onChange={(e) => setRegName(e.target.value)} placeholder="John Doe" className={inputClass} required />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Email *</Label>
+                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.email')} *</Label>
                   <Input type="email" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} placeholder="you@example.com" className={inputClass} required />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Password *</Label>
-                  <Input type="password" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} placeholder="Min 6 characters" className={inputClass} required />
+                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.password')} *</Label>
+                  <Input type="password" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} placeholder="••••••••" className={inputClass} required />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label className="text-stone-300 text-xs mb-1.5 block">Province</Label>
+                    <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.province')}</Label>
                     <Select value={regProvince} onValueChange={setRegProvince}>
-                      <SelectTrigger className={`${inputClass} h-11`}><SelectValue placeholder="Select" /></SelectTrigger>
+                      <SelectTrigger className={`${inputClass} h-11`}><SelectValue placeholder={t('auth.select')} /></SelectTrigger>
                       <SelectContent className="bg-neutral-900 border-white/10">
                         {PROVINCES.map((p) => <SelectItem key={p.slug} value={p.slug} className="text-stone-300">{p.name}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-stone-300 text-xs mb-1.5 block">City</Label>
-                    <Input value={regCity} onChange={(e) => setRegCity(e.target.value)} placeholder="City" className={inputClass} />
+                    <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.city')}</Label>
+                    <Input value={regCity} onChange={(e) => setRegCity(e.target.value)} placeholder={t('auth.city')} className={inputClass} />
                   </div>
                 </div>
                 <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl h-11">
                   {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                  Create Buyer Account
+                  {t('auth.createBuyerAccount')}
                 </Button>
               </form>
             </TabsContent>
@@ -297,43 +299,43 @@ export default function AuthModal() {
             <TabsContent value="register-seller" className="p-6 mt-0">
               <form onSubmit={handleSellerRegister} className="space-y-4">
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Full Name *</Label>
+                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.name')} *</Label>
                   <Input value={sellerName} onChange={(e) => setSellerName(e.target.value)} placeholder="Jane Smith" className={inputClass} required />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Email *</Label>
+                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.email')} *</Label>
                   <Input type="email" value={sellerEmail} onChange={(e) => setSellerEmail(e.target.value)} placeholder="you@example.com" className={inputClass} required />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Password *</Label>
-                  <Input type="password" value={sellerPassword} onChange={(e) => setSellerPassword(e.target.value)} placeholder="Min 6 characters" className={inputClass} required />
+                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.password')} *</Label>
+                  <Input type="password" value={sellerPassword} onChange={(e) => setSellerPassword(e.target.value)} placeholder="••••••••" className={inputClass} required />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Store Name *</Label>
-                  <Input value={storeName} onChange={(e) => setStoreName(e.target.value)} placeholder="My Canadian Store" className={inputClass} required />
+                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.storeName')} *</Label>
+                  <Input value={storeName} onChange={(e) => setStoreName(e.target.value)} placeholder={t('auth.storeName')} className={inputClass} required />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Store Description</Label>
-                  <Input value={storeDesc} onChange={(e) => setStoreDesc(e.target.value)} placeholder="Brief description of your store" className={inputClass} />
+                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.storeDescription')}</Label>
+                  <Input value={storeDesc} onChange={(e) => setStoreDesc(e.target.value)} placeholder={t('auth.storeDescription')} className={inputClass} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label className="text-stone-300 text-xs mb-1.5 block">Province</Label>
+                    <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.province')}</Label>
                     <Select value={sellerProvince} onValueChange={setSellerProvince}>
-                      <SelectTrigger className={`${inputClass} h-11`}><SelectValue placeholder="Select" /></SelectTrigger>
+                      <SelectTrigger className={`${inputClass} h-11`}><SelectValue placeholder={t('auth.select')} /></SelectTrigger>
                       <SelectContent className="bg-neutral-900 border-white/10">
                         {PROVINCES.map((p) => <SelectItem key={p.slug} value={p.slug} className="text-stone-300">{p.name}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-stone-300 text-xs mb-1.5 block">City</Label>
-                    <Input value={sellerCity} onChange={(e) => setSellerCity(e.target.value)} placeholder="City" className={inputClass} />
+                    <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.city')}</Label>
+                    <Input value={sellerCity} onChange={(e) => setSellerCity(e.target.value)} placeholder={t('auth.city')} className={inputClass} />
                   </div>
                 </div>
                 <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold rounded-xl h-11">
                   {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                  Create Seller Account
+                  {t('auth.createSellerAccount')}
                 </Button>
               </form>
             </TabsContent>

@@ -1,13 +1,13 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigation } from '@/lib/store'
+import { useTranslation } from '@/lib/i18n'
 import { Input } from '@/components/ui/input'
 import { Search, X, TrendingUp } from 'lucide-react'
 
-const popularSearches = ['Electronics', 'Fashion', 'Home & Garden', 'Sports', 'Vehicles', 'Books']
-
 export default function SearchBar() {
   const { isSearchOpen, toggleSearch, navigate } = useNavigation()
+  const { t } = useTranslation()
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -38,7 +38,7 @@ export default function SearchBar() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder="Search products across Canada..."
+            placeholder={t('search.placeholder')}
             className="flex-1 bg-transparent text-stone-100 placeholder:text-stone-500 text-base outline-none"
           />
           {query && (
@@ -53,10 +53,10 @@ export default function SearchBar() {
         <div className="p-4">
           <div className="flex items-center gap-2 mb-3">
             <TrendingUp className="w-4 h-4 text-stone-500" />
-            <span className="text-xs font-medium text-stone-500 uppercase tracking-wider">Popular Searches</span>
+            <span className="text-xs font-medium text-stone-500 uppercase tracking-wider">{t('search.popularSearches')}</span>
           </div>
           <div className="flex flex-wrap gap-2">
-            {popularSearches.map((term) => (
+            {['Electronics', 'Fashion', 'Home & Garden', 'Sports', 'Vehicles', 'Books'].map((term) => (
               <button
                 key={term}
                 onClick={() => handleSearch(term)}

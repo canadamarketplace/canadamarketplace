@@ -1,6 +1,7 @@
 'use client'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigation, useAuth, useCart } from '@/lib/store'
+import { useTranslation } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -18,13 +19,6 @@ interface ChatMessage {
   timestamp: Date
 }
 
-const QUICK_PROMPTS = [
-  { label: "Find a product", icon: Search, message: "I'm looking for a specific product" },
-  { label: "How checkout works", icon: ShoppingCart, message: "How does checkout work?" },
-  { label: "Is it safe to buy?", icon: Shield, message: "How are buyers protected?" },
-  { label: "Start selling", icon: Store, message: "I want to sell on Canada Marketplace" },
-]
-
 export default function ChatAI() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -36,6 +30,7 @@ export default function ChatAI() {
   const { navigate, currentPage } = useNavigation()
   const { user } = useAuth()
   const { items: cartItems } = useCart()
+  const { t, locale } = useTranslation()
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -52,12 +47,12 @@ export default function ChatAI() {
         id: 'greeting',
         role: 'assistant',
         content: user
-          ? `Hey ${user.name.split(' ')[0]}! 🍁 Welcome back to Canada Marketplace! How can I help you today? I can help you find products, manage your cart, or answer any questions about your orders.`
-          : "Welcome to Canada Marketplace! 🍁 I'm Maple, your AI shopping assistant. I can help you find products, explain how our marketplace works, or guide you through checkout. What can I help you with today?",
+          ? t('chat.greetingLoggedIn', { name: user.name.split(' ')[0] })
+          : t('chat.greeting'),
         actions: [
-          { label: 'Browse Products', action: 'browse' },
-          { label: 'Learn How It Works', action: 'safety' },
-          { label: 'Register Now', action: 'register' },
+          { label: t('home.startShopping'), action: 'browse' },
+          { label: t('nav.howItWorks'), action: 'safety' },
+          { label: t('nav.getStarted'), action: 'register' },
         ],
         timestamp: new Date(),
       }
@@ -66,7 +61,7 @@ export default function ChatAI() {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 300)
     }
-  }, [isOpen, hasGreeted, user])
+  }, [isOpen, hasGreeted, user, t])
 
   const sendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return
@@ -91,6 +86,7 @@ export default function ChatAI() {
           cartItems,
           currentPage,
           user: user ? { name: user.name, role: user.role, email: user.email } : null,
+          locale,
         }),
       })
 
@@ -109,7 +105,7 @@ export default function ChatAI() {
       const errorMsg: ChatMessage = {
         id: `error-${Date.now()}`,
         role: 'assistant',
-        content: "Oops! I couldn't connect right now. Please try again in a moment! 🍁",
+        content: t('chat.connectionError'),
         timestamp: new Date(),
       }
       setMessages(prev => [...prev, errorMsg])
@@ -156,6 +152,13 @@ export default function ChatAI() {
     sendMessage(input)
   }
 
+  const QUICK_PROMPTS = [
+    { label: t('chat.findAProduct'), icon: Search, message: "I'm looking for a specific product" },
+    { label: t('chat.howCheckoutWorks'), icon: ShoppingCart, message: "How does checkout work?" },
+    { label: t('chat.isItSafe'), icon: Shield, message: "How are buyers protected?" },
+    { label: t('chat.startSelling'), icon: Store, message: "I want to sell on Canada Marketplace" },
+  ]
+
   return (
     <>
       {/* Floating Chat Button */}
@@ -198,10 +201,10 @@ export default function ChatAI() {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-stone-100 flex items-center gap-1.5">
-                    Maple AI
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 font-medium border border-amber-500/20">BETA</span>
+                    {t('chat.mapleAI')}
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 font-medium border border-amber-500/20">{t('chat.beta')}</span>
                   </h3>
-                  <p className="text-[11px] text-stone-500">Your Canadian shopping assistant</p>
+                  <p className="text-[11px] text-stone-500">{t('chat.yourAssistant')}</p>
                 </div>
               </div>
               <button
@@ -267,7 +270,7 @@ export default function ChatAI() {
                     <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-white/5 border border-white/5">
                       <div className="flex items-center gap-2">
                         <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />
-                        <span className="text-xs text-stone-500">Maple is thinking...</span>
+                        <span className="text-xs text-stone-500">{t('chat.mapleThinking')}</span>
                       </div>
                     </div>
                   </div>
@@ -302,7 +305,7 @@ export default function ChatAI() {
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask Maple anything..."
+                  placeholder={t('chat.placeholder')}
                   disabled={isLoading}
                   className="flex-1 h-9 bg-white/5 border-white/10 rounded-xl text-sm text-stone-200 placeholder:text-stone-600 focus:border-amber-500/30 focus:ring-1 focus:ring-amber-500/20"
                 />
@@ -316,7 +319,7 @@ export default function ChatAI() {
                 </Button>
               </div>
               <p className="text-[10px] text-stone-600 mt-1.5 text-center">
-                AI-powered assistant • May not always be accurate
+                {t('chat.aiDisclaimer')}
               </p>
             </form>
           </motion.div>

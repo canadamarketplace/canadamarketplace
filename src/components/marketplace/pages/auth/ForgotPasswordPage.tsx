@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useNavigation } from '@/lib/store'
+import { useTranslation } from '@/lib/i18n'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -9,6 +10,7 @@ import { toast } from 'sonner'
 
 export default function ForgotPasswordPage() {
   const { openAuthModal } = useNavigation()
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
@@ -16,7 +18,7 @@ export default function ForgotPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email.trim()) {
-      toast.error('Please enter your email address')
+      toast.error(t('common.pleaseEnterEmail'))
       return
     }
     setLoading(true)
@@ -30,10 +32,10 @@ export default function ForgotPasswordPage() {
         setSent(true)
       } else {
         const data = await res.json()
-        toast.error(data.error || 'Something went wrong')
+        toast.error(data.error || t('common.somethingWentWrong'))
       }
     } catch {
-      toast.error('Request failed. Please try again.')
+      toast.error(t('common.requestFailed'))
     }
     setLoading(false)
   }
@@ -54,12 +56,12 @@ export default function ForgotPasswordPage() {
             <img src="/logo.png" alt="Canada Marketplace" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-2xl font-bold text-stone-100 mb-1">
-            Forgot Your Password?
+            {t('forgotPassword.title')}
           </h1>
           <p className="text-sm text-stone-400">
             {sent
-              ? 'Check your inbox for a reset link'
-              : "No worries — we'll send you a reset link"}
+              ? t('forgotPassword.subtitleSent')
+              : t('forgotPassword.subtitle')}
           </p>
         </div>
 
@@ -69,7 +71,7 @@ export default function ForgotPasswordPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <Label className="text-stone-300 text-xs mb-1.5 block">
-                  Email Address
+                  {t('forgotPassword.emailAddress')}
                 </Label>
                 <Input
                   type="email"
@@ -92,12 +94,11 @@ export default function ForgotPasswordPage() {
                 ) : (
                   <Mail className="w-4 h-4 mr-2" />
                 )}
-                Send Reset Link
+                {t('forgotPassword.sendResetLink')}
               </Button>
 
               <p className="text-center text-xs text-stone-500">
-                Enter the email address associated with your account and
-                we&apos;ll send you a link to reset your password.
+                {t('forgotPassword.infoText')}
               </p>
             </form>
           ) : (
@@ -108,19 +109,17 @@ export default function ForgotPasswordPage() {
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-stone-100 mb-1">
-                  Check Your Email
+                  {t('forgotPassword.checkYourEmail')}
                 </h2>
                 <p className="text-sm text-stone-400">
-                  We&apos;ve sent a password reset link to{' '}
-                  <span className="text-stone-200 font-medium">{email}</span>.
-                  The link expires in 1 hour.
+                  {t('forgotPassword.checkYourEmailDesc', { email })}
                 </p>
               </div>
 
               <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-start gap-3">
                 <KeyRound className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
                 <p className="text-xs text-stone-400 text-left">
-                  Didn&apos;t receive the email? Check your spam folder or{' '}
+                  {t('forgotPassword.didntReceive')}{' '}
                   <button
                     type="button"
                     onClick={() => {
@@ -129,9 +128,8 @@ export default function ForgotPasswordPage() {
                     }}
                     className="text-red-400 hover:text-red-300 underline underline-offset-2"
                   >
-                    try again
+                    {t('forgotPassword.tryAgain')}
                   </button>{' '}
-                  with a different address.
                 </p>
               </div>
 
@@ -142,7 +140,7 @@ export default function ForgotPasswordPage() {
                   className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl h-11 font-semibold"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Sign In
+                  {t('forgotPassword.backToSignIn')}
                 </Button>
               </div>
             </div>
@@ -158,7 +156,7 @@ export default function ForgotPasswordPage() {
               className="inline-flex items-center gap-1.5 text-sm text-stone-400 hover:text-stone-200 transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              Back to Sign In
+              {t('forgotPassword.backToSignIn')}
             </button>
           </div>
         )}
