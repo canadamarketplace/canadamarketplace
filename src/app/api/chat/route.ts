@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server"
-import ZAI from "z-ai-web-dev-sdk"
 
 const SYSTEM_PROMPT = `You are Maple, the friendly AI shopping assistant for Canada Marketplace (canadamarketplace.ca). You guide customers through their entire shopping journey in a warm, helpful, and distinctly Canadian way.
 
@@ -66,13 +65,14 @@ Response: {"message": "Here's how our checkout works — nice and simple!\n\n1. 
 
 IMPORTANT: Always respond with valid JSON. Keep message length appropriate — don't write essays. Be conversational and natural.`
 
-let zaiInstance: any = null
-
+// Dynamic import for z-ai-web-dev-sdk (only available in local/dev environment)
 async function getZAI() {
-  if (!zaiInstance) {
-    zaiInstance = await ZAI.create()
+  try {
+    const ZAI = (await import("z-ai-web-dev-sdk")).default
+    return await ZAI.create()
+  } catch {
+    return null
   }
-  return zaiInstance
 }
 
 export async function POST(req: NextRequest) {
@@ -80,6 +80,12 @@ export async function POST(req: NextRequest) {
     const { messages, cartItems, currentPage, user } = await req.json()
 
     const zai = await getZAI()
+
+    if (!zai) {
+      // AI SDK not available (production without private package) — return helpful fallback
+      const fallback = generateFallbackResponse(messages)
+      return NextResponse.json(fallback)
+    }
 
     // Build context about current user state
     let contextStr = ""
@@ -134,5 +140,49 @@ export async function POST(req: NextRequest) {
       { message: "Sorry, I'm having trouble right now. Please try again in a moment! 🍁", actions: [] },
       { status: 500 }
     )
+  }
+}
+
+function generateFallbackResponse(messages: any[]) {
+  const lastMsg = messages?.[messages.length - 1]?.content?.toLowerCase() || ""
+
+  if (lastMsg.includes("browse") || lastMsg.includes("shop") || lastMsg.includes("product")) {
+    return {
+      message: "I'd love to help you browse our marketplace! We have products across Electronics, Fashion, Home & Garden, Sports, and more. Click 'Browse All Products' to explore everything! 🍁",
+      actions: [{ label: "Browse All Products", action: "browse" }],
+    }
+  }
+
+  if (lastMsg.includes("cart") || lastMsg.includes("checkout")) {
+    return {
+      message: "Head over to your cart to review your items and checkout when you're ready. All payments are protected by our escrow system!",
+      actions: [{ label: "View My Cart", action: "cart" }],
+    }
+  }
+
+  if (lastMsg.includes("sell") || lastMsg.includes("register")) {
+    return {
+      message: "Welcome aboard! You can register as a buyer or seller. Sellers get access to their own storefront, analytics, and payout tools. All sellers are verified for buyer safety.",
+      actions: [
+        { label: "Register Now", action: "register" },
+        { label: "Become a Seller", action: "become-seller" },
+      ],
+    }
+  }
+
+  if (lastMsg.includes("escrow") || lastMsg.includes("safe") || lastMsg.includes("protect")) {
+    return {
+      message: "Great question! Our escrow system holds your payment securely until you confirm you've received and are happy with your item. Sellers only get paid after your approval. If anything goes wrong, you can file a dispute within 14 days. Your money is always safe! 🛡️",
+      actions: [{ label: "Browse Products", action: "browse" }],
+    }
+  }
+
+  return {
+    message: "Hey there! I'm Maple, your AI shopping assistant for Canada Marketplace. 🍁 I can help you find products, answer questions about how things work, or guide you through checkout. What can I help you with today?",
+    actions: [
+      { label: "Browse All Products", action: "browse" },
+      { label: "How It Works", action: "safety" },
+      { label: "Register Now", action: "register" },
+    ],
   }
 }
