@@ -38,6 +38,10 @@ export default function Footer() {
       title: t('footer.support'),
       links: [
         { label: t('footer.helpCenter'), page: 'safety' as const },
+        { label: t('footer.escrowProtection'), page: 'escrow' as const },
+        { label: t('footer.sellerGuide'), page: 'seller-guide' as const },
+        { label: t('footer.shippingInfo'), page: 'shipping' as const },
+        { label: t('footer.faq'), page: 'faq' as const },
         { label: t('footer.disputePolicy'), page: 'dispute-policy' as const },
         { label: t('footer.fileADispute'), page: 'file-dispute' as const },
       ],

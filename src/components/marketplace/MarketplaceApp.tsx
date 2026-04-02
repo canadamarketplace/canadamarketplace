@@ -40,6 +40,10 @@ import ContactPage from './pages/ContactPage'
 import AboutPage from './pages/AboutPage'
 import BecomeSellerPage from './pages/BecomeSellerPage'
 import SellerLocatorPage from './pages/SellerLocatorPage'
+import EscrowPage from './pages/EscrowPage'
+import SellerGuidePage from './pages/SellerGuidePage'
+import ShippingPage from './pages/ShippingPage'
+import FaqPage from './pages/FaqPage'
 import NotificationsPage from './pages/NotificationsPage'
 import MessagingPage from './MessagingPage'
 import type { PageView } from '@/lib/store'
@@ -62,6 +66,10 @@ function PageRenderer() {
     case 'order-detail': return <OrderDetailPage />
     case 'file-dispute': return <FileDisputePage />
     case 'seller-locator': return <SellerLocatorPage />
+    case 'escrow': return <EscrowPage />
+    case 'seller-guide': return <SellerGuidePage />
+    case 'shipping': return <ShippingPage />
+    case 'faq': return <FaqPage />
     case 'notifications': return <NotificationsPage />
     case 'messaging': return <MessagingPage />
     case 'profile': return <ProfilePage />

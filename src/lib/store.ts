@@ -39,6 +39,10 @@ export type PageView =
   | "notifications"
   | "messaging"
   | "seller-locator"
+  | "escrow"
+  | "seller-guide"
+  | "shipping"
+  | "faq"
   | "admin-dashboard"
   | "admin-users"
   | "admin-products"
@@ -85,6 +89,10 @@ function pageToUrlBase(page: PageView, params: Record<string, string>): string {
     "order-detail": `/orders/${params.id || ""}`,
     "file-dispute": `/disputes/new?order=${params.orderId || ""}`,
     "seller-locator": "/seller-locator",
+    "escrow": "/escrow",
+    "seller-guide": "/seller-guide",
+    "shipping": "/shipping",
+    "faq": "/faq",
     "notifications": "/notifications",
     "messaging": "/messages",
     "profile": "/profile",
@@ -142,6 +150,10 @@ export function urlToPage(pathname: string, search: string): { page: PageView; p
   if (cleanPath.startsWith("/orders/")) return { page: "order-detail", params: { id: cleanPath.split("/")[2] } }
   if (cleanPath.startsWith("/disputes/new")) return { page: "file-dispute", params: { orderId: params.get("order") || "" } }
   if (cleanPath === "/seller-locator") return { page: "seller-locator", params: {} }
+  if (cleanPath === "/escrow") return { page: "escrow", params: {} }
+  if (cleanPath === "/seller-guide") return { page: "seller-guide", params: {} }
+  if (cleanPath === "/shipping") return { page: "shipping", params: {} }
+  if (cleanPath === "/faq") return { page: "faq", params: {} }
   if (cleanPath === "/notifications") return { page: "notifications", params: {} }
   if (cleanPath === "/messages") return { page: "messaging", params: {} }
   if (cleanPath === "/profile") return { page: "profile", params: {} }
