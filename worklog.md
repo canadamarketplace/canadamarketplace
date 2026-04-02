@@ -353,3 +353,53 @@ Stage Summary:
 - ForgotPasswordPage with form, loading, and success states consistent with AuthModal styling
 - AuthModal wired with forgot password link
 - ESLint passes with zero errors
+
+---
+## Task ID: i18n-bilingual-support
+Agent: Super Z (Main)
+Task: Add bilingual English/French (en/CA, fr/CA) support to Canada Marketplace
+
+### Work Task
+Implement comprehensive bilingual support with lightweight client-side i18n system, translation files, locale-aware routing, language switcher component, and update all key components.
+
+### Work Summary
+
+**New Files Created (4):**
+1. `src/lib/i18n.ts` — Lightweight client-side i18n infrastructure:
+   - `useTranslation()` React hook returning `t()` function with dot-notation key lookup and `{param}` interpolation
+   - `useLocale` Zustand store for language state (`en`/`fr`)
+   - `getCurrentLocale()` for non-component code
+   - `getLocalePrefix()` for URL prefixing (`/fr` for French, empty for English)
+   - `stripLocalePrefix()` for URL parsing
+   - Auto-detect browser language, persist to localStorage (`cm-locale`)
+   - Updates `document.documentElement.lang` on language change
+
+2. `src/lib/locales/en.json` — Complete English translations (280+ keys across 20+ sections)
+3. `src/lib/locales/fr.json` — Complete Quebec French translations (proper terminology: "courriel" not "email", "panier" not "cart", "magasiner" not "shop", "témoins" not "cookies")
+4. `src/components/marketplace/LanguageSwitcher.tsx` — Compact toggle button with CA EN / CA FR display
+
+**Modified Files (13):**
+1. `src/lib/store.ts` — Updated `pageToUrl()`, `urlToPage()`, `goBack()` to use locale-aware URL prefixes
+2. `src/components/marketplace/MarketplaceApp.tsx` — Import useLocale, detect locale from URL on load and popstate
+3. `src/components/marketplace/Navbar.tsx` — All nav links, buttons, mobile menu translated; LanguageSwitcher added
+4. `src/components/marketplace/Footer.tsx` — All footer text, section titles, links translated
+5. `src/components/marketplace/AuthModal.tsx` — Login/register forms, labels, buttons, error messages translated
+6. `src/components/marketplace/CartSidebar.tsx` — Cart title, empty state, buttons, labels translated
+7. `src/components/marketplace/ChatAI.tsx` — Greeting, placeholder, quick prompts, thinking indicator translated
+8. `src/components/marketplace/NotificationBell.tsx` — Title, mark all read, empty states, time formatting translated
+9. `src/components/marketplace/SearchBar.tsx` — Placeholder, popular searches label translated
+10. `src/components/marketplace/MessagingPage.tsx` — All UI text including sign-in prompt, empty states translated
+11. `src/components/marketplace/pages/HomePage.tsx` — Hero, safety, categories, featured, regions, how-it-works translated
+12. `src/components/marketplace/pages/auth/ForgotPasswordPage.tsx` — Title, subtitle, form labels, success state translated
+13. `src/app/api/chat/route.ts` — Added complete French response generator with Quebec French terminology
+
+**Key Design Decisions:**
+- English is default locale (no URL prefix). French uses `/fr/` prefix
+- Language state managed in Zustand (not next-intl middleware) since this is an SPA
+- `document.documentElement.lang` updates to `en-CA` or `fr-CA` on language change
+- All French translations use proper Quebec French per PIPEDA/Loi 25 compliance
+
+**Verification:**
+- ESLint: 0 errors, 0 warnings
+- `npx next build`: Compiled successfully, all routes compile
+- Git pushed to `origin/master`

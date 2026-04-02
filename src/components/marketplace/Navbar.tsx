@@ -89,16 +89,13 @@ export default function Navbar() {
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
-            {/* Logo */}
-            <button onClick={() => navigate('home')} className="flex items-center gap-2.5 group">
+            {/* Logo - Wide/Horizontal */}
+            <button onClick={() => navigate('home')} className="flex items-center group">
               <img
-                src="/logo.png"
+                src="/logo-wide.png"
                 alt="Canada Marketplace"
-                className="w-9 h-9 rounded-xl object-cover shadow-lg shadow-red-500/20 group-hover:shadow-red-500/40 transition-shadow"
+                className="h-9 object-contain group-hover:opacity-90 transition-opacity"
               />
-              <span className="text-lg font-bold text-stone-100 hidden sm:block">
-                Canada<span className="text-red-500">Marketplace</span>
-              </span>
             </button>
 
             {/* Desktop Nav */}

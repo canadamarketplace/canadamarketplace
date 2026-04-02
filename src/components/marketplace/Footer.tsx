@@ -58,9 +58,8 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <img src="/logo.png" alt="Canada Marketplace" className="w-8 h-8 rounded-lg object-cover" />
-              <span className="text-sm font-bold text-stone-100">Canada<span className="text-red-500">Marketplace</span></span>
+            <div className="mb-4">
+              <img src="/logo-wide.png" alt="Canada Marketplace" className="h-8 object-contain" />
             </div>
             <p className="text-xs text-stone-500 leading-relaxed mb-4">
               {t('footer.tagline')}

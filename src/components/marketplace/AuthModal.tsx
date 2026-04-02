@@ -143,7 +143,7 @@ export default function AuthModal() {
       <DialogContent className="sm:max-w-md bg-neutral-900 border-white/10 p-0 gap-0 overflow-hidden">
         <div className="bg-gradient-to-r from-red-600/10 to-amber-500/10 p-6 text-center border-b border-white/5">
           <div className="w-12 h-12 rounded-2xl overflow-hidden mx-auto mb-3 shadow-lg shadow-red-500/20">
-            <img src="/logo.png" alt="Canada Marketplace" className="w-full h-full object-cover" />
+            <img src="/logo-square.png" alt="Canada Marketplace" className="w-full h-full object-cover" />
           </div>
           <DialogTitle className="text-xl font-bold text-stone-100">
             {success ? t('auth.welcome') : t('auth.welcomeTitle')}
