@@ -1,6 +1,21 @@
 import { NextRequest } from 'next/server'
+import { useAuth } from '@/lib/store'
 
-// Check if user is authenticated
+// Client-side auth guard hook
+export function useRequireAuth(requiredRole?: string) {
+  const { user } = useAuth()
+  
+  return {
+    user,
+    isAuthenticated: !!user,
+    isAdmin: user?.role === 'ADMIN',
+    isSeller: user?.role === 'SELLER',
+    isBuyer: user?.role === 'BUYER',
+    hasRole: user?.role === requiredRole || user?.role === 'ADMIN', // Admin has access to everything
+  }
+}
+
+// Check if user is authenticated (server-side)
 export async function requireAuth(req: NextRequest) {
   try {
     // For now, check Authorization header (Bearer token) or session cookie
@@ -27,7 +42,7 @@ export async function requireAuth(req: NextRequest) {
   }
 }
 
-// Require specific role
+// Require specific role (server-side)
 export async function requireRole(req: NextRequest, roles: string[]) {
   const auth = await requireAuth(req)
   if (!auth) return null

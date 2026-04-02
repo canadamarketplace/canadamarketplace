@@ -9,6 +9,7 @@ import { DollarSign, Users, Package, ShoppingCart, AlertTriangle, Eye } from 'lu
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie
 } from 'recharts'
+import AdminAuthGuard from './AdminAuthGuard'
 
 interface DashboardData {
   totalUsers: number; totalSellers: number; totalProducts: number; totalOrders: number
@@ -47,6 +48,7 @@ export default function AdminDashboard() {
   const statusColors = ['#dc2626', '#3b82f6', '#a855f7', '#22c55e', '#ef4444', '#f97316', '#78716c']
 
   return (
+    <AdminAuthGuard>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -169,5 +171,6 @@ export default function AdminDashboard() {
         </CardContent>
       </Card>
     </div>
+    </AdminAuthGuard>
   )
 }

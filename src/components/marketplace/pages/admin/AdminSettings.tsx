@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import AdminAuthGuard from './AdminAuthGuard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -30,6 +31,7 @@ export default function AdminSettings() {
   ]
 
   return (
+    <AdminAuthGuard>
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-2xl font-bold text-stone-100 mb-2">System Settings</h1>
       <p className="text-sm text-stone-500 mb-8">Configure marketplace-wide settings</p>
@@ -71,5 +73,6 @@ export default function AdminSettings() {
         Save Settings
       </Button>
     </div>
+    </AdminAuthGuard>
   )
 }

@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import AdminAuthGuard from './AdminAuthGuard'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge';
 import {
@@ -34,6 +35,7 @@ export default function AdminOrders() {
   useEffect(() => { fetchOrders() }, [statusFilter, fetchOrders])
 
   return (
+    <AdminAuthGuard>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -133,5 +135,6 @@ export default function AdminOrders() {
         </div>
       </div>
     </div>
+    </AdminAuthGuard>
   )
 }

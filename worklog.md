@@ -468,3 +468,43 @@ Create EscrowPage, SellerGuidePage, ShippingPage, and FaqPage with full bilingua
 - ESLint: 0 errors, 0 warnings
 - `npx next build`: Compiled successfully in 6.2s, all 28 static pages generated
 - Git committed and pushed to `origin/main` (d5a6487)
+
+---
+## Task ID: canadian-flag-colors
+Agent: Super Z (Main)
+Task: Replace ALL amber/gold colors with Canadian flag colors (Red + White)
+
+### Work Task
+Replace every `amber-*` Tailwind color class and JS color variable across the entire codebase with Canadian flag colors (red + white), following the provided color mapping table.
+
+### Work Summary
+
+**Scope:** 28 component files across `src/components/marketplace/` contained amber references. No amber found in `src/lib/`, `src/app/`, `tailwind.config.ts`, or `globals.css`.
+
+**Color Mapping Applied:**
+- `amber-300` → `white` (bright accent text)
+- `amber-400` → `red-300` (accent text/icons)
+- `amber-500` → `red-500` (primary accent)
+- `amber-600` → `red-600` (buttons/interactive)
+- `amber-700` → `red-700` (dark accents)
+- `amber-800` → `red-800` (deep accents)
+- `amber-900` → `red-900` (subtle backgrounds)
+- All opacity variants mapped (e.g., `amber-500/10` → `red-500/10`, `amber-500/20` → `red-500/20`, `amber-900/10` → `red-900/10`)
+- `amber-400/10` → `white/10` (per mapping)
+
+**Additional Changes:**
+- `color: 'amber'` → `color: 'red'` in data objects (BecomeSellerPage, AboutPage, SellerDashboard)
+- `isVerified ? 'green' : 'amber'` → `isVerified ? 'green' : 'red'` in SellerDashboard conditional
+- Gradients automatically updated (e.g., `from-amber-500 to-amber-600` → `from-red-500 to-red-600`)
+- Shadow colors updated (e.g., `shadow-amber-500/20` → `shadow-red-500/20`)
+- Hover states updated (e.g., `hover:from-amber-400 hover:to-amber-500` → `hover:from-red-300 hover:to-red-500`)
+
+**Locale Files:** Checked en.json and fr.json — "Gold" references are about the "Gold Seller" pricing tier, not color scheme. Left unchanged.
+
+**Verification:**
+- `rg "amber" src/components/ src/lib/ src/app/` returns ZERO results
+- ESLint: 0 errors, 0 warnings
+- `npx next build`: Compiled successfully, all 28 static pages + dynamic routes
+- Git commit `2c0c48b` pushed to `origin/main`
+
+**Files Changed: 28 component files (255 insertions, 190 deletions)**

@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
 import bcrypt from "bcryptjs"
 
+// Admin credentials from environment variables (with defaults for initial setup)
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@canadamarketplace.ca"
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "CanadaAdmin2024!"
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
@@ -11,6 +15,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 })
     }
 
+    // Check for admin login (environment-based, works even without database)
+    if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD) {
+      return NextResponse.json({
+        id: "admin-001",
+        email: ADMIN_EMAIL,
+        name: "Canada Marketplace Admin",
+        role: "ADMIN",
+        avatar: null,
+        isVerified: true,
+        phone: null,
+        province: "ON",
+        city: "Ottawa",
+        address: null,
+        postalCode: null,
+        bio: null,
+        storeId: null,
+        storeName: null,
+        storeSlug: null,
+      })
+    }
+
+    // Check database for regular users
     const user = await db.user.findUnique({
       where: { email: email.toLowerCase() },
       include: { store: { select: { id: true, name: true, slug: true } } },
