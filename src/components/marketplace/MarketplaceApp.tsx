@@ -1,5 +1,6 @@
 'use client'
-import { useNavigation } from '@/lib/store'
+import { useEffect } from 'react'
+import { useNavigation, urlToPage } from '@/lib/store'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import AuthModal from './AuthModal'
@@ -90,6 +91,27 @@ function PageRenderer() {
 }
 
 export default function MarketplaceApp() {
+  const { navigate } = useNavigation()
+
+  // Sync URL on page load (handle direct links / refresh)
+  useEffect(() => {
+    const { page, params } = urlToPage(window.location.pathname, window.location.search)
+    if (page !== "home" || window.location.pathname !== "/") {
+      navigate(page, params)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Handle browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const { page, params } = urlToPage(window.location.pathname, window.location.search)
+      useNavigation.setState({ currentPage: page, pageParams: params })
+      window.scrollTo(0, 0)
+    }
+    window.addEventListener("popstate", handlePopState)
+    return () => window.removeEventListener("popstate", handlePopState)
+  }, [])
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-stone-100">
       <Navbar />
