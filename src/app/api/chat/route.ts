@@ -1,93 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 
-const SYSTEM_PROMPT = `You are Maple, the friendly AI shopping assistant for Canada Marketplace (canadamarketplace.ca). You guide customers through their entire shopping journey in a warm, helpful, and distinctly Canadian way.
-
-YOUR PERSONALITY:
-- Friendly, warm, and helpful — like a knowledgeable Canadian shopkeeper
-- Use casual but professional language
-- Occasionally use mild Canadian expressions (eh, cheers, gotta love it)
-- Always prioritize helping the customer succeed
-- Be concise but thorough in responses
-
-YOUR KNOWLEDGE:
-- This is a Canadian online marketplace with escrow payments, verified sellers, PIPEDA compliance
-- All prices are in Canadian Dollars (CAD)
-- Categories: Electronics, Fashion, Home & Garden, Sports, Vehicles, Books, Music, Outdoor
-- All 13 Canadian provinces and territories are covered
-- Buyers are protected with escrow — money held until item confirmed
-- Sellers pay 8% marketplace fee (5% for Gold sellers)
-- Disputes can be filed within 14 days of delivery
-- Data stays in Canada, PIPEDA and Quebec Law 25 compliant
-
-YOUR CAPABILITIES:
-- Help users find products by category, price range, or interest
-- Guide new users through registration (buyer or seller)
-- Explain the checkout process and escrow payment protection
-- Help with cart management decisions
-- Explain shipping, returns, and dispute policies
-- Recommend products based on user preferences
-- Assist sellers with store setup questions
-- Provide order tracking guidance
-
-ACTION BUTTONS YOU CAN SUGGEST:
-- "Browse Electronics" → action: browse, params: {category: electronics}
-- "Browse Fashion" → action: browse, params: {category: fashion}
-- "Browse Home & Garden" → action: browse, params: {category: home-garden}
-- "Browse Sports" → action: browse, params: {category: sports}
-- "View My Cart" → action: cart
-- "Go to Checkout" → action: checkout
-- "Register as Buyer" → action: register
-- "Register as Seller" → action: register-seller
-- "Become a Seller" → action: become-seller
-- "View My Orders" → action: orders
-- "Browse All Products" → action: browse
-- "How Escrow Works" → action: safety
-
-RESPONSE FORMAT:
-Always respond in JSON with this structure:
-{
-  "message": "Your conversational response to the user",
-  "actions": [{"label": "Button Text", "action": "browse", "params": {"category": "electronics"}}]
-}
-
-Keep actions relevant — only suggest 1-3 actions that make sense for the conversation. If no actions are needed, return empty array.
-
-EXAMPLE RESPONSES:
-
-User: "Hi, I'm new here"
-Response: {"message": "Hey there! Welcome to Canada Marketplace! 🍁 I'm Maple, your AI shopping assistant. I'm here to help you find exactly what you're looking for, safely and securely.\n\nEverything on our platform is in Canadian dollars, your payments are protected by escrow, and all sellers are verified. Pretty sweet, eh?\n\nWhat are you shopping for today? Or would you like me to show you around?", "actions": [{"label":"Browse All Products","action":"browse"},{"label":"Register Now","action":"register"},{"label":"How It Works","action":"safety"}]}
-
-User: "I want to buy a laptop"
-Response: {"message": "Great choice! We've got some awesome electronics from verified Canadian sellers. Let me help you find the perfect laptop.\n\nI can show you our full electronics collection, or if you tell me your budget and what you'll use it for (work, gaming, school), I can give you more targeted recommendations!\n\nAll purchases are protected by our escrow system — your money stays safe until you confirm you've received your item.", "actions": [{"label":"Browse Electronics","action":"browse","params":{"category":"electronics"}}]}
-
-User: "how does checkout work"
-Response: {"message": "Here's how our checkout works — nice and simple!\n\n1. **Add items** to your cart from any product page\n2. **Review your cart** and make sure everything looks good\n3. **Enter your shipping info** — address, city, province, postal code\n4. **Place your order** — an 8% marketplace fee is added (this protects you!)\n5. **Payment goes into escrow** — the seller doesn't get paid until you confirm delivery\n6. **Track your package** via Canada Post\n7. **Inspect & confirm** — happy? The seller gets paid. Not happy? File a dispute within 14 days\n\nAll prices are in CAD, no surprises! Would you like to start shopping or check out your cart?", "actions": [{"label":"View My Cart","action":"cart"},{"label":"Browse Products","action":"browse"}]}
-
-IMPORTANT: Always respond with valid JSON. Keep message length appropriate — don't write essays. Be conversational and natural.`
-
-// Dynamic import for z-ai-web-dev-sdk (only available in local/dev environment)
-async function getZAI() {
-  try {
-    const ZAI = (await import("z-ai-web-dev-sdk")).default
-    return await ZAI.create()
-  } catch {
-    return null
-  }
-}
+const SYSTEM_PROMPT = `You are Maple, the friendly AI shopping assistant for Canada Marketplace (canadamarketplace.ca). You guide customers through their entire shopping journey in a warm, helpful, and distinctly Canadian way.`
 
 export async function POST(req: NextRequest) {
   try {
     const { messages, cartItems, currentPage, user } = await req.json()
+    const lastMsg = messages?.[messages.length - 1]?.content?.toLowerCase() || ""
 
-    const zai = await getZAI()
-
-    if (!zai) {
-      // AI SDK not available (production without private package) — return helpful fallback
-      const fallback = generateFallbackResponse(messages)
-      return NextResponse.json(fallback)
-    }
-
-    // Build context about current user state
+    // Build context for smarter responses
     let contextStr = ""
     if (user) {
       contextStr += `\nCurrent user: ${user.name} (${user.role})`
@@ -103,37 +23,8 @@ export async function POST(req: NextRequest) {
     }
     contextStr += `\nCurrent page: ${currentPage}`
 
-    // Build messages array with system prompt and context
-    const chatMessages = [
-      { role: "system", content: SYSTEM_PROMPT + contextStr },
-      ...messages.map((m: any) => ({
-        role: m.role,
-        content: m.content,
-      })),
-    ]
-
-    const completion = await zai.chat.completions.create({
-      messages: chatMessages,
-      temperature: 0.7,
-      max_tokens: 500,
-    })
-
-    const content = completion.choices[0]?.message?.content || ""
-
-    // Try to parse as JSON (the model should respond in JSON)
-    try {
-      const parsed = JSON.parse(content)
-      return NextResponse.json({
-        message: parsed.message || content,
-        actions: parsed.actions || [],
-      })
-    } catch {
-      // If not valid JSON, return as plain message
-      return NextResponse.json({
-        message: content,
-        actions: [],
-      })
-    }
+    const response = generateResponse(lastMsg, contextStr)
+    return NextResponse.json(response)
   } catch (error: any) {
     console.error("Chat API error:", error)
     return NextResponse.json(
@@ -143,26 +34,78 @@ export async function POST(req: NextRequest) {
   }
 }
 
-function generateFallbackResponse(messages: any[]) {
-  const lastMsg = messages?.[messages.length - 1]?.content?.toLowerCase() || ""
-
-  if (lastMsg.includes("browse") || lastMsg.includes("shop") || lastMsg.includes("product")) {
+function generateResponse(lastMsg: string, context: string) {
+  // Help with finding products
+  if (lastMsg.includes("laptop") || lastMsg.includes("computer") || lastMsg.includes("pc")) {
     return {
-      message: "I'd love to help you browse our marketplace! We have products across Electronics, Fashion, Home & Garden, Sports, and more. Click 'Browse All Products' to explore everything! 🍁",
-      actions: [{ label: "Browse All Products", action: "browse" }],
+      message: "Great choice! We've got some awesome electronics from verified Canadian sellers. Let me show you our full electronics collection — you'll find laptops, desktops, and accessories at competitive prices. All purchases are protected by our escrow system! 💻",
+      actions: [{ label: "Browse Electronics", action: "browse", params: { category: "electronics" } }],
     }
   }
 
-  if (lastMsg.includes("cart") || lastMsg.includes("checkout")) {
+  if (lastMsg.includes("phone") || lastMsg.includes("iphone") || lastMsg.includes("samsung") || lastMsg.includes("android")) {
     return {
-      message: "Head over to your cart to review your items and checkout when you're ready. All payments are protected by our escrow system!",
+      message: "Looking for a new phone? We have a great selection from verified Canadian sellers! Check out our electronics section for the latest smartphones, cases, and accessories. All in Canadian dollars with free returns within 14 days! 📱",
+      actions: [{ label: "Browse Electronics", action: "browse", params: { category: "electronics" } }],
+    }
+  }
+
+  if (lastMsg.includes("clothes") || lastMsg.includes("fashion") || lastMsg.includes("shirt") || lastMsg.includes("dress") || lastMsg.includes("shoes")) {
+    return {
+      message: "You'll love our fashion section! We've got clothing, shoes, and accessories from Canadian brands and sellers. From everyday wear to premium fashion — all in CAD with buyer protection! 👗",
+      actions: [{ label: "Browse Fashion", action: "browse", params: { category: "fashion" } }],
+    }
+  }
+
+  if (lastMsg.includes("home") || lastMsg.includes("garden") || lastMsg.includes("furniture") || lastMsg.includes("kitchen") || lastMsg.includes("decor")) {
+    return {
+      message: "Make your home shine! Our Home & Garden section has everything from furniture to kitchen essentials, garden tools, and decor. All from verified Canadian sellers! 🏠",
+      actions: [{ label: "Browse Home & Garden", action: "browse", params: { category: "home-garden" } }],
+    }
+  }
+
+  if (lastMsg.includes("sport") || lastMsg.includes("hockey") || lastMsg.includes("exercise") || lastMsg.includes("gym") || lastMsg.includes("fitness")) {
+    return {
+      message: "Hockey gear, workout equipment, outdoor adventure gear — we've got it all! Check out our sports section for everything an active Canadian needs. Go Jets go! 🏒",
+      actions: [{ label: "Browse Sports", action: "browse", params: { category: "sports" } }],
+    }
+  }
+
+  // Browse and shop
+  if (lastMsg.includes("browse") || lastMsg.includes("shop") || lastMsg.includes("product") || lastMsg.includes("catalog") || lastMsg.includes("look")) {
+    return {
+      message: "I'd love to help you browse our marketplace! We have thousands of products across Electronics, Fashion, Home & Garden, Sports, Vehicles, Books, Music, and Outdoor categories. Everything in Canadian dollars with buyer protection! 🍁",
+      actions: [
+        { label: "Browse All Products", action: "browse" },
+        { label: "Browse Electronics", action: "browse", params: { category: "electronics" } },
+        { label: "Browse Fashion", action: "browse", params: { category: "fashion" } },
+      ],
+    }
+  }
+
+  // Cart and checkout
+  if (lastMsg.includes("cart") || lastMsg.includes("checkout") || lastMsg.includes("pay") || lastMsg.includes("buy now")) {
+    return {
+      message: "Head over to your cart to review your items and checkout when you're ready. Here's how it works:\n\n1. Review your cart items\n2. Enter your shipping info (address, city, province, postal code)\n3. Place your order — payment goes into escrow\n4. Seller ships your item\n5. Confirm delivery → seller gets paid\n\nAll payments are protected by our escrow system! 🛡️",
       actions: [{ label: "View My Cart", action: "cart" }],
     }
   }
 
-  if (lastMsg.includes("sell") || lastMsg.includes("register")) {
+  // Selling
+  if (lastMsg.includes("sell") || lastMsg.includes("seller") || lastMsg.includes("start selling") || lastMsg.includes("open store")) {
     return {
-      message: "Welcome aboard! You can register as a buyer or seller. Sellers get access to their own storefront, analytics, and payout tools. All sellers are verified for buyer safety.",
+      message: "Becoming a seller on Canada Marketplace is easy! Here's what you get:\n\n✅ Your own customizable storefront\n✅ Sales analytics and dashboard\n✅ Secure payout system (direct to your bank)\n✅ Marketplace fee: only 8% (5% for Gold sellers)\n✅ Access to millions of Canadian buyers\n\nAll sellers are verified to keep the marketplace safe. Sign up today!",
+      actions: [
+        { label: "Become a Seller", action: "become-seller" },
+        { label: "Register Now", action: "register" },
+      ],
+    }
+  }
+
+  // Registration
+  if (lastMsg.includes("register") || lastMsg.includes("sign up") || lastMsg.includes("create account") || lastMsg.includes("join")) {
+    return {
+      message: "Welcome! Joining Canada Marketplace is free and takes just a minute. You can sign up as a buyer to start shopping, or as a seller to start selling. All accounts come with escrow protection and PIPEDA-compliant data handling! 🍁",
       actions: [
         { label: "Register Now", action: "register" },
         { label: "Become a Seller", action: "become-seller" },
@@ -170,15 +113,72 @@ function generateFallbackResponse(messages: any[]) {
     }
   }
 
-  if (lastMsg.includes("escrow") || lastMsg.includes("safe") || lastMsg.includes("protect")) {
+  // Safety and escrow
+  if (lastMsg.includes("escrow") || lastMsg.includes("safe") || lastMsg.includes("protect") || lastMsg.includes("security") || lastMsg.includes("scam") || lastMsg.includes("trust")) {
     return {
-      message: "Great question! Our escrow system holds your payment securely until you confirm you've received and are happy with your item. Sellers only get paid after your approval. If anything goes wrong, you can file a dispute within 14 days. Your money is always safe! 🛡️",
+      message: "Your safety is our #1 priority! Here's how we protect you:\n\n🔒 **Escrow Payments** — Your money is held securely until you confirm delivery\n✅ **Verified Sellers** — All sellers go through identity verification\n🛡️ **Dispute Resolution** — File a dispute within 14 days if anything goes wrong\n🇨🇦 **Data in Canada** — PIPEDA compliant, your data stays in Canada\n💳 **Secure Payments** — PCI DSS compliant payment processing\n\nYour money is ALWAYS safe with us!",
+      actions: [
+        { label: "Browse Products", action: "browse" },
+        { label: "How It Works", action: "safety" },
+      ],
+    }
+  }
+
+  // Shipping
+  if (lastMsg.includes("ship") || lastMsg.includes("delivery") || lastMsg.includes("track") || lastMsg.includes("canada post")) {
+    return {
+      message: "We work with Canada Post and other trusted carriers for shipping across all 13 provinces and territories. Here's what you need to know:\n\n📦 Most orders ship within 1-3 business days\n📍 Track your package in real-time from your orders page\n🔄 Free returns within 14 days of delivery\n❄️ Yes, we ship to the territories too!\n\nAll shipping costs are shown at checkout — no hidden fees!",
+      actions: [{ label: "View My Orders", action: "orders" }],
+    }
+  }
+
+  // Order tracking
+  if (lastMsg.includes("order") || lastMsg.includes("status") || lastMsg.includes("where")) {
+    return {
+      message: "To check your order status, head to the Orders page where you can see real-time tracking for all your purchases. Each order shows its current status: Processing → Shipped → Delivered. You'll also get email notifications at each step! 📦",
+      actions: [{ label: "View My Orders", action: "orders" }],
+    }
+  }
+
+  // Disputes
+  if (lastMsg.includes("dispute") || lastMsg.includes("refund") || lastMsg.includes("return") || lastMsg.includes("complaint") || lastMsg.includes("wrong") || lastMsg.includes("broken") || lastMsg.includes("damaged")) {
+    return {
+      message: "We're sorry to hear that! Here's how our dispute process works:\n\n1. Go to your order and click \"File Dispute\"\n2. Describe the issue and optionally upload photos\n3. Our admin team reviews within 48 hours\n4. If approved, you get a full refund from escrow\n\nYou have 14 days from delivery to file a dispute. We're here to make it right! 🤝",
+      actions: [{ label: "View My Orders", action: "orders" }],
+    }
+  }
+
+  // Fees
+  if (lastMsg.includes("fee") || lastMsg.includes("cost") || lastMsg.includes("charge") || lastMsg.includes("commission")) {
+    return {
+      message: "Here's our transparent fee structure:\n\n🛒 **For Buyers**: No fees! The price you see is what you pay\n🏪 **For Sellers**: 8% marketplace fee (5% for Gold sellers)\n💳 **Payment Processing**: Standard Stripe fees apply\n💰 **Payouts**: Direct to your bank account, processed weekly\n\nNo hidden fees, ever!",
+      actions: [{ label: "Become a Seller", action: "become-seller" }],
+    }
+  }
+
+  // Greetings
+  if (lastMsg.includes("hi") || lastMsg.includes("hello") || lastMsg.includes("hey") || lastMsg.includes("greetings") || lastMsg === "") {
+    return {
+      message: "Hey there! Welcome to Canada Marketplace! 🍁 I'm Maple, your AI shopping assistant. I'm here to help you find exactly what you're looking for, safely and securely.\n\nEverything on our platform is in Canadian dollars, your payments are protected by escrow, and all sellers are verified. Pretty sweet, eh?\n\nWhat are you shopping for today?",
+      actions: [
+        { label: "Browse All Products", action: "browse" },
+        { label: "Register Now", action: "register" },
+        { label: "How It Works", action: "safety" },
+      ],
+    }
+  }
+
+  // Thanks
+  if (lastMsg.includes("thank") || lastMsg.includes("thanks") || lastMsg.includes("cheers")) {
+    return {
+      message: "You're welcome! That's what I'm here for, eh? If you need anything else, just ask. Happy shopping! 🍁",
       actions: [{ label: "Browse Products", action: "browse" }],
     }
   }
 
+  // Default response
   return {
-    message: "Hey there! I'm Maple, your AI shopping assistant for Canada Marketplace. 🍁 I can help you find products, answer questions about how things work, or guide you through checkout. What can I help you with today?",
+    message: "I'd love to help you with that! I can assist with:\n\n🛍️ Finding products across all categories\n🛒 Cart and checkout questions\n🏪 Becoming a seller\n🔒 Escrow and safety info\n📦 Shipping and tracking\n🤝 Disputes and returns\n\nWhat would you like to know more about?",
     actions: [
       { label: "Browse All Products", action: "browse" },
       { label: "How It Works", action: "safety" },
