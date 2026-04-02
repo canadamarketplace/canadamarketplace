@@ -1,0 +1,215 @@
+'use client'
+import { useState, useEffect } from 'react'
+import { useNavigation, useAuth } from '@/lib/store'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+} from '@/components/ui/select'
+import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/types'
+import { Package, Truck, Eye, Loader2, ChevronDown, ChevronUp } from 'lucide-react'
+import { toast } from 'sonner'
+
+interface Order {
+  id: string; orderNumber: string; status: string; total: number
+  shippingAddress: string; shippingCity: string; shippingProvince: string; shippingPostalCode: string
+  trackingNumber?: string; createdAt: string
+  buyer: { id: string; name: string; email: string; province: string; city: string }
+  items: Array<{ id: string; title: string; price: number; quantity: number; image?: string }>
+  _count?: { disputes: number }
+}
+
+export default function SellerOrders() {
+  const { navigate } = useNavigation()
+  const { user } = useAuth()
+  const [orders, setOrders] = useState<Order[]>([])
+  const [loading, setLoading] = useState(true)
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const [trackingNum, setTrackingNum] = useState('')
+
+  const fetchOrders = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/orders?sellerId=${user?.id || 'seller'}`)
+      if (res.ok) setOrders(await res.json())
+    } catch {}
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    fetchOrders()
+  }, [statusFilter, fetchOrders])
+
+  const handleShip = async (orderId: string) => {
+    if (!trackingNum.trim()) {
+      toast.error('Please enter a tracking number')
+      return
+    }
+    setUpdatingId(orderId)
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'SHIPPED', trackingNumber: trackingNum }),
+      })
+      if (res.ok) {
+        toast.success('Order marked as shipped')
+        setExpandedId(null)
+        setTrackingNum('')
+        fetchOrders()
+      }
+    } catch {}
+    setUpdatingId(null)
+  }
+
+  const handleDeliver = async (orderId: string) => {
+    setUpdatingId(orderId)
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'DELIVERED' }),
+      })
+      if (res.ok) {
+        toast.success('Order marked as delivered')
+        fetchOrders()
+      }
+    } catch {}
+    setUpdatingId(null)
+  }
+
+  return (
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-stone-100">Seller Orders</h1>
+          <p className="text-sm text-stone-500 mt-1">{orders.length} orders</p>
+        </div>
+        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v === "all" ? "" : v)}>
+          <SelectTrigger className="w-48 bg-white/5 border-white/10 text-stone-200 h-10 rounded-xl">
+            <SelectValue placeholder="All Status" />
+          </SelectTrigger>
+          <SelectContent className="bg-neutral-900 border-white/10">
+            <SelectItem value="all" className="text-stone-300">All Orders</SelectItem>
+            {Object.entries(ORDER_STATUS_LABELS).map(([key, label]) => (
+              <SelectItem key={key} value={key} className="text-stone-300">{label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {loading ? (
+        <div className="space-y-4 animate-pulse">
+          {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-28 rounded-2xl bg-neutral-800" />)}
+        </div>
+      ) : orders.filter(o => !statusFilter || o.status === statusFilter).length === 0 ? (
+        <div className="text-center py-16 rounded-2xl bg-neutral-900/60 border border-white/5">
+          <Package className="w-16 h-16 text-stone-700 mx-auto mb-4" />
+          <p className="text-stone-500">No orders found</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {orders
+            .filter(o => !statusFilter || o.status === statusFilter)
+            .map((order) => (
+            <div key={order.id} className="rounded-2xl bg-neutral-900/60 border border-white/5 overflow-hidden">
+              <button
+                onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
+                className="w-full text-left p-5 flex items-center justify-between"
+              >
+                <div>
+                  <div className="flex items-center gap-3 mb-1">
+                    <p className="text-sm font-mono text-stone-400">{order.orderNumber}</p>
+                    <Badge className={`${ORDER_STATUS_COLORS[order.status as keyof typeof ORDER_STATUS_COLORS] || ''} text-[10px] border`}>
+                      {ORDER_STATUS_LABELS[order.status as keyof typeof ORDER_STATUS_LABELS] || order.status}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-stone-300">{order.buyer?.name} · {order.shippingCity}, {order.shippingProvince}</p>
+                  <p className="text-xs text-stone-600 mt-0.5">{new Date(order.createdAt).toLocaleDateString()} · {order.items.length} items</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-base font-bold text-stone-200">${order.total.toFixed(2)}</span>
+                  {expandedId === order.id ? <ChevronUp className="w-4 h-4 text-stone-500" /> : <ChevronDown className="w-4 h-4 text-stone-500" />}
+                </div>
+              </button>
+
+              {expandedId === order.id && (
+                <div className="border-t border-white/5 p-5 space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <h4 className="text-xs font-semibold text-stone-500 mb-2">Items</h4>
+                      <div className="space-y-2">
+                        {order.items.map((item) => (
+                          <div key={item.id} className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-neutral-800 overflow-hidden flex-shrink-0">
+                              {item.image ? <img src={item.image} alt="" className="w-full h-full object-cover" /> : (
+                                <div className="w-full h-full flex items-center justify-center text-stone-600"><Package className="w-4 h-4" /></div>
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm text-stone-300 truncate">{item.title}</p>
+                              <p className="text-xs text-stone-600">Qty: {item.quantity}</p>
+                            </div>
+                            <p className="text-sm font-medium text-stone-200">${item.price.toFixed(2)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-semibold text-stone-500 mb-2">Shipping</h4>
+                      <p className="text-sm text-stone-400">{order.shippingAddress}</p>
+                      <p className="text-sm text-stone-400">{order.shippingCity}, {order.shippingProvince} {order.shippingPostalCode}</p>
+                      {order.trackingNumber && (
+                        <p className="text-sm text-purple-300 mt-2 flex items-center gap-1">
+                          <Truck className="w-3.5 h-3.5" /> Tracking: <span className="font-mono">{order.trackingNumber}</span>
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {(order.status === 'PAID') && (
+                    <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                      <h4 className="text-xs font-semibold text-stone-400 mb-2">Mark as Shipped</h4>
+                      <div className="flex gap-2">
+                        <Input
+                          value={trackingNum}
+                          onChange={(e) => setTrackingNum(e.target.value)}
+                          placeholder="Enter tracking number"
+                          className="flex-1 bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 rounded-lg h-9 text-sm"
+                        />
+                        <Button
+                          onClick={() => handleShip(order.id)}
+                          disabled={updatingId === order.id}
+                          size="sm"
+                          className="bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg text-sm"
+                        >
+                          {updatingId === order.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Truck className="w-3 h-3 mr-1" />}
+                          Ship
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {order.status === 'SHIPPED' && (
+                    <Button
+                      onClick={() => handleDeliver(order.id)}
+                      disabled={updatingId === order.id}
+                      size="sm"
+                      className="bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg text-sm"
+                    >
+                      {updatingId === order.id ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+                      Mark as Delivered
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
