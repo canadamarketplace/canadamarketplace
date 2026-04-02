@@ -21,7 +21,7 @@ const STEPS = [
     title: 'Get Verified',
     desc: 'Upload a government-issued ID and proof of address. Our team reviews and verifies your identity within 24-48 hours. This builds trust with Canadian buyers.',
     icon: Shield,
-    color: 'amber',
+    color: 'red',
   },
   {
     step: '03',
@@ -42,9 +42,9 @@ const STEPS = [
 const BENEFITS = [
   { icon: DollarSign, title: 'Low Marketplace Fee', desc: 'Only 8% per sale (5% for Gold sellers). No monthly fees, no subscriptions, no hidden costs. You only pay when you sell.', color: 'green' },
   { icon: Clock, title: 'Fast Payouts', desc: 'Get paid within 2 business days after buyer confirms delivery. Direct bank transfer to your Canadian bank account. No holds, no delays.', color: 'blue' },
-  { icon: Shield, title: 'Seller Protection', desc: 'Our escrow system protects you too. Buyers\' payments are guaranteed. Our dispute resolution team ensures fair outcomes for both parties.', color: 'amber' },
+  { icon: Shield, title: 'Seller Protection', desc: 'Our escrow system protects you too. Buyers\' payments are guaranteed. Our dispute resolution team ensures fair outcomes for both parties.', color: 'red' },
   { icon: TrendingUp, title: 'Grow Your Business', desc: 'Access analytics, sales reports, and promotional tools. Reach thousands of verified Canadian buyers actively looking for products.', color: 'purple' },
-  { icon: Star, title: 'Gold Seller Program', desc: 'Reach Gold status with consistent sales and positive reviews. Unlock lower fees (5%), premium placement, and a verified Gold badge.', color: 'amber' },
+  { icon: Star, title: 'Gold Seller Program', desc: 'Reach Gold status with consistent sales and positive reviews. Unlock lower fees (5%), premium placement, and a verified Gold badge.', color: 'red' },
   { icon: Lock, title: 'Data Stays in Canada', desc: 'Your business data, sales records, and customer information are all stored on Canadian servers. Fully PIPEDA and Law 25 compliant.', color: 'green' },
 ]
 
@@ -83,19 +83,19 @@ export default function BecomeSellerPage() {
     <div className="min-h-screen bg-[#0a0a0a]">
       {/* Hero */}
       <section className="relative py-24 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-amber-900/10 via-transparent to-transparent" />
-        <div className="absolute top-10 left-1/3 w-72 h-72 bg-amber-600/5 rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-b from-red-900/10 via-transparent to-transparent" />
+        <div className="absolute top-10 left-1/3 w-72 h-72 bg-red-600/5 rounded-full blur-3xl" />
         <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-red-600/5 rounded-full blur-3xl" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <button onClick={() => navigate('home')} className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 mb-6 group">
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Home
           </button>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/20 bg-amber-500/5 mb-6">
-            <Store className="w-4 h-4 text-amber-400" />
-            <span className="text-xs font-medium text-amber-400 uppercase tracking-[0.2em]">Seller Program</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-red-500/20 bg-red-500/5 mb-6">
+            <Store className="w-4 h-4 text-red-300" />
+            <span className="text-xs font-medium text-red-300 uppercase tracking-[0.2em]">Seller Program</span>
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
-            Become a <span className="bg-gradient-to-r from-amber-400 via-red-400 to-amber-500 bg-clip-text text-transparent">Verified Seller</span>
+            Become a <span className="bg-gradient-to-r from-red-300 via-red-400 to-red-500 bg-clip-text text-transparent">Verified Seller</span>
           </h1>
           <p className="text-lg text-stone-400 font-light max-w-2xl mx-auto mb-8 leading-relaxed">
             Join thousands of Canadian entrepreneurs selling on Canada&apos;s most trusted marketplace. Low fees, fast payouts, escrow protection, and buyers across all 13 provinces.
@@ -104,7 +104,7 @@ export default function BecomeSellerPage() {
             <Button
               onClick={() => openAuthModal('register-seller')}
               size="lg"
-              className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold rounded-2xl px-8 shadow-lg shadow-amber-500/20"
+              className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-300 hover:to-red-500 text-black font-semibold rounded-2xl px-8 shadow-lg shadow-red-500/20"
             >
               <span className="flex items-center gap-2">
                 Create Your Store Free
@@ -123,15 +123,15 @@ export default function BecomeSellerPage() {
           {/* Key Stats */}
           <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto mt-16">
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-amber-400">8%</div>
+              <div className="text-2xl md:text-3xl font-bold text-red-300">8%</div>
               <div className="text-xs text-stone-500 mt-1">Marketplace Fee</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-amber-400">2 Days</div>
+              <div className="text-2xl md:text-3xl font-bold text-red-300">2 Days</div>
               <div className="text-xs text-stone-500 mt-1">Payout Speed</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-amber-400">$0</div>
+              <div className="text-2xl md:text-3xl font-bold text-red-300">$0</div>
               <div className="text-xs text-stone-500 mt-1">Monthly Fees</div>
             </div>
           </div>
@@ -142,9 +142,9 @@ export default function BecomeSellerPage() {
       <section className="px-6 py-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-xs font-medium text-amber-500 uppercase tracking-[0.2em]">Simple Process</span>
+            <span className="text-xs font-medium text-red-500 uppercase tracking-[0.2em]">Simple Process</span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">
-              Start Selling in <span className="bg-gradient-to-r from-amber-400 to-red-400 bg-clip-text text-transparent">4 Easy Steps</span>
+              Start Selling in <span className="bg-gradient-to-r from-red-300 to-red-400 bg-clip-text text-transparent">4 Easy Steps</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -168,12 +168,12 @@ export default function BecomeSellerPage() {
       </section>
 
       {/* Benefits */}
-      <section className="px-6 py-20 bg-gradient-to-b from-transparent via-amber-900/[0.03] to-transparent">
+      <section className="px-6 py-20 bg-gradient-to-b from-transparent via-red-900/[0.03] to-transparent">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-xs font-medium text-amber-500 uppercase tracking-[0.2em]">Why Sell With Us</span>
+            <span className="text-xs font-medium text-red-500 uppercase tracking-[0.2em]">Why Sell With Us</span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">
-              Seller <span className="bg-gradient-to-r from-amber-400 to-red-400 bg-clip-text text-transparent">Benefits</span>
+              Seller <span className="bg-gradient-to-r from-red-300 to-red-400 bg-clip-text text-transparent">Benefits</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -194,9 +194,9 @@ export default function BecomeSellerPage() {
       <section className="px-6 py-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-xs font-medium text-amber-500 uppercase tracking-[0.2em]">Powerful Tools</span>
+            <span className="text-xs font-medium text-red-500 uppercase tracking-[0.2em]">Powerful Tools</span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">
-              Your Seller <span className="bg-gradient-to-r from-amber-400 to-red-400 bg-clip-text text-transparent">Dashboard</span>
+              Your Seller <span className="bg-gradient-to-r from-red-300 to-red-400 bg-clip-text text-transparent">Dashboard</span>
             </h2>
             <p className="text-stone-400 mt-3 max-w-2xl mx-auto">Everything you need to manage your store, track sales, and grow your business — all in one place.</p>
           </div>
@@ -209,7 +209,7 @@ export default function BecomeSellerPage() {
                 { icon: TrendingUp, label: 'Payout History', desc: 'Monitor earnings and withdrawal status' },
               ].map((item) => (
                 <div key={item.label} className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                  <item.icon className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
+                  <item.icon className="w-5 h-5 text-red-300 mt-0.5 flex-shrink-0" />
                   <div>
                     <h4 className="text-sm font-semibold text-stone-200">{item.label}</h4>
                     <p className="text-xs text-stone-500 mt-0.5">{item.desc}</p>
@@ -239,16 +239,16 @@ export default function BecomeSellerPage() {
       <section className="px-6 py-20">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-xs font-medium text-amber-500 uppercase tracking-[0.2em]">Common Questions</span>
+            <span className="text-xs font-medium text-red-500 uppercase tracking-[0.2em]">Common Questions</span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">
-              Seller <span className="bg-gradient-to-r from-amber-400 to-stone-300 bg-clip-text text-transparent">FAQ</span>
+              Seller <span className="bg-gradient-to-r from-red-300 to-stone-300 bg-clip-text text-transparent">FAQ</span>
             </h2>
           </div>
           <div className="space-y-4">
             {FAQS.map((faq) => (
               <div key={faq.q} className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
                 <h3 className="text-base font-semibold text-stone-200 mb-2 flex items-start gap-2">
-                  <span className="text-amber-400 flex-shrink-0 mt-0.5">Q:</span>
+                  <span className="text-red-300 flex-shrink-0 mt-0.5">Q:</span>
                   {faq.q}
                 </h3>
                 <p className="text-sm text-stone-400 leading-relaxed pl-5">{faq.a}</p>
@@ -261,8 +261,8 @@ export default function BecomeSellerPage() {
       {/* Final CTA */}
       <section className="px-6 py-20">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="p-10 rounded-2xl bg-gradient-to-br from-amber-900/20 via-neutral-900/50 to-red-900/10 border border-amber-500/10">
-            <Award className="w-12 h-12 text-amber-400 mx-auto mb-4" />
+          <div className="p-10 rounded-2xl bg-gradient-to-br from-red-900/20 via-neutral-900/50 to-red-900/10 border border-red-500/10">
+            <Award className="w-12 h-12 text-red-300 mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-bold text-stone-100 mb-3">
               Ready to Start Selling?
             </h2>
@@ -272,7 +272,7 @@ export default function BecomeSellerPage() {
             <Button
               onClick={() => openAuthModal('register-seller')}
               size="lg"
-              className="bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-400 hover:to-red-500 text-white font-semibold rounded-2xl px-10 shadow-lg shadow-amber-500/20"
+              className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-300 hover:to-red-500 text-white font-semibold rounded-2xl px-10 shadow-lg shadow-red-500/20"
             >
               <span className="flex items-center gap-2">
                 <Zap className="w-5 h-5" />

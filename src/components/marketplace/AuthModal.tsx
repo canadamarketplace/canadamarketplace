@@ -141,7 +141,7 @@ export default function AuthModal() {
   return (
     <Dialog open={isAuthModalOpen} onOpenChange={(open) => { if (!open) { closeAuthModal(); resetForms() } }}>
       <DialogContent className="sm:max-w-md bg-neutral-900 border-white/10 p-0 gap-0 overflow-hidden">
-        <div className="bg-gradient-to-r from-red-600/10 to-amber-500/10 p-6 text-center border-b border-white/5">
+        <div className="bg-gradient-to-r from-red-600/10 to-red-500/10 p-6 text-center border-b border-white/5">
           <div className="w-12 h-12 rounded-2xl overflow-hidden mx-auto mb-3 shadow-lg shadow-red-500/20">
             <img src="/logo-square.png" alt="Canada Marketplace" className="w-full h-full object-cover" />
           </div>
@@ -333,7 +333,7 @@ export default function AuthModal() {
                     <Input value={sellerCity} onChange={(e) => setSellerCity(e.target.value)} placeholder={t('auth.city')} className={inputClass} />
                   </div>
                 </div>
-                <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold rounded-xl h-11">
+                <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-300 hover:to-red-500 text-black font-semibold rounded-xl h-11">
                   {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                   {t('auth.createSellerAccount')}
                 </Button>

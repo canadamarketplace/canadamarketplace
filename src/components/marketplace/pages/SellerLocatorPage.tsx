@@ -318,7 +318,7 @@ export default function SellerLocatorPage() {
       <section className="relative py-20 px-6 bg-gradient-to-b from-red-900/10 via-transparent to-transparent">
         <div className="absolute inset-0">
           <div className="absolute top-10 left-1/3 w-80 h-80 bg-red-600/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-600/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-red-600/5 rounded-full blur-3xl" />
         </div>
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <button
@@ -327,12 +327,12 @@ export default function SellerLocatorPage() {
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Home
           </button>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/20 bg-amber-500/5 mb-6">
-            <MapPinned className="w-4 h-4 text-amber-400" />
-            <span className="text-xs font-medium text-amber-400 uppercase tracking-[0.2em]">Find Sellers Near You</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-red-500/20 bg-red-500/5 mb-6">
+            <MapPinned className="w-4 h-4 text-red-300" />
+            <span className="text-xs font-medium text-red-300 uppercase tracking-[0.2em]">Find Sellers Near You</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
-            Seller <span className="bg-gradient-to-r from-amber-400 to-red-400 bg-clip-text text-transparent">Locator</span>
+            Seller <span className="bg-gradient-to-r from-red-300 to-red-400 bg-clip-text text-transparent">Locator</span>
           </h1>
           <p className="text-stone-400 font-light max-w-2xl mx-auto mb-8">
             Discover verified sellers across Canada. Click any marker to view their storefront and browse their products.
@@ -344,7 +344,7 @@ export default function SellerLocatorPage() {
             </span>
             <span className="text-stone-600">|</span>
             <span className="flex items-center gap-1.5">
-              <Navigation className="w-4 h-4 text-amber-400" />
+              <Navigation className="w-4 h-4 text-red-300" />
               <strong className="text-stone-200">{sellerProvinces.length}</strong> provinces
             </span>
           </div>
@@ -366,7 +366,7 @@ export default function SellerLocatorPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search sellers, cities..."
-                    className="w-full pl-10 pr-9 h-10 bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 rounded-xl text-sm focus:border-amber-500/30 focus:ring-1 focus:ring-amber-500/20"
+                    className="w-full pl-10 pr-9 h-10 bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 rounded-xl text-sm focus:border-red-500/30 focus:ring-1 focus:ring-red-500/20"
                   />
                   {searchQuery && (
                     <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300">
@@ -381,7 +381,7 @@ export default function SellerLocatorPage() {
                   <Filter className="w-4 h-4" />
                   {showFilters ? 'Hide Filters' : 'Filter by Province'}
                   {selectedProvince && (
-                    <Badge className="ml-auto bg-amber-500/10 text-amber-400 border-amber-500/20 text-[10px] border">
+                    <Badge className="ml-auto bg-red-500/10 text-red-300 border-red-500/20 text-[10px] border">
                       1 active
                     </Badge>
                   )}
@@ -393,7 +393,7 @@ export default function SellerLocatorPage() {
                 <div className="px-4 py-3 border-b border-white/5 space-y-1 max-h-52 overflow-y-auto">
                   <button
                     onClick={() => setSelectedProvince(null)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${!selectedProvince ? 'bg-amber-500/10 text-amber-300' : 'text-stone-400 hover:bg-white/5'}`}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${!selectedProvince ? 'bg-red-500/10 text-white' : 'text-stone-400 hover:bg-white/5'}`}
                   >
                     All Provinces ({allSellers.length})
                   </button>
@@ -401,7 +401,7 @@ export default function SellerLocatorPage() {
                     <button
                       key={prov}
                       onClick={() => setSelectedProvince(selectedProvince === prov ? null : prov)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${selectedProvince === prov ? 'bg-amber-500/10 text-amber-300' : 'text-stone-400 hover:bg-white/5'}`}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${selectedProvince === prov ? 'bg-red-500/10 text-white' : 'text-stone-400 hover:bg-white/5'}`}
                     >
                       <span className="flex items-center gap-2">
                         <MapPin className="w-3 h-3 text-stone-600" />
@@ -417,12 +417,12 @@ export default function SellerLocatorPage() {
 
               {/* Selected Seller Detail Card */}
               {selectedSeller && (
-                <div className="px-4 py-4 border-b border-white/5 bg-amber-500/5">
+                <div className="px-4 py-4 border-b border-white/5 bg-red-500/5">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2 min-w-0">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold text-white ${
                         selectedSeller.totalSales >= 50
-                          ? 'bg-gradient-to-br from-amber-500 to-amber-600'
+                          ? 'bg-gradient-to-br from-red-500 to-red-600'
                           : 'bg-gradient-to-br from-red-600 to-red-700'
                       }`}>
                         {selectedSeller.storeName.charAt(0).toUpperCase()}
@@ -439,7 +439,7 @@ export default function SellerLocatorPage() {
                       {selectedSeller.city}, {selectedSeller.province}
                     </div>
                     <div className="flex items-center gap-2 text-stone-400">
-                      <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 flex-shrink-0" />
+                      <Star className="w-3.5 h-3.5 text-red-300 fill-red-300 flex-shrink-0" />
                       <span>{selectedSeller.rating.toFixed(1)} rating</span>
                       <span className="text-stone-600">· {selectedSeller.totalSales} sales</span>
                     </div>
@@ -483,31 +483,31 @@ export default function SellerLocatorPage() {
                         onClick={() => handleSidebarClick(seller)}
                         className={`w-full text-left p-3 rounded-xl transition-all group ${
                           selectedSeller?.storeId === seller.storeId
-                            ? 'bg-amber-500/10 border border-amber-500/20'
+                            ? 'bg-red-500/10 border border-red-500/20'
                             : 'hover:bg-white/5 border border-transparent'
                         }`}
                       >
                         <div className="flex items-start gap-3">
                           <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold text-white shadow-lg ${
                             seller.totalSales >= 50
-                              ? 'bg-gradient-to-br from-amber-500 to-amber-600'
+                              ? 'bg-gradient-to-br from-red-500 to-red-600'
                               : 'bg-gradient-to-br from-red-600 to-red-700'
                           }`}>
                             {seller.storeName.charAt(0).toUpperCase()}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-medium text-stone-200 truncate group-hover:text-amber-300 transition-colors">
+                            <h4 className="text-sm font-medium text-stone-200 truncate group-hover:text-white transition-colors">
                               {seller.storeName}
                             </h4>
                             <p className="text-xs text-stone-500 truncate">{seller.city}, {seller.province}</p>
                             <div className="flex items-center gap-2 mt-1">
                               <span className="flex items-center gap-0.5 text-xs text-stone-500">
-                                <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                                <Star className="w-3 h-3 text-red-300 fill-red-300" />
                                 {seller.rating.toFixed(1)}
                               </span>
                               <span className="text-[10px] text-stone-600">{seller.totalProducts} products</span>
                               {seller.totalSales >= 50 && (
-                                <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 text-[9px] px-1.5 py-0 border">
+                                <Badge className="bg-red-500/10 text-red-300 border-red-500/20 text-[9px] px-1.5 py-0 border">
                                   GOLD
                                 </Badge>
                               )}
@@ -561,7 +561,7 @@ export default function SellerLocatorPage() {
                       <span className="text-[10px] text-stone-400">Verified Seller</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-[22px] h-[22px] rounded-full bg-gradient-to-br from-amber-500 to-amber-600 border-2 border-white/80 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">$</div>
+                      <div className="w-[22px] h-[22px] rounded-full bg-gradient-to-br from-red-500 to-red-600 border-2 border-white/80 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">$</div>
                       <span className="text-[10px] text-stone-400">Gold Seller (50+ sales)</span>
                     </div>
                   </div>
@@ -607,7 +607,7 @@ export default function SellerLocatorPage() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-3xl font-bold text-stone-100">
-              How It <span className="bg-gradient-to-r from-amber-400 to-red-400 bg-clip-text text-transparent">Works</span>
+              How It <span className="bg-gradient-to-r from-red-300 to-red-400 bg-clip-text text-transparent">Works</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -619,8 +619,8 @@ export default function SellerLocatorPage() {
                 <p className="text-xs text-stone-500 leading-relaxed">Browse the map or use the sidebar to search by seller name, city, or province. All sellers are verified Canadian businesses.</p>
               </div>
               <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-3">
-                  <MapPin className="w-5 h-5 text-amber-400" />
+                <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-3">
+                  <MapPin className="w-5 h-5 text-red-300" />
                 </div>
                 <h3 className="text-sm font-semibold text-stone-200 mb-2">2. Click</h3>
                 <p className="text-xs text-stone-500 leading-relaxed">Click any seller marker on the map to see their details, rating, total sales, and product count at a glance.</p>

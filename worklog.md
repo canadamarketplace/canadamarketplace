@@ -403,3 +403,68 @@ Implement comprehensive bilingual support with lightweight client-side i18n syst
 - ESLint: 0 errors, 0 warnings
 - `npx next build`: Compiled successfully, all routes compile
 - Git pushed to `origin/master`
+
+---
+## Task ID: help-pages
+Agent: Super Z (Main)
+Task: Create 4 new help/information pages for Canada Marketplace (Escrow, Seller Guide, Shipping, FAQ)
+
+### Work Task
+Create EscrowPage, SellerGuidePage, ShippingPage, and FaqPage with full bilingual EN/FR translations, wire navigation, and update footer links.
+
+### Work Summary
+
+**New Files Created (4):**
+1. `src/components/marketplace/pages/EscrowPage.tsx` — Escrow protection information page:
+   - Hero section with Shield icon and gradient background
+   - "What is Escrow?" explanation with clear language
+   - 5-step numbered process cards (place order → ship → inspect → confirm → dispute)
+   - For Buyers section: full refund, no release until happy, 14-day dispute window
+   - For Sellers section: proof of payment, chargeback protection, fair dispute process
+   - FAQ accordion with 4 expandable questions
+   - CTA with shop/sell buttons
+
+2. `src/components/marketplace/pages/SellerGuidePage.tsx` — Seller registration guide:
+   - Hero with Store icon and amber gradient
+   - 7-step registration timeline with icons
+   - Checklist section (email, phone, ID, bank, photos)
+   - 6 pro tips for success (descriptions, photos, pricing, messages, shipping, reviews)
+   - Fees section: 8% basic, 5% Gold, $0 to start
+   - Basic vs Gold seller comparison cards
+   - CTA with register-seller auth modal trigger
+
+3. `src/components/marketplace/pages/ShippingPage.tsx` — Shipping & delivery information:
+   - Hero with Truck icon and emerald gradient
+   - 4 shipping partners: Canada Post, Purolator, UPS, FedEx
+   - Shipping timelines with color-coded cards (2-14 business days)
+   - Shipping costs explanation (seller-set, no hidden fees)
+   - Order tracking section (real-time, orders page, email notifications)
+   - Packaging tips for sellers (sturdy boxes, fragile items, packing slip, waterproof)
+   - Returns & exchanges section
+   - Territories shipping (Yukon, NWT, Nunavut) + local pickup info
+
+4. `src/components/marketplace/pages/FaqPage.tsx` — Comprehensive FAQ page:
+   - Hero with HelpCircle icon and purple gradient
+   - Search bar with real-time filtering
+   - 7 category filter tabs: All, Buying, Selling, Payments, Shipping, Account, Safety
+   - 24 expandable FAQ items with color-coded category badges
+   - Empty state for no search results
+   - Question count display
+   - CTA with contact support and browse buttons
+
+**Modified Files (5):**
+1. `src/lib/store.ts` — Added "escrow", "seller-guide", "shipping", "faq" to PageView union type; added URL mappings in pageToUrl() and urlToPage()
+2. `src/components/marketplace/MarketplaceApp.tsx` — Added imports and 4 switch cases for new pages
+3. `src/components/marketplace/Footer.tsx` — Added 4 new links to Support section: Escrow Protection, Seller Registration Guide, Shipping & Delivery, FAQ
+4. `src/lib/locales/en.json` — Added footer link labels + 4 new translation sections (escrow, sellerGuide, shipping, faq) with 250+ new English keys
+5. `src/lib/locales/fr.json` — Added footer link labels + 4 new translation sections with proper Quebec French translations
+
+**French Translation Quality:**
+- All translations use proper Quebec French terminology per PIPEDA/Loi 25 compliance
+- "courriel" (not "email"), "séquestre" (not "escrow"), "témoins" (not "cookies")
+- Legal/proper translations for marketplace terms throughout
+
+**Verification:**
+- ESLint: 0 errors, 0 warnings
+- `npx next build`: Compiled successfully in 6.2s, all 28 static pages generated
+- Git committed and pushed to `origin/main` (d5a6487)

@@ -187,8 +187,8 @@ export default function CheckoutPage() {
                     </select>
                     {selectedProvince && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                        <Percent className="w-3 h-3 text-amber-400" />
-                        <span className="text-[10px] text-amber-400 font-medium">
+                        <Percent className="w-3 h-3 text-red-300" />
+                        <span className="text-[10px] text-red-300 font-medium">
                           {taxResult ? `${taxResult.tax.totalRate}%` : ''}
                         </span>
                       </div>
@@ -255,10 +255,10 @@ export default function CheckoutPage() {
               {/* Tax breakdown */}
               {taxResult && (
                 <>
-                  <div className="rounded-lg bg-amber-500/5 border border-amber-500/10 p-3 space-y-1.5">
+                  <div className="rounded-lg bg-red-500/5 border border-red-500/10 p-3 space-y-1.5">
                     <div className="flex items-center gap-1.5 mb-2">
-                      <Percent className="w-3.5 h-3.5 text-amber-400" />
-                      <span className="text-xs font-medium text-amber-300">
+                      <Percent className="w-3.5 h-3.5 text-red-300" />
+                      <span className="text-xs font-medium text-white">
                         Tax — {taxResult.tax.province}
                       </span>
                       <span className="text-[10px] text-stone-600 ml-auto">
@@ -285,9 +285,9 @@ export default function CheckoutPage() {
                         <span className="text-stone-400">${taxResult.tax.pst.toFixed(2)}</span>
                       </div>
                     )}
-                    <div className="flex justify-between text-xs font-medium pt-1 border-t border-amber-500/10">
+                    <div className="flex justify-between text-xs font-medium pt-1 border-t border-red-500/10">
                       <span className="text-stone-400 pl-5">Total Tax</span>
-                      <span className="text-amber-300">${taxResult.tax.totalTax.toFixed(2)}</span>
+                      <span className="text-white">${taxResult.tax.totalTax.toFixed(2)}</span>
                     </div>
                   </div>
                 </>

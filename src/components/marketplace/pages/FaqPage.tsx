@@ -152,7 +152,7 @@ export default function FaqPage() {
                     <div className="flex items-start gap-3">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider flex-shrink-0 mt-0.5 ${
                         item.category === 'buying' ? 'bg-green-500/10 text-green-400' :
-                        item.category === 'selling' ? 'bg-amber-500/10 text-amber-400' :
+                        item.category === 'selling' ? 'bg-red-500/10 text-red-300' :
                         item.category === 'payments' ? 'bg-blue-500/10 text-blue-400' :
                         item.category === 'shipping' ? 'bg-emerald-500/10 text-emerald-400' :
                         item.category === 'account' ? 'bg-purple-500/10 text-purple-400' :

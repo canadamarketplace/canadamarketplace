@@ -33,7 +33,7 @@ type FilterTab = 'ALL' | 'UNREAD' | 'ORDER' | 'MESSAGE' | 'REVIEW' | 'PAYOUT' | 
 const typeIcons: Record<string, { icon: typeof Package; color: string; bg: string }> = {
   ORDER: { icon: Package, color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' },
   MESSAGE: { icon: MessageCircle, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
-  REVIEW: { icon: Star, color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' },
+  REVIEW: { icon: Star, color: 'text-red-300', bg: 'bg-red-500/10 border-red-500/20' },
   PAYOUT: { icon: DollarSign, color: 'text-green-400', bg: 'bg-green-500/10 border-green-500/20' },
   DISPUTE: { icon: AlertTriangle, color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20' },
 }

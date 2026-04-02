@@ -15,7 +15,7 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="relative py-24 px-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-red-900/10 via-transparent to-transparent" />
-        <div className="absolute top-10 right-1/4 w-72 h-72 bg-amber-600/5 rounded-full blur-3xl" />
+        <div className="absolute top-10 right-1/4 w-72 h-72 bg-red-600/5 rounded-full blur-3xl" />
         <div className="absolute bottom-10 left-1/4 w-96 h-96 bg-red-600/5 rounded-full blur-3xl" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <button
@@ -31,7 +31,7 @@ export default function AboutPage() {
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
             Built by Canadians,<br />
-            <span className="bg-gradient-to-r from-red-400 via-amber-400 to-red-500 bg-clip-text text-transparent">For Canadians</span>
+            <span className="bg-gradient-to-r from-red-400 via-red-300 to-red-500 bg-clip-text text-transparent">For Canadians</span>
           </h1>
           <p className="text-lg text-stone-400 font-light max-w-2xl mx-auto leading-relaxed">
             Canada Marketplace was founded with a simple mission: to create a safe, fair, and truly Canadian online marketplace where buyers and sellers can transact with confidence. Every dollar stays in Canada. Every transaction is protected.
@@ -70,8 +70,8 @@ export default function AboutPage() {
             </p>
           </div>
           <div className="p-8 rounded-2xl bg-white/[0.03] border border-white/5">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-5">
-              <Eye className="w-6 h-6 text-amber-400" />
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-red-600/10 flex items-center justify-center mb-5">
+              <Eye className="w-6 h-6 text-red-300" />
             </div>
             <h2 className="text-2xl font-bold text-stone-100 mb-3">Our Vision</h2>
             <p className="text-stone-400 font-light leading-relaxed">
@@ -100,7 +100,7 @@ export default function AboutPage() {
               },
               {
                 icon: Lock,
-                color: 'amber',
+                color: 'red',
                 title: 'Data Privacy',
                 desc: 'All data is stored on Canadian servers. We are fully PIPEDA compliant and ready for Quebec\'s Law 25. Your information never crosses the border. We believe Canadians\' data should stay in Canada.',
               },
@@ -148,14 +148,14 @@ export default function AboutPage() {
       <section className="px-6 py-16">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-xs font-medium text-amber-500 uppercase tracking-[0.2em]">Our Journey</span>
+            <span className="text-xs font-medium text-red-500 uppercase tracking-[0.2em]">Our Journey</span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">
-              The Canada Marketplace <span className="bg-gradient-to-r from-amber-400 to-red-400 bg-clip-text text-transparent">Story</span>
+              The Canada Marketplace <span className="bg-gradient-to-r from-red-300 to-red-400 bg-clip-text text-transparent">Story</span>
             </h2>
           </div>
           <div className="relative">
             {/* Vertical Line */}
-            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-red-500/30 via-amber-500/20 to-transparent" />
+            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-red-500/30 via-red-500/20 to-transparent" />
 
             {[
               {
@@ -181,7 +181,7 @@ export default function AboutPage() {
             ].map((item, idx) => (
               <div key={idx} className={`relative flex items-start gap-6 mb-12 ${idx % 2 === 1 ? 'md:flex-row-reverse md:text-right' : ''}`}>
                 {/* Dot */}
-                <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-gradient-to-br from-red-500 to-amber-500 border-2 border-[#0a0a0a] mt-2 z-10" />
+                <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-gradient-to-br from-red-500 to-red-500 border-2 border-[#0a0a0a] mt-2 z-10" />
                 {/* Content */}
                 <div className={`ml-12 md:ml-0 md:w-1/2 ${idx % 2 === 1 ? 'md:pl-8' : 'md:pr-8'}`}>
                   <span className="text-sm font-bold text-red-400">{item.year}</span>
@@ -199,7 +199,7 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto text-center">
           <span className="text-xs font-medium text-red-400 uppercase tracking-[0.2em]">The People Behind It</span>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-3 mb-4">
-            Headquartered in <span className="bg-gradient-to-r from-red-400 to-amber-400 bg-clip-text text-transparent">Surrey, BC</span>
+            Headquartered in <span className="bg-gradient-to-r from-red-400 to-red-300 bg-clip-text text-transparent">Surrey, BC</span>
           </h2>
           <p className="text-stone-400 font-light max-w-2xl mx-auto mb-12 leading-relaxed">
             Our team is made up of passionate Canadians who believe in building technology that serves Canadians. From engineers to customer support, every member of our team is committed to making Canada Marketplace the safest and most trusted place to buy and sell online in Canada.
@@ -211,7 +211,7 @@ export default function AboutPage() {
                 <span>14914 104 Ave, Unit 105</span>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-amber-400" />
+                <MapPin className="w-4 h-4 text-red-300" />
                 <span>Surrey, BC V3R 1M7</span>
               </div>
               <div className="flex items-center gap-2">
@@ -234,7 +234,7 @@ export default function AboutPage() {
       {/* CTA */}
       <section className="px-6 py-20">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="p-10 rounded-2xl bg-gradient-to-br from-red-900/20 via-neutral-900/50 to-amber-900/10 border border-white/5">
+          <div className="p-10 rounded-2xl bg-gradient-to-br from-red-900/20 via-neutral-900/50 to-red-900/10 border border-white/5">
             <h2 className="text-2xl md:text-3xl font-bold text-stone-100 mb-3">
               Ready to Join Canada&apos;s Most Trusted Marketplace?
             </h2>

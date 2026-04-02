@@ -127,14 +127,14 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(220,38,38,0.08)_0%,_transparent_60%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(245,158,11,0.05)_0%,_transparent_50%)]" />
         <div className="absolute top-20 left-1/4 w-96 h-96 bg-red-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-red-500/5 rounded-full blur-3xl" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 lg:pt-28 lg:pb-32">
           <div className="text-center max-w-4xl mx-auto">
             {/* Trust Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-amber-500/5 border border-amber-500/20 mb-8">
-              <Shield className="w-4 h-4 text-amber-400" />
-              <span className="text-xs font-medium text-amber-400">{t('home.trustedBy')}</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-red-500/10 to-red-500/5 border border-red-500/20 mb-8">
+              <Shield className="w-4 h-4 text-red-300" />
+              <span className="text-xs font-medium text-red-300">{t('home.trustedBy')}</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight mb-6">
@@ -142,7 +142,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                 {t('home.heroTitle')}
               </span>
               <br />
-              <span className="bg-gradient-to-r from-red-400 via-red-500 to-amber-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-red-400 via-red-500 to-red-500 bg-clip-text text-transparent">
                 {t('home.heroTitleHighlight')}
               </span>
             </h1>
@@ -198,7 +198,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
       <section className="py-20 lg:py-24 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 mb-4">
+            <Badge className="bg-red-500/10 text-red-300 border-red-500/20 mb-4">
               <Shield className="w-3.5 h-3.5 mr-1.5" />
               {t('home.safetyFirst')}
             </Badge>
@@ -216,7 +216,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
             {safetyFeatures.map((feature) => (
               <Card key={feature.title} className="bg-neutral-900/60 backdrop-blur-xl border-white/5 rounded-2xl hover:border-white/10 transition-all group">
                 <CardContent className="p-6">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/10 to-amber-500/10 border border-white/5 flex items-center justify-center mb-4 group-hover:from-red-500/20 group-hover:to-amber-500/20 transition-all">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/10 to-red-500/10 border border-white/5 flex items-center justify-center mb-4 group-hover:from-red-500/20 group-hover:to-red-500/20 transition-all">
                     <feature.icon className="w-6 h-6 text-red-400" />
                   </div>
                   <h3 className="text-base font-semibold text-stone-100 mb-2">{feature.title}</h3>
@@ -333,7 +333,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                       <div className="flex items-center gap-1 mt-1.5">
                         <div className="flex">
                           {Array.from({ length: 5 }).map((_, i) => (
-                            <Star key={i} className={`w-3 h-3 ${i < (product.store.rating || 0) ? 'text-amber-400 fill-amber-400' : 'text-neutral-700'}`} />
+                            <Star key={i} className={`w-3 h-3 ${i < (product.store.rating || 0) ? 'text-red-300 fill-red-300' : 'text-neutral-700'}`} />
                           ))}
                         </div>
                         <span className="text-[10px] text-stone-600">({product._count.reviews})</span>
@@ -390,17 +390,17 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
       {/* Seller Locator CTA */}
       <section className="py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl bg-gradient-to-br from-red-900/15 via-neutral-900/60 to-amber-900/10 border border-white/5 p-8 lg:p-12 relative overflow-hidden">
+          <div className="rounded-3xl bg-gradient-to-br from-red-900/15 via-neutral-900/60 to-red-900/10 border border-white/5 p-8 lg:p-12 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-72 h-72 bg-red-600/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-600/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-red-600/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
             <div className="relative z-10 grid lg:grid-cols-2 gap-8 items-center">
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 mb-4">
-                  <MapPinned className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="text-xs font-medium text-amber-400 uppercase tracking-wider">{t('home.interactiveMap')}</span>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 mb-4">
+                  <MapPinned className="w-3.5 h-3.5 text-red-300" />
+                  <span className="text-xs font-medium text-red-300 uppercase tracking-wider">{t('home.interactiveMap')}</span>
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold text-stone-100 mb-3">
-                  {t('home.findSellersOnMap').split(' ').slice(0, -1).join(' ')} <span className="bg-gradient-to-r from-amber-400 to-red-400 bg-clip-text text-transparent">Map</span>
+                  {t('home.findSellersOnMap').split(' ').slice(0, -1).join(' ')} <span className="bg-gradient-to-r from-red-300 to-red-400 bg-clip-text text-transparent">Map</span>
                 </h2>
                 <p className="text-stone-400 leading-relaxed mb-6">
                   {t('home.findSellersOnMapDesc')}
@@ -408,7 +408,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                 <div className="flex flex-wrap gap-3">
                   <Button
                     onClick={() => navigate('seller-locator')}
-                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold rounded-2xl px-6 shadow-lg shadow-amber-500/20"
+                    className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-300 hover:to-red-500 text-black font-semibold rounded-2xl px-6 shadow-lg shadow-red-500/20"
                   >
                     <Map className="w-4 h-4 mr-2" />
                     {t('home.openSellerLocator')}
@@ -435,7 +435,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                     <span className="text-lg mb-1 block">{loc.icon}</span>
                     <p className="text-xs font-medium text-stone-200 truncate">{loc.city}</p>
                     <p className="text-[10px] text-stone-600">{loc.province}</p>
-                    <p className="text-[10px] text-amber-400 mt-1">{loc.sellers > 0 ? `${loc.sellers} ${t('home.sellers')}` : t('home.comingSoon')}</p>
+                    <p className="text-[10px] text-red-300 mt-1">{loc.sellers > 0 ? `${loc.sellers} ${t('home.sellers')}` : t('home.comingSoon')}</p>
                   </div>
                 ))}
               </div>
@@ -462,7 +462,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                 {i < steps.length - 1 && (
                   <div className="hidden lg:block absolute top-10 left-[60%] w-[80%] border-t border-dashed border-white/10" />
                 )}
-                <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-red-500/10 to-amber-500/10 border border-white/5 mb-4 group-hover:from-red-500/20 group-hover:to-amber-500/20 transition-all">
+                <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-red-500/10 to-red-500/10 border border-white/5 mb-4 group-hover:from-red-500/20 group-hover:to-red-500/20 transition-all">
                   <step.icon className="w-8 h-8 text-red-400" />
                   <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-red-500/20">
                     {i + 1}
@@ -484,12 +484,12 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
             <div className="rounded-3xl bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 backdrop-blur-xl border border-white/5 p-8 lg:p-12">
               <div className="grid lg:grid-cols-2 gap-8 items-center">
                 <div>
-                  <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 mb-4">
+                  <Badge className="bg-red-500/10 text-red-300 border-red-500/20 mb-4">
                     <Award className="w-3.5 h-3.5 mr-1.5" />
                     {t('home.forSellers')}
                   </Badge>
                   <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                    <span className="bg-gradient-to-r from-amber-400 to-red-400 bg-clip-text text-transparent">
+                    <span className="bg-gradient-to-r from-red-300 to-red-400 bg-clip-text text-transparent">
                       {t('home.startSellingToday')}
                     </span>
                   </h2>
@@ -499,7 +499,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                   <Button
                     onClick={() => openAuthModal('register-seller')}
                     size="lg"
-                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold rounded-2xl px-8 shadow-lg shadow-amber-500/20"
+                    className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-300 hover:to-red-500 text-black font-semibold rounded-2xl px-8 shadow-lg shadow-red-500/20"
                   >
                     {t('home.createYourStore')}
                     <ArrowRight className="w-5 h-5 ml-2" />
@@ -513,7 +513,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                     { value: '$0', label: t('home.monthlyFee'), icon: DollarSign },
                   ].map((item) => (
                     <div key={item.label} className="text-center p-4 rounded-2xl bg-white/[0.02] border border-white/5">
-                      <item.icon className="w-5 h-5 text-amber-400 mx-auto mb-2" />
+                      <item.icon className="w-5 h-5 text-red-300 mx-auto mb-2" />
                       <p className="text-xl font-bold text-stone-100">{item.value}</p>
                       <p className="text-[10px] text-stone-600 mt-1">{item.label}</p>
                     </div>

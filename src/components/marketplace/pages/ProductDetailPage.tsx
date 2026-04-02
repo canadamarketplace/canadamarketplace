@@ -121,7 +121,7 @@ export default function ProductDetailPage() {
   const conditionColors: Record<string, string> = {
     NEW: 'bg-green-500/10 text-green-400 border-green-500/20',
     LIKE_NEW: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    GOOD: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    GOOD: 'bg-red-500/10 text-red-300 border-red-500/20',
     FAIR: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
     USED: 'bg-stone-500/10 text-stone-400 border-stone-500/20',
   }
@@ -170,8 +170,8 @@ export default function ProductDetailPage() {
               {product.condition}
             </Badge>
             {product.isFeatured && (
-              <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 text-xs border">
-                <Star className="w-3 h-3 mr-1 fill-amber-400" /> Featured
+              <Badge className="bg-red-500/10 text-red-300 border-red-500/20 text-xs border">
+                <Star className="w-3 h-3 mr-1 fill-red-300" /> Featured
               </Badge>
             )}
           </div>
@@ -230,7 +230,7 @@ export default function ProductDetailPage() {
             className="w-full p-4 rounded-2xl bg-neutral-900/60 border border-white/5 hover:border-white/10 transition-all text-left group"
           >
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500/10 to-amber-500/10 border border-white/5 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500/10 to-red-500/10 border border-white/5 flex items-center justify-center">
                 <Store className="w-7 h-7 text-red-400" />
               </div>
               <div className="flex-1 min-w-0">
@@ -243,7 +243,7 @@ export default function ProductDetailPage() {
                 <p className="text-xs text-stone-500 mt-0.5">by {product.store.seller.name}</p>
                 <div className="flex items-center gap-3 mt-1">
                   <div className="flex items-center gap-1">
-                    <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                    <Star className="w-3 h-3 text-red-300 fill-red-300" />
                     <span className="text-xs text-stone-400">{product.store.rating.toFixed(1)}</span>
                   </div>
                   <span className="text-xs text-stone-600">|</span>
@@ -261,7 +261,7 @@ export default function ProductDetailPage() {
 
           {/* Stock */}
           <div className="mt-4 flex items-center gap-2 text-xs">
-            <Badge className={`${product.stock > 5 ? 'bg-green-500/10 text-green-400 border-green-500/20' : product.stock > 0 ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'} border`}>
+            <Badge className={`${product.stock > 5 ? 'bg-green-500/10 text-green-400 border-green-500/20' : product.stock > 0 ? 'bg-red-500/10 text-red-300 border-red-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'} border`}>
               {product.stock > 5 ? 'In Stock' : product.stock > 0 ? `Only ${product.stock} left` : 'Out of Stock'}
             </Badge>
           </div>
@@ -278,7 +278,7 @@ export default function ProductDetailPage() {
             <p className="text-5xl font-bold text-stone-100">{product.avgRating.toFixed(1)}</p>
             <div className="flex justify-center gap-0.5 mt-2">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className={`w-5 h-5 ${i < Math.round(product.avgRating) ? 'text-amber-400 fill-amber-400' : 'text-neutral-700'}`} />
+                <Star key={i} className={`w-5 h-5 ${i < Math.round(product.avgRating) ? 'text-red-300 fill-red-300' : 'text-neutral-700'}`} />
               ))}
             </div>
             <p className="text-sm text-stone-500 mt-2">{product._count.reviews} review{product._count.reviews !== 1 ? 's' : ''}</p>
@@ -295,7 +295,7 @@ export default function ProductDetailPage() {
               product.reviews.map((review) => (
                 <div key={review.id} className="p-4 rounded-2xl bg-neutral-900/60 border border-white/5">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-amber-500 flex items-center justify-center text-xs font-bold text-white">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center text-xs font-bold text-white">
                       {review.reviewer.name.charAt(0)}
                     </div>
                     <div>
@@ -303,7 +303,7 @@ export default function ProductDetailPage() {
                       <div className="flex items-center gap-2">
                         <div className="flex gap-0.5">
                           {Array.from({ length: 5 }).map((_, i) => (
-                            <Star key={i} className={`w-3 h-3 ${i < review.rating ? 'text-amber-400 fill-amber-400' : 'text-neutral-700'}`} />
+                            <Star key={i} className={`w-3 h-3 ${i < review.rating ? 'text-red-300 fill-red-300' : 'text-neutral-700'}`} />
                           ))}
                         </div>
                         <span className="text-[10px] text-stone-600">{new Date(review.createdAt).toLocaleDateString()}</span>

@@ -96,7 +96,7 @@ export default function OrderDetailPage() {
           <div className="flex items-center justify-between relative">
             <div className="absolute top-5 left-8 right-8 h-0.5 bg-neutral-800" />
             <div
-              className="absolute top-5 left-8 h-0.5 bg-gradient-to-r from-red-500 to-amber-500 transition-all duration-500"
+              className="absolute top-5 left-8 h-0.5 bg-gradient-to-r from-red-500 to-red-500 transition-all duration-500"
               style={{ width: `${Math.max(0, currentStepIdx / (statusSteps.length - 1)) * 100}%` }}
             />
             {[
@@ -106,7 +106,7 @@ export default function OrderDetailPage() {
             ].map((step, i) => (
               <div key={step.label} className="relative flex flex-col items-center z-10">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  step.done ? 'bg-gradient-to-br from-red-500 to-amber-500' : 'bg-neutral-800 border border-white/10'
+                  step.done ? 'bg-gradient-to-br from-red-500 to-red-500' : 'bg-neutral-800 border border-white/10'
                 }`}>
                   <step.icon className={`w-5 h-5 ${step.done ? 'text-white' : 'text-stone-600'}`} />
                 </div>
@@ -184,8 +184,8 @@ export default function OrderDetailPage() {
       )}
 
       {order.disputes.length > 0 && (
-        <div className="mt-4 p-4 rounded-xl bg-amber-500/5 border border-amber-500/10">
-          <p className="text-sm text-amber-300 flex items-center gap-2">
+        <div className="mt-4 p-4 rounded-xl bg-red-500/5 border border-red-500/10">
+          <p className="text-sm text-white flex items-center gap-2">
             <AlertTriangle className="w-4 h-4" />
             {order.disputes.length} dispute{order.disputes.length > 1 ? 's' : ''} filed for this order
           </p>

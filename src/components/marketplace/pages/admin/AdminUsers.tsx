@@ -132,7 +132,7 @@ export default function AdminUsers() {
                     <tr key={u.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02]">
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-red-500 to-amber-500 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
                             {u.name.charAt(0)}
                           </div>
                           <div>

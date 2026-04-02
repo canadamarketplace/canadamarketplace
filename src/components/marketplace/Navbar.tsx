@@ -142,7 +142,7 @@ export default function Navbar() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="hidden sm:flex items-center gap-2 text-stone-300 hover:bg-white/5">
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-red-500 to-amber-500 flex items-center justify-center text-xs font-bold text-white">
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center text-xs font-bold text-white">
                         {user.name.charAt(0).toUpperCase()}
                       </div>
                       <span className="text-sm max-w-[100px] truncate">{user.name}</span>
@@ -153,7 +153,7 @@ export default function Navbar() {
                     <div className="px-3 py-2 border-b border-white/10">
                       <p className="text-sm font-medium text-stone-100">{user.name}</p>
                       <p className="text-xs text-stone-500">{user.email}</p>
-                      <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                      <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-500/10 text-red-300 border border-red-500/20">
                         {user.role === 'ADMIN' && <Shield className="w-3 h-3" />}
                         {user.role}
                       </span>

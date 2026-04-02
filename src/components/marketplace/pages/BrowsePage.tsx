@@ -308,7 +308,7 @@ export default function BrowsePage() {
                             <div className="flex items-center gap-1 mt-1.5">
                               <div className="flex">
                                 {Array.from({ length: 5 }).map((_, i) => (
-                                  <Star key={i} className={`w-3 h-3 ${i < Math.round(product.store.rating || 0) ? 'text-amber-400 fill-amber-400' : 'text-neutral-700'}`} />
+                                  <Star key={i} className={`w-3 h-3 ${i < Math.round(product.store.rating || 0) ? 'text-red-300 fill-red-300' : 'text-neutral-700'}`} />
                                 ))}
                               </div>
                               <span className="text-[10px] text-stone-600">({product._count.reviews})</span>

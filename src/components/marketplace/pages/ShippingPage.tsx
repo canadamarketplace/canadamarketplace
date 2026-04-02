@@ -20,7 +20,7 @@ export default function ShippingPage() {
     {
       name: 'Purolator',
       desc: t('shipping.purolatorDesc'),
-      color: 'text-amber-400 bg-amber-500/10',
+      color: 'text-red-300 bg-red-500/10',
     },
     {
       name: 'UPS',
@@ -50,8 +50,8 @@ export default function ShippingPage() {
     {
       zone: t('shipping.zone3'),
       time: t('shipping.zone3Time'),
-      color: 'border-amber-500/20 bg-amber-500/5',
-      badge: 'bg-amber-500/10 text-amber-400',
+      color: 'border-red-500/20 bg-red-500/5',
+      badge: 'bg-red-500/10 text-red-300',
     },
     {
       zone: t('shipping.zone4'),
@@ -192,10 +192,10 @@ export default function ShippingPage() {
       </section>
 
       {/* Packaging Tips */}
-      <section className="px-6 py-16 bg-gradient-to-b from-transparent via-amber-900/[0.03] to-transparent">
+      <section className="px-6 py-16 bg-gradient-to-b from-transparent via-red-900/[0.03] to-transparent">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-xs font-medium text-amber-400 uppercase tracking-[0.2em]">{t('shipping.tipsLabel')}</span>
+            <span className="text-xs font-medium text-red-300 uppercase tracking-[0.2em]">{t('shipping.tipsLabel')}</span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">
               {t('shipping.tipsTitle')}
             </h2>
@@ -203,8 +203,8 @@ export default function ShippingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {packageTips.map((tip) => (
               <div key={tip.title} className="p-5 rounded-2xl bg-white/[0.03] border border-white/5">
-                <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center mb-3">
-                  <tip.icon className="w-5 h-5 text-amber-400" />
+                <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center mb-3">
+                  <tip.icon className="w-5 h-5 text-red-300" />
                 </div>
                 <h3 className="text-sm font-semibold text-stone-200 mb-1.5">{tip.title}</h3>
                 <p className="text-xs text-stone-500 leading-relaxed">{tip.desc}</p>

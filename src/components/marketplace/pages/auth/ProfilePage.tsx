@@ -69,7 +69,7 @@ export default function ProfilePage() {
       {/* User Card */}
       <div className="rounded-2xl bg-neutral-900/60 border border-white/5 p-6 mb-6">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-amber-500 flex items-center justify-center text-2xl font-bold text-white">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center text-2xl font-bold text-white">
             {user.name.charAt(0).toUpperCase()}
           </div>
           <div>

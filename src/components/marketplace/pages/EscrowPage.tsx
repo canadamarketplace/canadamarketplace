@@ -26,7 +26,7 @@ export default function EscrowPage() {
       title: t('escrow.step2Title'),
       desc: t('escrow.step2Desc'),
       icon: Lock,
-      color: 'text-amber-400 bg-amber-500/10',
+      color: 'text-red-300 bg-red-500/10',
     },
     {
       step: '03',
@@ -171,7 +171,7 @@ export default function EscrowPage() {
       <section className="px-6 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-xs font-medium text-amber-400 uppercase tracking-[0.2em]">{t('escrow.sellersLabel')}</span>
+            <span className="text-xs font-medium text-red-300 uppercase tracking-[0.2em]">{t('escrow.sellersLabel')}</span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">
               {t('escrow.sellersTitle')}
             </h2>
@@ -179,8 +179,8 @@ export default function EscrowPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {sellerBenefits.map((item) => (
               <div key={item.title} className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-4">
-                  <item.icon className="w-5 h-5 text-amber-400" />
+                <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center mb-4">
+                  <item.icon className="w-5 h-5 text-red-300" />
                 </div>
                 <h3 className="text-base font-semibold text-stone-200 mb-2">{item.title}</h3>
                 <p className="text-sm text-stone-400 font-light leading-relaxed">{item.desc}</p>

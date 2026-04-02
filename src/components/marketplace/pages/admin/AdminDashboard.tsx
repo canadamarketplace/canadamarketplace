@@ -34,7 +34,7 @@ export default function AdminDashboard() {
   const stats = [
     { label: 'Total Users', value: data?.totalUsers || 0, icon: Users, color: 'from-blue-500/10 to-blue-600/5', textColor: 'text-blue-400' },
     { label: 'Total Sellers', value: data?.totalSellers || 0, icon: Package, color: 'from-purple-500/10 to-purple-600/5', textColor: 'text-purple-400' },
-    { label: 'Total Products', value: data?.totalProducts || 0, icon: Package, color: 'from-amber-500/10 to-amber-600/5', textColor: 'text-amber-400' },
+    { label: 'Total Products', value: data?.totalProducts || 0, icon: Package, color: 'from-red-500/10 to-red-600/5', textColor: 'text-red-300' },
     { label: 'Total Revenue', value: data ? `$${data.totalRevenue.toFixed(0)}` : '$0', icon: DollarSign, color: 'from-green-500/10 to-green-600/5', textColor: 'text-green-400' },
     { label: 'Pending Disputes', value: data?.pendingDisputes || 0, icon: AlertTriangle, color: 'from-red-500/10 to-red-600/5', textColor: 'text-red-400' },
   ]

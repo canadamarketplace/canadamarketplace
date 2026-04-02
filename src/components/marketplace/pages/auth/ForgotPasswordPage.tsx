@@ -117,7 +117,7 @@ export default function ForgotPasswordPage() {
               </div>
 
               <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-start gap-3">
-                <KeyRound className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+                <KeyRound className="w-4 h-4 text-red-300 mt-0.5 shrink-0" />
                 <p className="text-xs text-stone-400 text-left">
                   {t('forgotPassword.didntReceive')}{' '}
                   <button

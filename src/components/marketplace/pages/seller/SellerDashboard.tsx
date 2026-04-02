@@ -64,7 +64,7 @@ export default function SellerDashboard() {
     { label: 'Total Revenue', value: loading ? '...' : `$${totalRevenue.toLocaleString('en-CA', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`, icon: DollarSign, color: 'from-green-500/10 to-green-600/5', textColor: 'text-green-400', change: '+12.5%', up: true },
     { label: 'Total Orders', value: loading ? '...' : orders.length, icon: ShoppingCart, color: 'from-blue-500/10 to-blue-600/5', textColor: 'text-blue-400', change: '+8.3%', up: true },
     { label: 'Active Products', value: loading ? '...' : totalProducts, icon: Package, color: 'from-purple-500/10 to-purple-600/5', textColor: 'text-purple-400', change: '+3', up: true },
-    { label: 'Avg. Rating', value: '4.8', icon: Star, color: 'from-amber-500/10 to-amber-600/5', textColor: 'text-amber-400', change: '+0.2', up: true },
+    { label: 'Avg. Rating', value: '4.8', icon: Star, color: 'from-red-500/10 to-red-600/5', textColor: 'text-red-300', change: '+0.2', up: true },
   ]
 
   const quickActions = [
@@ -86,7 +86,7 @@ export default function SellerDashboard() {
           <div>
             <div className="flex items-center gap-3 mb-1">
               <h1 className="text-2xl font-bold text-stone-100">Seller Dashboard</h1>
-              <Badge className={`${sellerLevel === 'Gold' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : sellerLevel === 'Silver' ? 'bg-stone-500/10 text-stone-300 border-stone-500/20' : 'bg-orange-500/10 text-orange-400 border-orange-500/20'} border text-xs`}>
+              <Badge className={`${sellerLevel === 'Gold' ? 'bg-red-500/10 text-red-300 border-red-500/20' : sellerLevel === 'Silver' ? 'bg-stone-500/10 text-stone-300 border-stone-500/20' : 'bg-orange-500/10 text-orange-400 border-orange-500/20'} border text-xs`}>
                 <Award className="w-3 h-3 mr-1" />
                 {sellerLevel} Seller
               </Badge>
@@ -110,8 +110,8 @@ export default function SellerDashboard() {
           <CardContent className="p-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${sellerLevel === 'Gold' ? 'bg-amber-500/10' : sellerLevel === 'Silver' ? 'bg-stone-500/10' : 'bg-orange-500/10'}`}>
-                  <Award className={`w-5 h-5 ${sellerLevel === 'Gold' ? 'text-amber-400' : sellerLevel === 'Silver' ? 'text-stone-300' : 'text-orange-400'}`} />
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${sellerLevel === 'Gold' ? 'bg-red-500/10' : sellerLevel === 'Silver' ? 'bg-stone-500/10' : 'bg-orange-500/10'}`}>
+                  <Award className={`w-5 h-5 ${sellerLevel === 'Gold' ? 'text-red-300' : sellerLevel === 'Silver' ? 'text-stone-300' : 'text-orange-400'}`} />
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-stone-200">
@@ -126,7 +126,7 @@ export default function SellerDashboard() {
                 <span className="text-stone-500">Sales: {completedOrders}</span>
               </div>
             </div>
-            <Progress value={progressPercent} className="h-2 bg-white/5 [&>div]:bg-gradient-to-r [&>div]:from-amber-500 [&>div]:to-red-500 rounded-full" />
+            <Progress value={progressPercent} className="h-2 bg-white/5 [&>div]:bg-gradient-to-r [&>div]:from-red-500 [&>div]:to-red-500 rounded-full" />
           </CardContent>
         </Card>
 
@@ -155,7 +155,7 @@ export default function SellerDashboard() {
         <Card className="bg-neutral-900/60 border-white/5 rounded-2xl mb-6">
           <CardContent className="p-5">
             <h2 className="text-sm font-semibold text-stone-200 mb-3 flex items-center gap-2">
-              <Zap className="w-4 h-4 text-amber-400" />
+              <Zap className="w-4 h-4 text-red-300" />
               Quick Actions
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -165,8 +165,8 @@ export default function SellerDashboard() {
                   onClick={() => navigate(action.page, action.page === 'storefront' && user?.storeId ? { id: user.storeId } : {})}
                   className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/5 hover:border-white/10 transition-all group"
                 >
-                  <div className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-500/10 transition-colors">
-                    <action.icon className="w-4 h-4 text-stone-400 group-hover:text-amber-400 transition-colors" />
+                  <div className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-red-500/10 transition-colors">
+                    <action.icon className="w-4 h-4 text-stone-400 group-hover:text-red-300 transition-colors" />
                   </div>
                   <span className="text-xs font-medium text-stone-300">{action.label}</span>
                   <span className="text-[10px] text-stone-600">{action.desc}</span>
@@ -258,7 +258,7 @@ export default function SellerDashboard() {
                   { icon: CheckCircle, label: 'Quebec Law 25 Ready', desc: 'Bill 64 requirements met', status: 'Active', color: 'green' },
                   { icon: Lock, label: 'Data in Canada', desc: 'All data stored on Canadian servers', status: 'Active', color: 'green' },
                   { icon: Shield, label: 'Escrow Protection', desc: 'Buyer payments held securely', status: 'Active', color: 'green' },
-                  { icon: FileCheck, label: 'Seller Verified', desc: 'ID verification complete', status: isVerified ? 'Active' : 'Pending', color: isVerified ? 'green' : 'amber' },
+                  { icon: FileCheck, label: 'Seller Verified', desc: 'ID verification complete', status: isVerified ? 'Active' : 'Pending', color: isVerified ? 'green' : 'red' },
                   { icon: Truck, label: 'CRA Tax Reporting', desc: 'Ready for annual tax reporting', status: 'Active', color: 'green' },
                 ].map((item) => (
                   <div key={item.label} className="flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.02]">
@@ -267,7 +267,7 @@ export default function SellerDashboard() {
                       <p className="text-xs font-medium text-stone-200 truncate">{item.label}</p>
                       <p className="text-[10px] text-stone-600 truncate">{item.desc}</p>
                     </div>
-                    <Badge className={`${item.color === 'green' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'} border text-[10px]`}>
+                    <Badge className={`${item.color === 'green' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-red-500/10 text-red-300 border-red-500/20'} border text-[10px]`}>
                       {item.status}
                     </Badge>
                   </div>
@@ -290,7 +290,7 @@ export default function SellerDashboard() {
                 <ShoppingCart className="w-4 h-4 text-blue-400" />
                 Recent Orders
                 {pendingOrders > 0 && (
-                  <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 text-[10px] border ml-2">
+                  <Badge className="bg-red-500/10 text-red-300 border-red-500/20 text-[10px] border ml-2">
                     {pendingOrders} pending action
                   </Badge>
                 )}
@@ -344,7 +344,7 @@ export default function SellerDashboard() {
               {[
                 { label: 'Completion Rate', value: '98%', desc: 'Orders delivered successfully', bar: 98, barColor: 'bg-green-500' },
                 { label: 'Avg. Response Time', value: '2.1 hrs', desc: 'Time to ship after order', bar: 85, barColor: 'bg-blue-500' },
-                { label: 'Seller Rating', value: '4.8/5', desc: 'Based on buyer reviews', bar: 96, barColor: 'bg-amber-500' },
+                { label: 'Seller Rating', value: '4.8/5', desc: 'Based on buyer reviews', bar: 96, barColor: 'bg-red-500' },
                 { label: 'Repeat Buyers', value: '34%', desc: 'Customers who bought again', bar: 34, barColor: 'bg-purple-500' },
               ].map((metric) => (
                 <div key={metric.label} className="p-4 rounded-xl bg-white/[0.02] border border-white/5">

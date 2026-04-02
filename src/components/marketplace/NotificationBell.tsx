@@ -28,7 +28,7 @@ interface Notification {
 const typeIcons: Record<string, { icon: typeof Package; color: string; bg: string }> = {
   ORDER: { icon: Package, color: 'text-blue-400', bg: 'bg-blue-500/10' },
   MESSAGE: { icon: MessageCircle, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-  REVIEW: { icon: Star, color: 'text-amber-400', bg: 'bg-amber-500/10' },
+  REVIEW: { icon: Star, color: 'text-red-300', bg: 'bg-red-500/10' },
   PAYOUT: { icon: DollarSign, color: 'text-green-400', bg: 'bg-green-500/10' },
   DISPUTE: { icon: AlertTriangle, color: 'text-red-400', bg: 'bg-red-500/10' },
 }

@@ -64,7 +64,7 @@ export default function ContactPage() {
             <span className="text-xs font-medium text-stone-400 uppercase tracking-[0.2em]">Get In Touch</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
-            Contact <span className="bg-gradient-to-r from-red-400 via-red-500 to-amber-500 bg-clip-text text-transparent">Us</span>
+            Contact <span className="bg-gradient-to-r from-red-400 via-red-500 to-red-500 bg-clip-text text-transparent">Us</span>
           </h1>
           <p className="text-lg text-stone-400 font-light max-w-2xl mx-auto">
             Have a question, concern, or just want to say hello? We&apos;re here to help. Our Canadian-based support team is ready to assist you.
@@ -92,12 +92,12 @@ export default function ContactPage() {
 
             {/* Phone */}
             <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Phone className="w-5 h-5 text-amber-400" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-red-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Phone className="w-5 h-5 text-red-300" />
               </div>
               <h3 className="text-sm font-semibold text-stone-200 mb-1">Phone</h3>
               <p className="text-sm text-stone-400 leading-relaxed">
-                <a href="tel:+16044971001" className="hover:text-amber-400 transition-colors">(604) 497-1001</a>
+                <a href="tel:+16044971001" className="hover:text-red-300 transition-colors">(604) 497-1001</a>
               </p>
               <p className="text-xs text-stone-600 mt-2">Mon-Fri, 10AM - 6PM PST</p>
             </div>

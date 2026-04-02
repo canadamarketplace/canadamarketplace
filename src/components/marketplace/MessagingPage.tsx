@@ -85,7 +85,7 @@ function getInitials(name: string) {
 }
 
 const ROLE_COLORS: Record<string, string> = {
-  SELLER: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+  SELLER: 'bg-red-500/10 text-red-300 border-red-500/20',
   BUYER: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
   ADMIN: 'bg-red-500/10 text-red-400 border-red-500/20',
 }
@@ -371,7 +371,7 @@ export default function MessagingPage() {
                     <div className="relative flex-shrink-0">
                       <Avatar className="w-11 h-11">
                         <AvatarImage src={conv.otherParticipant.avatar || undefined} alt={conv.otherParticipant.name} />
-                        <AvatarFallback className="bg-gradient-to-br from-red-500 to-amber-500 text-white text-sm font-semibold">
+                        <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-500 text-white text-sm font-semibold">
                           {getInitials(conv.otherParticipant.name)}
                         </AvatarFallback>
                       </Avatar>
@@ -427,7 +427,7 @@ export default function MessagingPage() {
                 </Button>
                 <Avatar className="w-10 h-10">
                   <AvatarImage src={fullConversation.otherParticipant.avatar || undefined} alt={fullConversation.otherParticipant.name} />
-                  <AvatarFallback className="bg-gradient-to-br from-red-500 to-amber-500 text-white text-sm font-semibold">
+                  <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-500 text-white text-sm font-semibold">
                     {getInitials(fullConversation.otherParticipant.name)}
                   </AvatarFallback>
                 </Avatar>
@@ -467,7 +467,7 @@ export default function MessagingPage() {
                           {!msg.isOwn && (
                             <Avatar className="w-7 h-7 flex-shrink-0 mt-auto">
                               <AvatarImage src={msg.sender.avatar || undefined} alt={msg.sender.name} />
-                              <AvatarFallback className="bg-gradient-to-br from-red-500 to-amber-500 text-white text-[10px] font-semibold">
+                              <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-500 text-white text-[10px] font-semibold">
                                 {getInitials(msg.sender.name)}
                               </AvatarFallback>
                             </Avatar>

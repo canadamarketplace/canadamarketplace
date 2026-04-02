@@ -88,8 +88,8 @@ export default function FileDisputePage() {
   if (submitted) {
     return (
       <div className="max-w-lg mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-        <div className="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center mx-auto mb-6">
-          <Shield className="w-8 h-8 text-amber-400" />
+        <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-6">
+          <Shield className="w-8 h-8 text-red-300" />
         </div>
         <h1 className="text-2xl font-bold text-stone-100 mb-2">Dispute Filed</h1>
         <p className="text-stone-400 mb-6">Your dispute has been submitted. Our team will review it and get back to you within 48 hours.</p>
@@ -118,8 +118,8 @@ export default function FileDisputePage() {
 
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
-            <AlertTriangle className="w-5 h-5 text-amber-400" />
+          <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center">
+            <AlertTriangle className="w-5 h-5 text-red-300" />
           </div>
           <h1 className="text-2xl font-bold text-stone-100">File a Dispute</h1>
         </div>

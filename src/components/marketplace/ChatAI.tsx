@@ -194,7 +194,7 @@ export default function ChatAI() {
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-[#111]/80 backdrop-blur-sm">
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-500 to-amber-500 flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center">
                     <Sparkles className="w-4 h-4 text-white" />
                   </div>
                   <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-[#111]" />
@@ -202,7 +202,7 @@ export default function ChatAI() {
                 <div>
                   <h3 className="text-sm font-semibold text-stone-100 flex items-center gap-1.5">
                     {t('chat.mapleAI')}
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 font-medium border border-amber-500/20">{t('chat.beta')}</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-500/10 text-red-300 font-medium border border-red-500/20">{t('chat.beta')}</span>
                   </h3>
                   <p className="text-[11px] text-stone-500">{t('chat.yourAssistant')}</p>
                 </div>
@@ -221,7 +221,7 @@ export default function ChatAI() {
                 {messages.map((msg) => (
                   <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     {msg.role === 'assistant' && (
-                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-red-500 to-amber-500 flex items-center justify-center flex-shrink-0 mr-2 mt-1">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center flex-shrink-0 mr-2 mt-1">
                         <Leaf className="w-3 h-3 text-white" />
                       </div>
                     )}
@@ -248,7 +248,7 @@ export default function ChatAI() {
                             <button
                               key={idx}
                               onClick={() => handleAction(action.action, action.params)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-stone-300 hover:bg-amber-500/10 hover:border-amber-500/30 hover:text-amber-300 transition-all group"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-stone-300 hover:bg-red-500/10 hover:border-red-500/30 hover:text-white transition-all group"
                             >
                               {getActionIcon(action.action)}
                               {action.label}
@@ -264,12 +264,12 @@ export default function ChatAI() {
                 {/* Loading Indicator */}
                 {isLoading && (
                   <div className="flex justify-start">
-                    <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-red-500 to-amber-500 flex items-center justify-center flex-shrink-0 mr-2 mt-1">
+                    <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center flex-shrink-0 mr-2 mt-1">
                       <Leaf className="w-3 h-3 text-white" />
                     </div>
                     <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-white/5 border border-white/5">
                       <div className="flex items-center gap-2">
-                        <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+                        <Loader2 className="w-3.5 h-3.5 text-red-300 animate-spin" />
                         <span className="text-xs text-stone-500">{t('chat.mapleThinking')}</span>
                       </div>
                     </div>
@@ -307,7 +307,7 @@ export default function ChatAI() {
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={t('chat.placeholder')}
                   disabled={isLoading}
-                  className="flex-1 h-9 bg-white/5 border-white/10 rounded-xl text-sm text-stone-200 placeholder:text-stone-600 focus:border-amber-500/30 focus:ring-1 focus:ring-amber-500/20"
+                  className="flex-1 h-9 bg-white/5 border-white/10 rounded-xl text-sm text-stone-200 placeholder:text-stone-600 focus:border-red-500/30 focus:ring-1 focus:ring-red-500/20"
                 />
                 <Button
                   type="submit"

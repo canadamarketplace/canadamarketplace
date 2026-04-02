@@ -61,7 +61,7 @@ export default function StorefrontPage() {
   return (
     <div className="min-h-screen">
       {/* Banner */}
-      <div className="h-48 sm:h-64 bg-gradient-to-r from-red-900/30 via-neutral-900 to-amber-900/20 relative">
+      <div className="h-48 sm:h-64 bg-gradient-to-r from-red-900/30 via-neutral-900 to-red-900/20 relative">
         {store.banner && (
           <img src={store.banner} alt="" className="w-full h-full object-cover opacity-50" />
         )}
@@ -80,7 +80,7 @@ export default function StorefrontPage() {
             {store.logo ? (
               <img src={store.logo} alt={store.name} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-500/20 to-amber-500/20">
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-500/20 to-red-500/20">
                 <Store className="w-10 h-10 text-red-400" />
               </div>
             )}
@@ -95,7 +95,7 @@ export default function StorefrontPage() {
             <p className="text-sm text-stone-500 mt-1">by {store.seller.name}</p>
             <div className="flex items-center gap-4 mt-2 flex-wrap">
               <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                <Star className="w-4 h-4 text-red-300 fill-red-300" />
                 <span className="text-sm text-stone-300">{store.rating.toFixed(1)}</span>
               </div>
               <span className="text-xs text-stone-600">|</span>
@@ -145,7 +145,7 @@ export default function StorefrontPage() {
                   <div className="p-4">
                     <h3 className="text-sm font-medium text-stone-200 truncate">{product.title}</h3>
                     <div className="flex items-center gap-1 mt-1">
-                      <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                      <Star className="w-3 h-3 text-red-300 fill-red-300" />
                       <span className="text-[10px] text-stone-500">({product._count.reviews} reviews)</span>
                     </div>
                     <p className="text-base font-bold text-red-400 mt-2">${product.price.toFixed(2)}</p>

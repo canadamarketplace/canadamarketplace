@@ -87,7 +87,7 @@ export default function AdminProducts() {
                             <p className="text-sm text-stone-200 truncate max-w-[200px]">{p.title}</p>
                             <div className="flex items-center gap-2">
                               <span className="text-[10px] text-stone-600">{p.category?.name}</span>
-                              {p.isFeatured && <Star className="w-3 h-3 text-amber-400 fill-amber-400" />}
+                              {p.isFeatured && <Star className="w-3 h-3 text-red-300 fill-red-300" />}
                             </div>
                           </div>
                         </div>

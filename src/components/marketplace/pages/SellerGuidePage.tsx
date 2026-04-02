@@ -26,7 +26,7 @@ export default function SellerGuidePage() {
       title: t('sellerGuide.step2Title'),
       desc: t('sellerGuide.step2Desc'),
       icon: Store,
-      color: 'text-amber-400 bg-amber-500/10',
+      color: 'text-red-300 bg-red-500/10',
     },
     {
       step: '03',
@@ -69,7 +69,7 @@ export default function SellerGuidePage() {
     { icon: Mail, label: t('sellerGuide.checkEmail'), color: 'text-blue-400' },
     { icon: Phone, label: t('sellerGuide.checkPhone'), color: 'text-green-400' },
     { icon: CreditCard, label: t('sellerGuide.checkId'), color: 'text-purple-400' },
-    { icon: DollarSign, label: t('sellerGuide.checkBank'), color: 'text-amber-400' },
+    { icon: DollarSign, label: t('sellerGuide.checkBank'), color: 'text-red-300' },
     { icon: Image, label: t('sellerGuide.checkPhotos'), color: 'text-pink-400' },
   ]
 
@@ -86,8 +86,8 @@ export default function SellerGuidePage() {
     <div className="min-h-screen bg-[#0a0a0a]">
       {/* Hero */}
       <section className="relative py-24 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-amber-900/10 via-transparent to-transparent" />
-        <div className="absolute top-10 left-1/3 w-72 h-72 bg-amber-600/5 rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-b from-red-900/10 via-transparent to-transparent" />
+        <div className="absolute top-10 left-1/3 w-72 h-72 bg-red-600/5 rounded-full blur-3xl" />
         <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-red-600/5 rounded-full blur-3xl" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <button
@@ -97,9 +97,9 @@ export default function SellerGuidePage() {
             <ArrowLeft className="w-4 h-4" />
             {t('common.back')}
           </button>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/20 bg-amber-500/5 mb-6">
-            <Store className="w-4 h-4 text-amber-400" />
-            <span className="text-xs font-medium text-amber-400 uppercase tracking-[0.2em]">{t('sellerGuide.badge')}</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-red-500/20 bg-red-500/5 mb-6">
+            <Store className="w-4 h-4 text-red-300" />
+            <span className="text-xs font-medium text-red-300 uppercase tracking-[0.2em]">{t('sellerGuide.badge')}</span>
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
             {t('sellerGuide.heroTitle')}
@@ -114,7 +114,7 @@ export default function SellerGuidePage() {
       <section className="px-6 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-xs font-medium text-amber-500 uppercase tracking-[0.2em]">{t('sellerGuide.stepsLabel')}</span>
+            <span className="text-xs font-medium text-red-500 uppercase tracking-[0.2em]">{t('sellerGuide.stepsLabel')}</span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">
               {t('sellerGuide.stepsTitle')}
             </h2>
@@ -140,10 +140,10 @@ export default function SellerGuidePage() {
       </section>
 
       {/* What You'll Need */}
-      <section className="px-6 py-16 bg-gradient-to-b from-transparent via-amber-900/[0.03] to-transparent">
+      <section className="px-6 py-16 bg-gradient-to-b from-transparent via-red-900/[0.03] to-transparent">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-xs font-medium text-amber-500 uppercase tracking-[0.2em]">{t('sellerGuide.checklistLabel')}</span>
+            <span className="text-xs font-medium text-red-500 uppercase tracking-[0.2em]">{t('sellerGuide.checklistLabel')}</span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">
               {t('sellerGuide.checklistTitle')}
             </h2>
@@ -165,7 +165,7 @@ export default function SellerGuidePage() {
       <section className="px-6 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-xs font-medium text-amber-500 uppercase tracking-[0.2em]">{t('sellerGuide.tipsLabel')}</span>
+            <span className="text-xs font-medium text-red-500 uppercase tracking-[0.2em]">{t('sellerGuide.tipsLabel')}</span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">
               {t('sellerGuide.tipsTitle')}
             </h2>
@@ -173,8 +173,8 @@ export default function SellerGuidePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tips.map((tip) => (
               <div key={tip.title} className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center mb-4">
-                  <CheckCircle2 className="w-4 h-4 text-amber-400" />
+                <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center mb-4">
+                  <CheckCircle2 className="w-4 h-4 text-red-300" />
                 </div>
                 <h3 className="text-base font-semibold text-stone-200 mb-2">{tip.title}</h3>
                 <p className="text-sm text-stone-400 font-light leading-relaxed">{tip.desc}</p>
@@ -185,7 +185,7 @@ export default function SellerGuidePage() {
       </section>
 
       {/* Fees Explained */}
-      <section className="px-6 py-16 bg-gradient-to-b from-transparent via-amber-900/[0.03] to-transparent">
+      <section className="px-6 py-16 bg-gradient-to-b from-transparent via-red-900/[0.03] to-transparent">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-xs font-medium text-green-400 uppercase tracking-[0.2em]">{t('sellerGuide.feesLabel')}</span>
@@ -199,8 +199,8 @@ export default function SellerGuidePage() {
               <div className="text-sm text-stone-300 font-medium mb-1">{t('sellerGuide.basicFee')}</div>
               <div className="text-xs text-stone-500">{t('sellerGuide.noMonthly')}</div>
             </div>
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-amber-500/20 text-center">
-              <div className="text-3xl font-bold text-amber-400 mb-1">5%</div>
+            <div className="p-6 rounded-2xl bg-white/[0.03] border border-red-500/20 text-center">
+              <div className="text-3xl font-bold text-red-300 mb-1">5%</div>
               <div className="text-sm text-stone-300 font-medium mb-1">{t('sellerGuide.goldFee')}</div>
               <div className="text-xs text-stone-500">{t('sellerGuide.goldLabel')}</div>
             </div>
@@ -217,7 +217,7 @@ export default function SellerGuidePage() {
       <section className="px-6 py-16">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-xs font-medium text-amber-500 uppercase tracking-[0.2em]">{t('sellerGuide.levelsLabel')}</span>
+            <span className="text-xs font-medium text-red-500 uppercase tracking-[0.2em]">{t('sellerGuide.levelsLabel')}</span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">
               {t('sellerGuide.levelsTitle')}
             </h2>
@@ -249,19 +249,19 @@ export default function SellerGuidePage() {
               </ul>
             </div>
             {/* Gold */}
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-amber-900/10 to-transparent border border-amber-500/20 relative">
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-red-900/10 to-transparent border border-red-500/20 relative">
               <div className="absolute -top-3 right-4">
-                <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 text-xs font-semibold uppercase tracking-wider">
+                <span className="px-3 py-1 rounded-full bg-red-500/20 text-red-300 text-xs font-semibold uppercase tracking-wider">
                   {t('sellerGuide.recommended')}
                 </span>
               </div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
-                  <Award className="w-5 h-5 text-amber-400" />
+                <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+                  <Award className="w-5 h-5 text-red-300" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-amber-300">{t('sellerGuide.goldLevel')}</h3>
-                  <p className="text-xs text-amber-500">{t('sellerGuide.goldLabelDesc')}</p>
+                  <h3 className="text-lg font-semibold text-white">{t('sellerGuide.goldLevel')}</h3>
+                  <p className="text-xs text-red-500">{t('sellerGuide.goldLabelDesc')}</p>
                 </div>
               </div>
               <ul className="space-y-3">
@@ -274,7 +274,7 @@ export default function SellerGuidePage() {
                   t('sellerGuide.goldF6'),
                 ].map((f, i) => (
                   <li key={i} className="flex items-center gap-2 text-sm text-stone-300">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-red-300 flex-shrink-0" />
                     {f}
                   </li>
                 ))}
@@ -287,8 +287,8 @@ export default function SellerGuidePage() {
       {/* CTA */}
       <section className="px-6 py-20">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="p-10 rounded-2xl bg-gradient-to-br from-amber-900/20 via-neutral-900/50 to-red-900/10 border border-amber-500/10">
-            <Award className="w-12 h-12 text-amber-400 mx-auto mb-4" />
+          <div className="p-10 rounded-2xl bg-gradient-to-br from-red-900/20 via-neutral-900/50 to-red-900/10 border border-red-500/10">
+            <Award className="w-12 h-12 text-red-300 mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-bold text-stone-100 mb-3">
               {t('sellerGuide.ctaTitle')}
             </h2>
@@ -298,7 +298,7 @@ export default function SellerGuidePage() {
             <Button
               onClick={() => openAuthModal('register-seller')}
               size="lg"
-              className="bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-400 hover:to-red-500 text-white font-semibold rounded-2xl px-10 shadow-lg shadow-amber-500/20"
+              className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-300 hover:to-red-500 text-white font-semibold rounded-2xl px-10 shadow-lg shadow-red-500/20"
             >
               <span className="flex items-center gap-2">
                 <Zap className="w-5 h-5" />
