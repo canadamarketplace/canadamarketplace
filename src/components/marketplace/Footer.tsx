@@ -57,10 +57,8 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center">
-                <Leaf className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-sm font-bold text-stone-100">Canada<span className="text-red-500">MP</span></span>
+              <img src="/logo.png" alt="Canada Marketplace" className="w-8 h-8 rounded-lg object-cover" />
+              <span className="text-sm font-bold text-stone-100">Canada<span className="text-red-500">Marketplace</span></span>
             </div>
             <p className="text-xs text-stone-500 leading-relaxed mb-4">
               Canada&apos;s trusted marketplace. Built safe by design for Canadians, by Canadians.
@@ -103,7 +101,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Canada Marketplace. All rights reserved.
           </p>
           <div className="flex items-center gap-1 text-xs text-stone-600">
-            <Leaf className="w-3 h-3 text-red-500" />
+            <span>🍁</span>
             <span>Data hosted in Canada</span>
           </div>
         </div>

@@ -19,12 +19,14 @@ export const metadata: Metadata = {
   keywords: ["Canada", "marketplace", "buy", "sell", "Canadian", "escrow", "verified sellers", "CAD", "e-commerce"],
   authors: [{ name: "Canada Marketplace" }],
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍁</text></svg>",
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
   },
   openGraph: {
     title: "Canada Marketplace — Buy & Sell Across Canada",
     description: "Canada's most trusted marketplace with escrow protection and verified sellers.",
     type: "website",
+    images: ["/logo.png"],
   },
 };
 

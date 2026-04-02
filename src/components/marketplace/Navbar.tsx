@@ -88,10 +88,12 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
-            <button onClick={() => navigate('home')} className="flex items-center gap-2 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg shadow-red-500/20 group-hover:shadow-red-500/40 transition-shadow">
-                <Leaf className="w-5 h-5 text-white" />
-              </div>
+            <button onClick={() => navigate('home')} className="flex items-center gap-2.5 group">
+              <img
+                src="/logo.png"
+                alt="Canada Marketplace"
+                className="w-9 h-9 rounded-xl object-cover shadow-lg shadow-red-500/20 group-hover:shadow-red-500/40 transition-shadow"
+              />
               <span className="text-lg font-bold text-stone-100 hidden sm:block">
                 Canada<span className="text-red-500">Marketplace</span>
               </span>

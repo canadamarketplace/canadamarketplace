@@ -50,8 +50,8 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 to-amber-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-500/20">
-            <Leaf className="w-7 h-7 text-white" />
+          <div className="w-14 h-14 rounded-2xl overflow-hidden mx-auto mb-4 shadow-lg shadow-red-500/20">
+            <img src="/logo.png" alt="Canada Marketplace" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-2xl font-bold text-stone-100 mb-1">
             Forgot Your Password?

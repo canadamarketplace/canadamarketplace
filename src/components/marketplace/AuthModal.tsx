@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select'
-import { Eye, EyeOff, Loader2, Leaf, CheckCircle2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react'
 import { PROVINCES } from '@/lib/types'
 import { toast } from 'sonner'
 
@@ -140,8 +140,8 @@ export default function AuthModal() {
     <Dialog open={isAuthModalOpen} onOpenChange={(open) => { if (!open) { closeAuthModal(); resetForms() } }}>
       <DialogContent className="sm:max-w-md bg-neutral-900 border-white/10 p-0 gap-0 overflow-hidden">
         <div className="bg-gradient-to-r from-red-600/10 to-amber-500/10 p-6 text-center border-b border-white/5">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-red-500/20">
-            <Leaf className="w-6 h-6 text-white" />
+          <div className="w-12 h-12 rounded-2xl overflow-hidden mx-auto mb-3 shadow-lg shadow-red-500/20">
+            <img src="/logo.png" alt="Canada Marketplace" className="w-full h-full object-cover" />
           </div>
           <DialogTitle className="text-xl font-bold text-stone-100">
             {success ? 'Welcome!' : 'Join Canada Marketplace'}
