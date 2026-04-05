@@ -138,6 +138,7 @@ model Order {
   disputes      Dispute[]
   reviews       Review[]
   appliedCoupon AppliedCoupon?
+  timeline      OrderTimeline[]
 }
 
 model OrderItem {
@@ -295,6 +296,21 @@ model Coupon {
   updatedAt     DateTime  @updatedAt
 
   appliedCoupons AppliedCoupon[]
+}
+
+model OrderTimeline {
+  id          String   @id @default(cuid())
+  orderId     String
+  event       String
+  title       String
+  description String?
+  metadata    String?  @default("{}")
+  createdAt   DateTime @default(now())
+
+  order       Order    @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
+  @@index([createdAt])
 }
 
 model AppliedCoupon {

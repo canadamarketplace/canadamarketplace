@@ -8,6 +8,7 @@ import AuthModal from './AuthModal'
 import CartSidebar from './CartSidebar'
 import SearchBar from './SearchBar'
 import ChatAI from './ChatAI'
+import PWAInstallPrompt from './PWAInstallPrompt'
 import HomePage from './pages/HomePage'
 import BrowsePage from './pages/BrowsePage'
 import ProductDetailPage from './pages/ProductDetailPage'
@@ -152,6 +153,7 @@ export default function MarketplaceApp() {
       <CartSidebar />
       <SearchBar />
       <ChatAI />
+      <PWAInstallPrompt />
     </div>
   )
 }

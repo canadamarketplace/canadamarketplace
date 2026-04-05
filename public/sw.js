@@ -1,35 +1,50 @@
-const CACHE_NAME = "cm-cache-v1";
-const STATIC_ASSETS = ["/", "/manifest.json", "/sw.js"];
+const CACHE_NAME = "camarket-v1";
 
-// Install: cache static assets
+// Essential static assets to cache on install
+const STATIC_ASSETS = [
+  "/",
+  "/manifest.json",
+  "/offline.html",
+  "/icon.png",
+  "/apple-icon.png",
+  "/logo.png",
+  "/logo-square.png",
+  "/logo.svg"
+];
+
+// ─────────────────────────────────────────────
+// Install: pre-cache essential static assets
+// ─────────────────────────────────────────────
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(STATIC_ASSETS);
-      })
+      .then((cache) => cache.addAll(STATIC_ASSETS))
       .then(() => self.skipWaiting())
   );
 });
 
-// Activate: clean old caches
+// ─────────────────────────────────────────────
+// Activate: clean up old caches
+// ─────────────────────────────────────────────
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((cacheNames) => {
-        return Promise.all(
+      .then((cacheNames) =>
+        Promise.all(
           cacheNames
             .filter((name) => name !== CACHE_NAME)
             .map((name) => caches.delete(name))
-        );
-      })
+        )
+      )
       .then(() => self.clients.claim())
   );
 });
 
+// ─────────────────────────────────────────────
 // Fetch: cache-first for static, network-first for API
+// ─────────────────────────────────────────────
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
@@ -46,9 +61,9 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Page requests: network-first
+  // HTML page requests: network-first with offline.html fallback
   if (request.headers.get("accept")?.includes("text/html")) {
-    event.respondWith(networkFirst(request));
+    event.respondWith(networkFirstWithOfflinePage(request));
     return;
   }
 
@@ -74,6 +89,9 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(networkFirst(request));
 });
 
+// ─────────────────────────────────────────────
+// Cache-first strategy (static assets)
+// ─────────────────────────────────────────────
 async function cacheFirst(request) {
   const cached = await caches.match(request);
   if (cached) return cached;
@@ -97,6 +115,9 @@ async function cacheFirst(request) {
   }
 }
 
+// ─────────────────────────────────────────────
+// Network-first strategy (API calls)
+// ─────────────────────────────────────────────
 async function networkFirst(request) {
   try {
     const response = await fetch(request);
@@ -108,12 +129,29 @@ async function networkFirst(request) {
   } catch {
     const cached = await caches.match(request);
     if (cached) return cached;
-
-    // Offline fallback for pages
-    if (request.headers.get("accept")?.includes("text/html")) {
-      return caches.match("/");
-    }
-
     return new Response("Offline", { status: 503 });
+  }
+}
+
+// ─────────────────────────────────────────────
+// Network-first with offline.html fallback
+// ─────────────────────────────────────────────
+async function networkFirstWithOfflinePage(request) {
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+
+    // Show offline fallback page
+    const offlinePage = await caches.match("/offline.html");
+    if (offlinePage) return offlinePage;
+
+    return new Response("You're offline. Please check your internet connection.", { status: 503 });
   }
 }

@@ -17,6 +17,13 @@ import { PROVINCES } from '@/lib/types'
 export default function Navbar() {
   const { navigate, isMobileMenuOpen, toggleMobileMenu, isSearchOpen, toggleSearch, openAuthModal } = useNavigation()
   const { user, logout } = useAuth()
+
+  const handleLogout = async () => {
+    // Clear server-side JWT cookie
+    try { await fetch('/api/auth/logout', { method: 'POST' }) } catch { /* ignore */ }
+    // Clear client-side Zustand state
+    logout()
+  }
   const { toggleCart, itemCount } = useCart()
   const { t } = useTranslation()
   const [scrolled, setScrolled] = useState(false)
@@ -166,7 +173,7 @@ export default function Navbar() {
                       </DropdownMenuItem>
                     ))}
                     <DropdownMenuSeparator className="bg-white/10" />
-                    <DropdownMenuItem onClick={logout} className="text-red-400 hover:bg-red-500/10 cursor-pointer">
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-400 hover:bg-red-500/10 cursor-pointer">
                       <LogOut className="w-4 h-4 mr-2" />
                       {t('nav.signOut')}
                     </DropdownMenuItem>
@@ -230,7 +237,7 @@ export default function Navbar() {
                     </button>
                   ))}
                   <button
-                    onClick={() => { logout(); toggleMobileMenu() }}
+                    onClick={() => { handleLogout(); toggleMobileMenu() }}
                     className="w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 rounded-lg flex items-center gap-3"
                   >
                     <LogOut className="w-4 h-4" />

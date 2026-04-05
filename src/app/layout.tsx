@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Canada Marketplace",
+    title: "CAMarket",
   },
   openGraph: {
     title: "Canada Marketplace — Buy & Sell Across Canada",
@@ -64,7 +64,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Canada Marketplace" />
+        <meta name="apple-mobile-web-app-title" content="CAMarket" />
         <meta name="application-name" content="Canada Marketplace" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/apple-icon.png" />

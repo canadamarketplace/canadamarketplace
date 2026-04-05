@@ -85,8 +85,27 @@ export async function POST(req: NextRequest) {
             image: item.image,
           })),
         },
+        timeline: {
+          create: [
+            {
+              event: "ORDER_PLACED",
+              title: "Order Placed",
+              description: "Your order has been placed successfully.",
+              metadata: "{}",
+            },
+            {
+              event: "PAYMENT_RECEIVED",
+              title: "Payment Received",
+              description: "Your payment has been confirmed and is held in escrow.",
+              metadata: "{}",
+            },
+          ],
+        },
       },
-      include: { items: true },
+      include: {
+        items: true,
+        timeline: { orderBy: { createdAt: "desc" } },
+      },
     })
 
     // Update product stock

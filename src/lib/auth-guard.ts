@@ -1,5 +1,26 @@
 import { NextRequest } from 'next/server'
+import jwt from 'jsonwebtoken'
 import { useAuth } from '@/lib/store'
+
+const JWT_SECRET = process.env.JWT_SECRET || 'canada-marketplace-secret-key-2024'
+
+// JWT payload shape
+export interface JwtUserPayload {
+  userId: string
+  email: string
+  role: string
+  name: string
+}
+
+// Verify a JWT token and return its payload, or null if invalid
+export function verifyToken(token: string): JwtUserPayload | null {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as JwtUserPayload
+    return decoded
+  } catch {
+    return null
+  }
+}
 
 // Client-side auth guard hook
 export function useRequireAuth(requiredRole?: string) {
@@ -16,18 +37,14 @@ export function useRequireAuth(requiredRole?: string) {
 }
 
 // Check if user is authenticated (server-side)
+// This is called from API route handlers — at this point the middleware has already
+// injected x-user-id and x-user-role headers from the JWT cookie.
 export async function requireAuth(req: NextRequest) {
   try {
-    // For now, check Authorization header (Bearer token) or session cookie
-    const authHeader = req.headers.get('authorization')
-
-    // Also support passing userId directly for internal use (e.g., from Zustand client state)
     const userId = req.headers.get('x-user-id')
     const userRole = req.headers.get('x-user-role')
 
-    // In production, this would validate a JWT token
-    // For now, we validate that required headers exist and look up the user in the database
-    if (userId && userRole) {
+    if (userId && userRole && userId !== '') {
       const { PrismaClient } = await import('@prisma/client')
       const prisma = new PrismaClient()
       const user = await prisma.user.findUnique({ where: { id: userId } })

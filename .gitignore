@@ -57,3 +57,6 @@ download/
 
 # Skills
 /skills/
+
+# Mini-services
+mini-services/*/node_modules/

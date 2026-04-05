@@ -1,40 +1,27 @@
 {
   "name": "Canada Marketplace",
-  "short_name": "CM",
-  "description": "Canada's trusted marketplace - Buy and sell safely",
+  "short_name": "CAMarket",
+  "description": "Canada's trusted online marketplace — Buy and sell across all 13 provinces",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#dc2626",
-  "orientation": "any",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["shopping", "marketplace"],
   "icons": [
     {
       "src": "/icon.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
       "src": "/icon.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/apple-icon.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/apple-icon.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
-  ],
-  "categories": ["shopping", "marketplace"],
-  "lang": "en-CA",
-  "dir": "ltr",
-  "scope": "/"
+  ]
 }

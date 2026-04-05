@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/auth-guard'
 import { db } from '@/lib/db'
+import { emitNewMessage } from '@/lib/socket-emit'
 
 // POST /api/conversations/[id]/messages — send a message
 export async function POST(
@@ -57,6 +58,22 @@ export async function POST(
         lastMessage: content.trim(),
         lastMessageAt: new Date(),
       },
+    })
+
+    const messageData = {
+      id: message.id,
+      content: message.content,
+      type: message.type,
+      isRead: message.isRead,
+      createdAt: message.createdAt.toISOString(),
+      sender: message.sender,
+      isOwn: false, // The recipient will see isOwn: false
+      conversationId: id,
+    }
+
+    // Emit the new message via socket service (non-blocking)
+    emitNewMessage(id, messageData).catch(() => {
+      // Fail silently — the message was saved to DB regardless
     })
 
     return NextResponse.json({

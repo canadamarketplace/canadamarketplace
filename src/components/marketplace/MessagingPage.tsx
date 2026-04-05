@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { Send, MessageCircle, Search, ArrowLeft, User, Wifi, WifiOff, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { io, Socket } from 'socket.io-client'
+import { useSocket, useConversationSocket } from '@/hooks/use-socket'
 
 interface ConversationSummary {
   id: string
@@ -95,94 +95,41 @@ export default function MessagingPage() {
   const { user } = useAuth()
   const { navigate, pageParams } = useNavigation()
   const { t } = useTranslation()
+  const { isConnected: socketConnected, isUserOnline } = useSocket()
   const [conversations, setConversations] = useState<ConversationSummary[]>([])
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null)
   const [fullConversation, setFullConversation] = useState<FullConversation | null>(null)
-  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [baseMessages, setBaseMessages] = useState<ChatMessage[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
   const [sendingMessage, setSendingMessage] = useState(false)
   const [mobileShowChat, setMobileShowChat] = useState(false)
-  const [socketConnected, setSocketConnected] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const socketRef = useRef<Socket | null>(null)
-  const prevConversationIdRef = useRef<string | null>(null)
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Socket hook for the selected conversation
+  const {
+    messages: socketMessages,
+    addLocalMessage,
+    clearMessages: clearSocketMessages,
+    sendMessage: sendSocketMessage,
+    sendTyping,
+    isTyping: isOtherTyping,
+    typingUserId,
+  } = useConversationSocket(selectedConversationId)
+
+  // Merge base messages (from API) with socket messages
+  const messages = baseMessages.length > 0 || socketMessages.length === 0
+    ? baseMessages
+    : socketMessages
 
   const authHeaders = useCallback(() => ({
     'Content-Type': 'application/json',
     'x-user-id': user!.id,
     'x-user-role': user!.role,
   }), [user])
-
-  // WebSocket connection
-  useEffect(() => {
-    if (!user) return
-
-    const socket = io('/?XTransformPort=3003', {
-      transports: ['websocket', 'polling'],
-      reconnection: true,
-      reconnectionAttempts: 10,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 30000,
-    })
-
-    socketRef.current = socket
-
-    socket.on('connect', () => {
-      console.log('[MessagingPage] WebSocket connected')
-      setSocketConnected(true)
-      // Re-join current room if one is selected
-      if (selectedConversationId) {
-        socket.emit('join', { room: `messaging-${selectedConversationId}` })
-      }
-    })
-
-    socket.on('disconnect', () => {
-      console.log('[MessagingPage] WebSocket disconnected')
-      setSocketConnected(false)
-    })
-
-    socket.on('reconnect', () => {
-      console.log('[MessagingPage] WebSocket reconnected')
-      setSocketConnected(true)
-      if (selectedConversationId) {
-        socket.emit('join', { room: `messaging-${selectedConversationId}` })
-      }
-    })
-
-    // Listen for real-time messages
-    socket.on('message', (data: ChatMessage) => {
-      // Only add if message is for the currently selected conversation
-      if (data.sender.id !== user.id) {
-        // Check if this message belongs to current conversation
-        // The message event includes conversationId via the room
-        setMessages((prev) => {
-          // Avoid duplicates
-          if (prev.some((m) => m.id === data.id)) return prev
-          return [...prev, data]
-        })
-
-        // Update conversation list
-        setConversations((prev) =>
-          prev.map((c) =>
-            c.id === selectedConversationId
-              ? { ...c, lastMessage: data.content, lastMessageAt: data.createdAt }
-              : c
-          )
-        )
-      }
-    })
-
-    return () => {
-      if (selectedConversationId) {
-        socket.emit('leave', { room: `messaging-${selectedConversationId}` })
-      }
-      socket.disconnect()
-      socketRef.current = null
-    }
-  }, [user, selectedConversationId])
 
   // Fetch conversations on mount
   useEffect(() => {
@@ -240,7 +187,7 @@ export default function MessagingPage() {
     startConversation()
   }, [user, pageParams.recipientId, authHeaders])
 
-  // Fetch messages when conversation selected + join/leave socket rooms
+  // Fetch messages when conversation selected
   useEffect(() => {
     if (!selectedConversationId || !user) return
 
@@ -252,7 +199,7 @@ export default function MessagingPage() {
         if (res.ok) {
           const data = await res.json()
           setFullConversation(data.conversation)
-          setMessages(data.conversation.messages || [])
+          setBaseMessages(data.conversation.messages || [])
 
           // Update unread count to 0 for this conversation in the list
           setConversations((prev) =>
@@ -266,19 +213,21 @@ export default function MessagingPage() {
       }
     }
 
+    // Clear previous socket messages
+    clearSocketMessages()
     fetchMessages()
+  }, [selectedConversationId, user, clearSocketMessages])
 
-    // Join WebSocket room for this conversation
-    const socket = socketRef.current
-    if (socket && socket.connected) {
-      // Leave previous room
-      if (prevConversationIdRef.current) {
-        socket.emit('leave', { room: `messaging-${prevConversationIdRef.current}` })
-      }
-      socket.emit('join', { room: `messaging-${selectedConversationId}` })
-      prevConversationIdRef.current = selectedConversationId
-    }
-  }, [selectedConversationId, user])
+  // Merge incoming socket messages into base messages
+  useEffect(() => {
+    if (socketMessages.length === 0) return
+    setBaseMessages((prev) => {
+      const existingIds = new Set(prev.map((m) => m.id))
+      const newMsgs = socketMessages.filter((m: any) => !existingIds.has(m.id))
+      if (newMsgs.length === 0) return prev
+      return [...prev, ...newMsgs]
+    })
+  }, [socketMessages])
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -298,12 +247,33 @@ export default function MessagingPage() {
     setMobileShowChat(false)
   }
 
+  // Handle typing indicator
+  const handleInputChange = (value: string) => {
+    setNewMessage(value)
+    sendTyping(true)
+
+    // Clear previous timeout
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current)
+    }
+    // Stop typing after 2 seconds of inactivity
+    typingTimeoutRef.current = setTimeout(() => {
+      sendTyping(false)
+    }, 2000)
+  }
+
   // Send message
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !selectedConversationId || !user || sendingMessage) return
 
     const messageContent = newMessage.trim()
     setNewMessage('')
+
+    // Stop typing indicator
+    sendTyping(false)
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current)
+    }
 
     // Optimistic UI update
     const optimisticMessage: ChatMessage = {
@@ -320,7 +290,8 @@ export default function MessagingPage() {
       },
       isOwn: true,
     }
-    setMessages((prev) => [...prev, optimisticMessage])
+    setBaseMessages((prev) => [...prev, optimisticMessage])
+    addLocalMessage(optimisticMessage)
 
     // Update last message in conversation list
     setConversations((prev) =>
@@ -341,27 +312,19 @@ export default function MessagingPage() {
 
       if (res.ok) {
         const data = await res.json()
+        const realMessage = data.message
         // Replace optimistic message with real one
-        setMessages((prev) =>
-          prev.map((m) => (m.id === optimisticMessage.id ? data.message : m))
+        setBaseMessages((prev) =>
+          prev.map((m) => (m.id === optimisticMessage.id ? { ...realMessage, isOwn: true } : m))
         )
-
-        // Emit via WebSocket for the other participant
-        const socket = socketRef.current
-        if (socket && socket.connected) {
-          socket.emit('message', {
-            room: `messaging-${selectedConversationId}`,
-            message: data.message,
-          })
-        }
       } else {
         toast.error(t('messaging.failedToSend'))
         // Remove optimistic message on failure
-        setMessages((prev) => prev.filter((m) => m.id !== optimisticMessage.id))
+        setBaseMessages((prev) => prev.filter((m) => m.id !== optimisticMessage.id))
       }
     } catch (error) {
       toast.error(t('messaging.failedToSend'))
-      setMessages((prev) => prev.filter((m) => m.id !== optimisticMessage.id))
+      setBaseMessages((prev) => prev.filter((m) => m.id !== optimisticMessage.id))
     } finally {
       setSendingMessage(false)
       inputRef.current?.focus()
@@ -382,6 +345,9 @@ export default function MessagingPage() {
   )
 
   const selectedConvSummary = conversations.find((c) => c.id === selectedConversationId)
+  const isParticipantOnline = selectedConversationId && fullConversation
+    ? isUserOnline(fullConversation.otherParticipant.id)
+    : false
 
   // Loading state
   if (!user) {
@@ -534,12 +500,18 @@ export default function MessagingPage() {
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
-                <Avatar className="w-10 h-10">
-                  <AvatarImage src={fullConversation.otherParticipant.avatar || undefined} alt={fullConversation.otherParticipant.name} />
-                  <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-500 text-white text-sm font-semibold">
-                    {getInitials(fullConversation.otherParticipant.name)}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="relative">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={fullConversation.otherParticipant.avatar || undefined} alt={fullConversation.otherParticipant.name} />
+                    <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-500 text-white text-sm font-semibold">
+                      {getInitials(fullConversation.otherParticipant.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  {/* Online indicator dot on avatar */}
+                  {isParticipantOnline && (
+                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-neutral-900 rounded-full" />
+                  )}
+                </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-semibold text-stone-100 truncate">
                     {fullConversation.otherParticipant.name}
@@ -548,12 +520,10 @@ export default function MessagingPage() {
                     <Badge className={`${ROLE_COLORS[fullConversation.otherParticipant.role] || ROLE_COLORS.BUYER} text-[10px] border px-1.5 py-0`}>
                       {fullConversation.otherParticipant.role}
                     </Badge>
-                    {socketConnected && (
-                      <span className="flex items-center gap-1 text-[10px] text-green-400">
-                        <span className="w-1.5 h-1.5 bg-green-400 rounded-full" />
-                        Online
-                      </span>
-                    )}
+                    <span className={`flex items-center gap-1 text-[10px] ${isParticipantOnline ? 'text-green-400' : 'text-stone-500'}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${isParticipantOnline ? 'bg-green-400' : 'bg-stone-500'}`} />
+                      {isParticipantOnline ? 'Online' : 'Offline'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -616,6 +586,28 @@ export default function MessagingPage() {
                       </div>
                     ))
                   )}
+
+                  {/* Typing indicator */}
+                  {isOtherTyping && typingUserId !== user?.id && (
+                    <div className="flex justify-start">
+                      <div className="flex gap-2 max-w-[75%]">
+                        <Avatar className="w-7 h-7 flex-shrink-0 mt-auto">
+                          <AvatarImage src={fullConversation.otherParticipant.avatar || undefined} alt={fullConversation.otherParticipant.name} />
+                          <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-500 text-white text-[10px] font-semibold">
+                            {getInitials(fullConversation.otherParticipant.name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="bg-neutral-800 px-4 py-3 rounded-2xl rounded-bl-md">
+                          <div className="flex items-center gap-1">
+                            <span className="w-2 h-2 bg-stone-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="w-2 h-2 bg-stone-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                            <span className="w-2 h-2 bg-stone-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div ref={messagesEndRef} />
                 </div>
               </ScrollArea>
@@ -627,14 +619,14 @@ export default function MessagingPage() {
                     ref={inputRef}
                     placeholder={t('messaging.message', { name: fullConversation.otherParticipant.name })}
                     value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
+                    onChange={(e) => handleInputChange(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    disabled={!socketConnected}
+                    disabled={sendingMessage}
                     className="flex-1 bg-neutral-800 border-white/10 text-stone-100 placeholder:text-stone-600 rounded-xl h-11 disabled:opacity-50"
                   />
                   <Button
                     onClick={handleSendMessage}
-                    disabled={!newMessage.trim() || sendingMessage || !socketConnected}
+                    disabled={!newMessage.trim() || sendingMessage}
                     className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl h-11 w-11 p-0 flex items-center justify-center flex-shrink-0 disabled:opacity-40"
                   >
                     <Send className="w-4 h-4" />

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/auth-guard'
 import { db } from '@/lib/db'
+import { emitNewNotification } from '@/lib/socket-emit'
 
 // GET /api/notifications - Fetch all notifications for current user
 export async function GET(req: NextRequest) {
@@ -79,18 +80,22 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    return NextResponse.json(
-      {
-        id: notification.id,
-        type: notification.type,
-        title: notification.title,
-        message: notification.message,
-        isRead: notification.isRead,
-        link: notification.link,
-        createdAt: notification.createdAt.toISOString(),
-      },
-      { status: 201 }
-    )
+    const notificationData = {
+      id: notification.id,
+      type: notification.type,
+      title: notification.title,
+      message: notification.message,
+      isRead: notification.isRead,
+      link: notification.link,
+      createdAt: notification.createdAt.toISOString(),
+    }
+
+    // Emit the new notification via socket service (non-blocking)
+    emitNewNotification(targetUserId, notificationData).catch(() => {
+      // Fail silently — the notification was saved to DB regardless
+    })
+
+    return NextResponse.json(notificationData, { status: 201 })
   } catch (error) {
     console.error('POST /api/notifications error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
