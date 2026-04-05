@@ -108,6 +108,18 @@ export default function MarketplaceApp() {
   const { navigate } = useNavigation()
   const { setLocale } = useLocale()
 
+  // Ensure database is seeded on first visit
+  useEffect(() => {
+    const setupDb = async () => {
+      try {
+        await fetch('/api/setup', { method: 'POST' })
+      } catch {
+        // Silent fail - seed will retry on next request
+      }
+    }
+    setupDb()
+  }, [])
+
   // Sync URL on page load (handle direct links / refresh)
   useEffect(() => {
     // Detect locale from URL and set it

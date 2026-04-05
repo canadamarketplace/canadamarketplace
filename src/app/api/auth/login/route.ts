@@ -2,23 +2,10 @@ import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
+import { ensureDatabaseSeeded } from "@/lib/auto-seed"
 
 const JWT_SECRET = process.env.JWT_SECRET || "canada-marketplace-secret-key-2024"
 const JWT_EXPIRY = "7d"
-
-// Demo account credentials
-const DEMO_ACCOUNTS = [
-  { email: "admin@canadamarketplace.ca", password: "Admin123!", name: "Admin User", role: "ADMIN" as const, province: "Ontario", city: "Ottawa", storeName: null, storeSlug: null },
-  { email: "sarah@techshop.ca", password: "Seller123!", name: "Sarah Mitchell", role: "SELLER" as const, province: "BC", city: "Vancouver", storeName: "TechHub Canada", storeSlug: "techhub-canada" },
-  { email: "jp@montrealfashion.ca", password: "Seller123!", name: "Jean-Pierre Beaumont", role: "SELLER" as const, province: "QC", city: "Montr\u00e9al", storeName: "Style Qu\u00e9bec", storeSlug: "style-quebec" },
-  { email: "mike@homegear.ca", password: "Seller123!", name: "Mike Thompson", role: "SELLER" as const, province: "ON", city: "Toronto", storeName: "Maple Home Living", storeSlug: "maple-home-living" },
-  { email: "emily@sportsplus.ca", password: "Seller123!", name: "Emily Chen", role: "SELLER" as const, province: "AB", city: "Calgary", storeName: "Great White North Sports", storeSlug: "great-white-north-sports" },
-  { email: "alex@gmail.com", password: "Buyer123!", name: "Alex Johnson", role: "BUYER" as const, province: "ON", city: "Toronto", storeName: null, storeSlug: null },
-  { email: "marie@hotmail.com", password: "Buyer123!", name: "Marie Tremblay", role: "BUYER" as const, province: "QC", city: "Qu\u00e9bec City", storeName: null, storeSlug: null },
-  { email: "chris@outlook.com", password: "Buyer123!", name: "Chris Brown", role: "BUYER" as const, province: "AB", city: "Edmonton", storeName: null, storeSlug: null },
-  { email: "priya@gmail.com", password: "Buyer123!", name: "Priya Patel", role: "BUYER" as const, province: "BC", city: "Surrey", storeName: null, storeSlug: null },
-  { email: "tom@yahoo.ca", password: "Buyer123!", name: "Tom Harris", role: "BUYER" as const, province: "MB", city: "Winnipeg", storeName: null, storeSlug: null },
-]
 
 function createJwtToken(payload: { userId: string; email: string; role: string; name: string }): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRY })
@@ -46,51 +33,6 @@ function createAuthResponse(userData: Record<string, unknown>) {
   return response
 }
 
-// Auto-seed demo accounts if they don't exist in the database
-// This handles Vercel cold starts where SQLite may be empty
-let seedAttempted = false
-async function ensureDemoAccounts() {
-  if (seedAttempted) return
-  seedAttempted = true
-  try {
-    const existing = await db.user.findMany({ select: { email: true } })
-    const existingEmails = new Set(existing.map((u: { email: string }) => u.email.toLowerCase()))
-    const missing = DEMO_ACCOUNTS.filter((d) => !existingEmails.has(d.email.toLowerCase()))
-    if (missing.length === 0) return
-
-    console.log(`\uD83D\uDC33 Auto-seeding ${missing.length} missing demo accounts...`)
-    for (const demo of missing) {
-      const hashedPassword = await bcrypt.hash(demo.password, 12)
-      const storeData = demo.storeName ? {
-        store: {
-          create: {
-            name: demo.storeName!,
-            slug: demo.storeSlug!,
-            description: `Welcome to ${demo.storeName}! Verified Canadian seller.`,
-            rating: 4.5,
-            totalSales: Math.floor(Math.random() * 200) + 50,
-          },
-        },
-      } : {}
-      await db.user.create({
-        data: {
-          email: demo.email,
-          password: hashedPassword,
-          name: demo.name,
-          role: demo.role,
-          isVerified: true,
-          province: demo.province,
-          city: demo.city,
-          ...storeData,
-        },
-      }).catch(() => {/* ignore duplicate */})
-    }
-    console.log(`\u2705 Demo accounts ensured`)
-  } catch (err) {
-    console.error("Demo account seed error:", err)
-  }
-}
-
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
@@ -100,8 +42,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 })
     }
 
-    // Auto-seed demo accounts if database is empty
-    await ensureDemoAccounts()
+    // Ensure database is seeded (handles fresh PostgreSQL databases)
+    await ensureDatabaseSeeded()
 
     // Check database for the user
     const user = await db.user.findUnique({

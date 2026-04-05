@@ -24,6 +24,7 @@ const PUBLIC_ROUTES = [
   "/api/stores",
   "/api/chat",
   "/api/upload",
+  "/api/setup",
 ]
 
 // Public route prefixes (wildcard matching)
