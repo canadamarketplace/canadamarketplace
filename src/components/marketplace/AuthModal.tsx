@@ -240,18 +240,18 @@ export default function AuthModal() {
                 </div>
                 <div className="space-y-1.5">
                   {[
-                    { label: 'Admin', email: 'admin@canadamarketplace.ca' },
-                    { label: 'Seller', email: 'sarah@techshop.ca' },
-                    { label: 'Buyer', email: 'alex@gmail.com' },
+                    { label: 'Admin', email: 'admin@canadamarketplace.ca', password: 'Admin123!' },
+                    { label: 'Seller', email: 'sarah@techshop.ca', password: 'Seller123!' },
+                    { label: 'Buyer', email: 'alex@gmail.com', password: 'Buyer123!' },
                   ].map((demo) => (
                     <button
                       type="button"
                       key={demo.label}
-                      onClick={() => { setLoginEmail(demo.email); setLoginPassword('') }}
+                      onClick={() => { setLoginEmail(demo.email); setLoginPassword(demo.password) }}
                       className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-cm-hover hover:bg-cm-hover-strong text-xs text-cm-secondary transition-colors"
                     >
                       <span>{demo.label}: {demo.email}</span>
-                      <span className="text-cm-faint text-[10px]">{t('auth.useDemo')}</span>
+                      <span className="text-cm-faint text-[10px]">pw: {demo.password}</span>
                     </button>
                   ))}
                 </div>
