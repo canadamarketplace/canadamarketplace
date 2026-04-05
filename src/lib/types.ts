@@ -99,3 +99,29 @@ export const ORDER_STATUS_COLORS: Record<OrderStatus, string> = {
   DISPUTED: "bg-orange-500/10 text-orange-400 border-orange-500/20",
   REFUNDED: "bg-stone-500/10 text-stone-400 border-stone-500/20",
 }
+
+export type CouponType = "PERCENTAGE" | "FIXED"
+
+export interface Coupon {
+  id: string
+  code: string
+  type: CouponType
+  value: number
+  minOrderAmount: number | null
+  maxUses: number | null
+  usedCount: number
+  startsAt: string | null
+  expiresAt: string | null
+  isActive: boolean
+  sellerId: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface AppliedCoupon {
+  id: string
+  couponId: string
+  orderId: string
+  discountAmount: number
+  coupon: Coupon
+}

@@ -1,15 +1,17 @@
 'use client'
 import { useState, useMemo } from 'react'
-import { useNavigation, useCart, useAuth } from '@/lib/store'
+import { useNavigation, useCart, useAuth, useCoupon } from '@/lib/store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Separator } from '@/components/ui/separator'
+import { Badge } from '@/components/ui/badge'
 import { PROVINCES } from '@/lib/types'
 import { calculateTax, getProvinceCode, type TaxResult } from '@/lib/canadian-tax'
 import {
-  CreditCard, MapPin, Loader2, CheckCircle2, ArrowRight, Shield, ShoppingBag, Percent
+  CreditCard, MapPin, Loader2, CheckCircle2, ArrowRight, Shield, ShoppingBag, Percent,
+  Tag, X, ChevronDown, ChevronUp, Gift
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -17,6 +19,8 @@ export default function CheckoutPage() {
   const { navigate } = useNavigation()
   const { items, total, clearCart } = useCart()
   const { user } = useAuth()
+  const { appliedCoupon, applyCoupon, removeCoupon } = useCoupon()
+
   const [loading, setLoading] = useState(false)
   const [orderPlaced, setOrderPlaced] = useState(false)
   const [orderId, setOrderId] = useState('')
@@ -26,6 +30,12 @@ export default function CheckoutPage() {
   const [province, setProvince] = useState('')
   const [postalCode, setPostalCode] = useState('')
   const [notes, setNotes] = useState('')
+
+  // Coupon state
+  const [couponExpanded, setCouponExpanded] = useState(false)
+  const [couponCode, setCouponCode] = useState('')
+  const [couponLoading, setCouponLoading] = useState(false)
+  const [couponError, setCouponError] = useState('')
 
   const subtotal = total()
   const fee = Math.round(subtotal * 0.08 * 100) / 100
@@ -38,11 +48,53 @@ export default function CheckoutPage() {
     return calculateTax(subtotal, provinceCode)
   }, [province, subtotal])
 
+  const discount = appliedCoupon?.discount || 0
   const taxAmount = taxResult?.tax.totalTax || 0
-  const cartTotal = subtotal + fee + taxAmount
+  const cartTotal = Math.max(0, subtotal + fee + taxAmount - discount)
 
   // Get the selected province's display info
   const selectedProvince = PROVINCES.find(p => p.slug === province)
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return
+    setCouponLoading(true)
+    setCouponError('')
+
+    try {
+      const res = await fetch('/api/coupons/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: couponCode.trim().toUpperCase(), orderAmount: subtotal }),
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        if (data.valid) {
+          applyCoupon({
+            code: data.coupon.code,
+            type: data.coupon.type,
+            value: data.coupon.value,
+            discount: data.discount,
+          })
+          toast.success(`Coupon "${data.coupon.code}" applied! You save $${data.discount.toFixed(2)}`)
+          setCouponCode('')
+        } else {
+          setCouponError(data.error || 'Invalid coupon')
+        }
+      } else {
+        const data = await res.json()
+        setCouponError(data.error || 'Invalid coupon')
+      }
+    } catch {
+      setCouponError('Failed to validate coupon')
+    }
+    setCouponLoading(false)
+  }
+
+  const handleRemoveCoupon = () => {
+    removeCoupon()
+    toast.success('Coupon removed')
+  }
 
   const handlePlaceOrder = async () => {
     if (!user) {
@@ -60,6 +112,26 @@ export default function CheckoutPage() {
 
     setLoading(true)
     try {
+      const body: Record<string, unknown> = {
+        buyerId: user.id,
+        items: items.map(item => ({
+          productId: item.productId,
+          title: item.title,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image,
+        })),
+        shippingAddress: address,
+        shippingCity: city,
+        shippingProvince: province,
+        shippingPostalCode: postalCode,
+        notes,
+      }
+
+      if (appliedCoupon) {
+        body.couponCode = appliedCoupon.code
+      }
+
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: {
@@ -67,21 +139,7 @@ export default function CheckoutPage() {
           'x-user-id': user.id,
           'x-user-role': user.role || 'BUYER',
         },
-        body: JSON.stringify({
-          buyerId: user.id,
-          items: items.map(item => ({
-            productId: item.productId,
-            title: item.title,
-            price: item.price,
-            quantity: item.quantity,
-            image: item.image,
-          })),
-          shippingAddress: address,
-          shippingCity: city,
-          shippingProvince: province,
-          shippingPostalCode: postalCode,
-          notes,
-        }),
+        body: JSON.stringify(body),
       })
 
       if (res.ok) {
@@ -89,6 +147,7 @@ export default function CheckoutPage() {
         setOrderId(order.id)
         setOrderPlaced(true)
         clearCart()
+        removeCoupon()
         toast.success('Order placed successfully!')
       } else {
         const data = await res.json()
@@ -246,11 +305,103 @@ export default function CheckoutPage() {
 
             <Separator className="bg-white/5 my-4" />
 
+            {/* Coupon Section */}
+            {!appliedCoupon ? (
+              <div className="mb-4">
+                <button
+                  onClick={() => setCouponExpanded(!couponExpanded)}
+                  className="flex items-center gap-2 w-full text-left group"
+                >
+                  <Gift className="w-4 h-4 text-red-400" />
+                  <span className="text-sm text-stone-300 group-hover:text-stone-100 transition-colors">
+                    Have a coupon?
+                  </span>
+                  {couponExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-stone-500 ml-auto" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-stone-500 ml-auto" />
+                  )}
+                </button>
+
+                {couponExpanded && (
+                  <div className="mt-3 space-y-2">
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
+                        <Input
+                          value={couponCode}
+                          onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponError('') }}
+                          onKeyDown={(e) => { if (e.key === 'Enter') handleApplyCoupon() }}
+                          placeholder="Enter coupon code"
+                          className="bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11 pl-10 font-mono"
+                        />
+                      </div>
+                      <Button
+                        onClick={handleApplyCoupon}
+                        disabled={couponLoading || !couponCode.trim()}
+                        className="bg-red-600 hover:bg-red-700 text-white rounded-xl h-11 px-4 disabled:opacity-40"
+                      >
+                        {couponLoading ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          'Apply'
+                        )}
+                      </Button>
+                    </div>
+                    {couponError && (
+                      <p className="text-xs text-red-400 flex items-center gap-1">
+                        <X className="w-3 h-3" />
+                        {couponError}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* Applied Coupon Badge */
+              <div className="mb-4 rounded-xl bg-green-500/5 border border-green-500/10 p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-400" />
+                    <span className="text-sm font-medium text-green-300">
+                      {appliedCoupon.code}
+                    </span>
+                    <Badge className="bg-green-500/10 text-green-400 border-green-500/20 border text-[10px] px-1.5 py-0">
+                      -${appliedCoupon.discount.toFixed(2)}
+                    </Badge>
+                  </div>
+                  <button
+                    onClick={handleRemoveCoupon}
+                    className="text-stone-500 hover:text-red-400 transition-colors"
+                    title="Remove coupon"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <p className="text-xs text-stone-500 mt-1">
+                  {appliedCoupon.type === 'PERCENTAGE'
+                    ? `${appliedCoupon.value}% off`
+                    : `$${appliedCoupon.value.toFixed(2)} off`}
+                </p>
+              </div>
+            )}
+
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-stone-500">Subtotal</span>
                 <span className="text-stone-300">${subtotal.toFixed(2)}</span>
               </div>
+
+              {/* Discount line */}
+              {appliedCoupon && discount > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-green-400 flex items-center gap-1">
+                    <Gift className="w-3.5 h-3.5" />
+                    Discount ({appliedCoupon.code})
+                  </span>
+                  <span className="text-green-400 font-medium">-${discount.toFixed(2)}</span>
+                </div>
+              )}
 
               {/* Tax breakdown */}
               {taxResult && (

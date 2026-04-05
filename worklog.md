@@ -551,3 +551,192 @@ Add client-side authentication guard to all 6 admin pages (Dashboard, Users, Pro
 - ESLint: 0 errors, 0 warnings
 - `npx next build`: Compiled successfully in 6.5s, all 28 static pages + dynamic routes
 - Git commit `0e6e4db` pushed to `origin/main`
+
+---
+Task ID: backend-infra
+Agent: full-stack-developer
+Task: Backend infrastructure for 10 new features
+
+Work Log:
+- Added Coupon and AppliedCoupon models to Prisma schema with full relations
+- Added appliedCoupon relation to existing Order model
+- Ran prisma db push to sync schema (created new SQLite tables)
+- Added coupon seed data: 6 sample coupons (WELCOME10, SAVE20, SELLER15, FREESHIP, SUMMER25, LOYAL10)
+- Updated seed.ts to delete coupons/appliedCoupons in proper FK order during reset
+- Added prisma seed config to package.json
+- Re-seeded database successfully with all existing data + 6 new coupons
+- Installed jsonwebtoken + @types/jsonwebtoken
+- Created Next.js middleware (src/middleware.ts) with JWT verification, role-based route protection
+- Created image upload API (POST /api/upload) with sharp processing, 5MB limit, thumbnail generation
+- Created Stripe webhook handler (POST /api/webhooks/stripe) for payment_intent.succeeded/failed, charge.refunded
+- Created coupon API: GET/POST /api/coupons (list/create with role-based access)
+- Created coupon validate API: POST /api/coupons/validate (checks active, expiry, min order, max uses)
+- Created coupon CRUD API: PATCH/DELETE /api/coupons/[id] (update/deactivate)
+- Upgraded Chat API to use z-ai-web-dev-sdk LLM with context-aware system prompt
+- Added CouponType, Coupon, AppliedCoupon types to src/lib/types.ts
+- Created PWA manifest (public/manifest.json) with icons and Canadian marketplace config
+- Created service worker (public/sw.js) with cache-first for static, network-first for API
+- Created WebSocket mini-service (mini-services/ws-service/) with socket.io on port 3003
+- Added useCoupon Zustand store for coupon state management to src/lib/store.ts
+- ESLint passes with zero errors
+
+Stage Summary:
+- 2 new Prisma models (Coupon, AppliedCoupon) with 6 seed coupons
+- Next.js JWT middleware with role-based route protection
+- Image upload API with sharp resize and thumbnail generation
+- Stripe webhook handler for 3 event types
+- Complete coupon CRUD API (4 routes: list/create, validate, update, deactivate)
+- Chat API upgraded from rule-based to real LLM (z-ai-web-dev-sdk)
+- PWA manifest + service worker for offline support
+- WebSocket relay service running on port 3003
+- useCoupon Zustand store for frontend coupon state
+- Zero ESLint errors
+
+---
+## Task ID: frontend-features-1
+Agent: Super Z (Main)
+Task: Upgrade 4 frontend components with advanced features (ChatAI, AddProduct, OrderDetail, SellerDashboard)
+
+### Work Task
+Enhance 4 marketplace components with LLM response support, image upload, order tracking timeline, and advanced analytics.
+
+### Work Summary
+
+**Files Modified (4):**
+
+1. **`src/components/marketplace/ChatAI.tsx`** — Upgraded for LLM responses:
+   - Added `parseMarkdown()` and `renderInline()` helper functions for rich text rendering
+   - Supports **bold** (`**text**`), *italic* (`*text*`), line breaks, and unordered lists (`- item`)
+   - Enhanced "Maple is thinking..." indicator with rotating Sparkles icon and animated 3-dot pulse
+   - Added `clearChat()` function with Trash2 icon button in header
+   - Added Minus button for minimize alongside X for close
+   - Added Framer Motion animations: messages fade-in, action buttons stagger in
+   - Expanded `handleAction()` to support all navigation pages: seller-locator, messaging, notifications, wishlist, faq, shipping, escrow, seller-guide, profile
+   - Added `getActionIcon()` with proper icons for all action types
+   - Widened chat window from 380px to 400px
+   - Kept existing bilingual support (t() translations), quick prompts, context awareness
+
+2. **`src/components/marketplace/pages/seller/AddProductPage.tsx`** — Added real image upload:
+   - Created `ImageItem` interface with url, thumbnail, uploading, progress fields
+   - Added drag-and-drop zone with visual feedback (border turns red on dragover)
+   - Added hidden file input (jpeg, png, webp, gif) triggered by clicking the drop zone
+   - Upload via FormData to `/api/upload` endpoint with simulated progress bar
+   - Each image shows loading spinner during upload with percentage progress
+   - Uploaded images display as thumbnails in a responsive 2-5 column grid
+   - Each thumbnail has: remove (X) button on hover, "Main" badge for first image, up/down reorder arrows
+   - Max 5 images enforced with toast error messages
+   - Kept existing URL input for pasting image URLs
+   - Edit mode: existing product images parsed from JSON and displayed
+   - Buttons disabled while images are still uploading
+   - Dark theme styling with red accent on upload zone border
+
+3. **`src/components/marketplace/pages/buyer/OrderDetailPage.tsx`** — Added order tracking timeline:
+   - Created horizontal timeline (desktop) with PENDING → PAID → SHIPPED → DELIVERED steps
+   - Each step: icon circle (completed=red gradient with checkmark, current=yellow pulsing, future=gray)
+   - Animated progress bar with Framer Motion (width transition on mount)
+   - Branch statuses: CANCELLED (Ban icon), DISPUTED (Scale icon), REFUNDED (RotateCcw icon)
+   - Vertical timeline for mobile (stacked layout with left border line)
+   - Estimated delivery date calculation (7 business days from shippedAt, skipping weekends)
+   - Seller tracking number input field (visible when PAID or SHIPPED status) with Save button
+   - Buyer "Track Package" link to Canada Post tracking URL
+   - Tax amount display in order totals (when taxAmount > 0)
+   - Timestamp display on completed steps (month/day format)
+
+4. **`src/components/marketplace/pages/seller/SellerDashboard.tsx`** — Advanced seller analytics:
+   - **Performance Badge**: Platinum ($5000+), Gold ($2000+), Silver ($500+), Bronze ($0+) based on monthly revenue
+   - **Quick Stats Cards**: 4 cards — Total Revenue, Monthly Revenue, Total Orders, Avg Order Value
+   - **Tabbed Layout**: Overview, Products, Revenue tabs using shadcn/ui Tabs component
+   - **12-Month Revenue Chart**: Bar chart with Recharts, padding API's 6 months to full 12
+   - **Sales by Province**: Pie chart (donut) with Recharts showing revenue per province
+   - **Daily Orders Line Chart**: 30-day order count trend line
+   - **Top Products Table**: Top 5 products by revenue with rank badges (gold/silver/bronze), units sold, revenue
+   - **Province Revenue Breakdown**: Horizontal bar chart with gradient bars
+   - **Export CSV**: Browser-generated CSV download with all order data (Blob + URL.createObjectURL)
+   - **Export button** in header and Revenue tab
+   - All analytics derived from real order data via `/api/seller/dashboard` and `/api/orders`
+
+**Verification:**
+- ESLint: 0 errors on all 4 modified files
+- All existing functionality preserved (minimize, clear chat, quick actions, seller level progress, etc.)
+- Dark theme styling consistent: bg-neutral-900/60, border-white/5, red-600 accent
+
+---
+## Task ID: frontend-integration
+Agent: Super Z (Main)
+Task: Frontend integration — Coupons page, Checkout coupon field, MarketplaceApp routing, PWA meta tags, WebSocket notifications, WebSocket messaging
+
+### Work Task
+Complete 6 frontend integration tasks: create CouponsPage, add coupon field to checkout, register routes, add PWA meta tags, integrate WebSocket into notifications and messaging.
+
+### Work Summary
+
+**Files Created (1):**
+
+1. **`src/components/marketplace/pages/CouponsPage.tsx`** (NEW) — Seller coupon management page:
+   - Stats cards: Total Coupons, Active, Expired, Total Discounts Given
+   - Filter tabs: All / Active / Expired with counts
+   - Desktop table with columns: Code (styled monospace badge), Type (Percentage/Fixed), Value, Min Order, Uses (used/max), Status, Dates, Actions
+   - Mobile card layout with responsive grid for mobile devices
+   - Copy code button on each coupon row
+   - Edit button opens Dialog pre-filled with coupon data
+   - Deactivate/Activate toggle via PATCH /api/coupons/[id]
+   - Delete with confirmation dialog
+   - Create Coupon dialog with: Code (auto-generate + manual input), Type toggle (Percentage/Fixed), Value with currency prefix, Min Order Amount, Max Uses, Start/Expiry dates, Active toggle
+   - Empty state with Tag icon and CTA to create first coupon
+   - Fetches from GET /api/coupons with auth headers
+   - Dark theme styling consistent with app
+
+**Files Modified (6):**
+
+2. **`src/components/marketplace/pages/buyer/CheckoutPage.tsx`** — Added coupon code field:
+   - Collapsible "Have a coupon?" section with Gift icon + chevron toggle
+   - Coupon code input with Tag icon prefix + "Apply" button
+   - On apply: POST /api/coupons/validate with { code, orderAmount: subtotal }
+   - Success: Green badge showing applied coupon code + discount amount + Remove (X) button
+   - Error: Red error message for invalid/expired/min-order-not-met coupons
+   - Discount line in order summary (green text with Gift icon)
+   - Order total = subtotal + fee + tax - discount (clamped to 0 minimum)
+   - Coupon code included in order creation request body as `couponCode`
+   - Coupon state cleared on successful order placement via removeCoupon()
+
+3. **`src/lib/store.ts`** — Added "coupons" to PageView union type + URL mappings:
+   - Added `| "coupons"` to PageView type
+   - Added `"coupons": "/seller/coupons"` to pageToUrlBase mapping
+   - Added URL route parsing: `/seller/coupons` → `{ page: "coupons", params: {} }`
+
+4. **`src/components/marketplace/MarketplaceApp.tsx`** — Registered CouponsPage:
+   - Imported CouponsPage component
+   - Added `case 'coupons': return <CouponsPage />` in PageRenderer switch
+
+5. **`src/app/layout.tsx`** — Added PWA meta tags:
+   - Added `Viewport` export with `viewportFit: "cover"` and `themeColor: "#dc2626"`
+   - Added `manifest` link to metadata
+   - Added `appleWebApp` config (capable, statusBarStyle, title)
+   - Added `other` meta tags (mobile-web-app-capable, apple-mobile-web-app-capable, etc.)
+   - Added inline `<head>` tags: theme-color meta, manifest link, apple-touch-icon links, iOS-specific meta tags
+   - Added inline `<script>` to register service worker (/sw.js) on page load
+
+6. **`src/components/marketplace/NotificationBell.tsx`** — WebSocket real-time notifications:
+   - Installed `socket.io-client` (v4.8.3)
+   - Connected to WebSocket at `/?XTransformPort=3003` with reconnection support (10 attempts, 1-30s delay)
+   - On connect: joins room `notifications-{userId}`
+   - Listens for "notification" events → adds to notifications list + increments unread count
+   - On disconnect: falls back to 30-second polling (same as before)
+   - On reconnect: re-joins notification room, stops polling
+   - All existing functionality preserved (dropdown, mark read, mark all read, navigation)
+
+7. **`src/components/marketplace/MessagingPage.tsx`** — WebSocket real-time messaging:
+   - Connected to WebSocket at `/?XTransformPort=3003` with reconnection support
+   - On conversation select: emits "join" to room `messaging-{conversationId}`
+   - On conversation change: leaves previous room, joins new room
+   - Listens for "message" events → adds message to current conversation in real-time
+   - On send: emits message via socket to room for other participant
+   - "Online" / "Reconnecting..." status indicator in page header + chat header
+   - Input disabled when disconnected
+   - Duplicate message prevention (checks message ID)
+   - All existing functionality preserved (conversation list, chat bubbles, optimistic sends, etc.)
+
+**Verification:**
+- ESLint: 0 errors, 0 warnings across all 7 files
+- `bun run lint` passes cleanly
+- socket.io-client installed (v4.8.3)

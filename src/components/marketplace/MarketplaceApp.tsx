@@ -46,6 +46,7 @@ import ShippingPage from './pages/ShippingPage'
 import FaqPage from './pages/FaqPage'
 import NotificationsPage from './pages/NotificationsPage'
 import MessagingPage from './MessagingPage'
+import CouponsPage from './pages/CouponsPage'
 import WishlistPage from './pages/WishlistPage'
 import type { PageView } from '@/lib/store'
 
@@ -74,6 +75,7 @@ function PageRenderer() {
     case 'notifications': return <NotificationsPage />
     case 'messaging': return <MessagingPage />
     case 'wishlist': return <WishlistPage />
+    case 'coupons': return <CouponsPage />
     case 'profile': return <ProfilePage />
     case 'forgot-password': return <ForgotPasswordPage />
     case 'dashboard': return <SellerDashboard />

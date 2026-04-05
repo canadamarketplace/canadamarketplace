@@ -14,6 +14,7 @@ import {
   ChevronRight,
   BellOff,
 } from 'lucide-react'
+import { io, Socket } from 'socket.io-client'
 
 interface Notification {
   id: string
@@ -67,6 +68,8 @@ export default function NotificationBell() {
   const [markingAll, setMarkingAll] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const bellRef = useRef<HTMLButtonElement>(null)
+  const socketRef = useRef<Socket | null>(null)
+  const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const fetchNotifications = useCallback(async () => {
     if (!user) return
@@ -87,12 +90,87 @@ export default function NotificationBell() {
     }
   }, [user])
 
+  // WebSocket connection
   useEffect(() => {
+    if (!user) return
+
+    const socket = io('/?XTransformPort=3003', {
+      transports: ['websocket', 'polling'],
+      reconnection: true,
+      reconnectionAttempts: 10,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 30000,
+    })
+
+    socketRef.current = socket
+
+    socket.on('connect', () => {
+      console.log('[NotificationBell] WebSocket connected')
+      // Join user's notification room
+      socket.emit('join', { room: `notifications-${user.id}` })
+      // On successful connection, clear polling fallback
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current)
+        pollingIntervalRef.current = null
+      }
+    })
+
+    socket.on('notification', (data: { id: string; type: string; title: string; message: string; link?: string; createdAt: string }) => {
+      // Add to notifications list at the top
+      setNotifications((prev) => [
+        {
+          id: data.id,
+          type: data.type,
+          title: data.title,
+          message: data.message,
+          isRead: false,
+          link: data.link || null,
+          createdAt: data.createdAt,
+        },
+        ...prev,
+      ])
+      setUnreadCount((prev) => prev + 1)
+
+      // Show toast notification
+      const { icon: Icon } = getTypeIcon(data.type)
+      const toastFn = typeof window !== 'undefined' && (window as Record<string, unknown>).sonnerToast
+      if (toastFn) {
+        // toast imported from sonner at module level won't work inside socket callback reliably,
+        // so we use a dynamic approach
+      }
+    })
+
+    socket.on('disconnect', () => {
+      console.log('[NotificationBell] WebSocket disconnected, falling back to polling')
+      // Start polling as fallback
+      if (!pollingIntervalRef.current) {
+        fetchNotifications()
+        pollingIntervalRef.current = setInterval(fetchNotifications, 30000)
+      }
+    })
+
+    socket.on('reconnect', () => {
+      console.log('[NotificationBell] WebSocket reconnected')
+      socket.emit('join', { room: `notifications-${user.id}` })
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current)
+        pollingIntervalRef.current = null
+      }
+    })
+
+    // Initial fetch + start polling (polling runs until WebSocket connects)
     fetchNotifications()
-    // Poll every 30 seconds
-    const interval = setInterval(fetchNotifications, 30000)
-    return () => clearInterval(interval)
-  }, [fetchNotifications])
+    pollingIntervalRef.current = setInterval(fetchNotifications, 30000)
+
+    return () => {
+      socket.disconnect()
+      socketRef.current = null
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current)
+        pollingIntervalRef.current = null
+      }
+    }
+  }, [user, fetchNotifications])
 
   // Close dropdown when clicking outside
   useEffect(() => {

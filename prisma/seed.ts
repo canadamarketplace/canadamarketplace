@@ -5,6 +5,8 @@ async function seed() {
   console.log("🌱 Seeding Canada Marketplace database...")
 
   // Clear existing data (order matters due to foreign keys)
+  await db.appliedCoupon.deleteMany()
+  await db.coupon.deleteMany()
   await db.message.deleteMany()
   await db.conversation.deleteMany()
   await db.cartItem.deleteMany()
@@ -491,6 +493,36 @@ async function seed() {
     })
   }
   console.log(`  ✅ ${notificationTemplates.length} notifications`)
+
+  // Create Sample Coupons
+  const couponData = [
+    { code: "WELCOME10", type: "PERCENTAGE", value: 10, minOrderAmount: 25, maxUses: 100, sellerId: null, startsAt: new Date("2024-01-01"), expiresAt: null },
+    { code: "SAVE20", type: "FIXED", value: 20, minOrderAmount: 100, maxUses: 50, sellerId: null, startsAt: new Date("2024-01-01"), expiresAt: null },
+    { code: "SELLER15", type: "PERCENTAGE", value: 15, minOrderAmount: 50, maxUses: 30, sellerId: sellers[0].id, startsAt: new Date("2024-01-01"), expiresAt: null },
+    { code: "FREESHIP", type: "FIXED", value: 15, minOrderAmount: 75, maxUses: null, sellerId: null, startsAt: new Date("2024-01-01"), expiresAt: null },
+    { code: "SUMMER25", type: "PERCENTAGE", value: 25, minOrderAmount: 0, maxUses: 200, sellerId: null, startsAt: new Date("2024-06-01"), expiresAt: new Date("2025-09-30") },
+    { code: "LOYAL10", type: "PERCENTAGE", value: 10, minOrderAmount: 30, maxUses: null, sellerId: sellers[1].id, startsAt: new Date("2024-01-01"), expiresAt: null },
+  ]
+
+  const coupons = []
+  for (const c of couponData) {
+    const coupon = await db.coupon.create({
+      data: {
+        code: c.code,
+        type: c.type,
+        value: c.value,
+        minOrderAmount: c.minOrderAmount,
+        maxUses: c.maxUses,
+        usedCount: Math.floor(Math.random() * Math.min(c.maxUses || 50, 15)),
+        startsAt: c.startsAt,
+        expiresAt: c.expiresAt,
+        isActive: true,
+        sellerId: c.sellerId,
+      },
+    })
+    coupons.push(coupon)
+  }
+  console.log(`  ✅ ${coupons.length} coupons`)
 
   console.log("\n🍁 Canada Marketplace seeded successfully!")
   console.log("\n📋 Test Accounts:")

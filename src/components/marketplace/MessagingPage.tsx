@@ -1,6 +1,6 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
-import { useNavigation } from '@/lib/store'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { useAuth, useNavigation } from '@/lib/store'
 import { useTranslation } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,8 +8,9 @@ import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
-import { Send, MessageCircle, Search, ArrowLeft, User } from 'lucide-react'
+import { Send, MessageCircle, Search, ArrowLeft, User, Wifi, WifiOff, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { io, Socket } from 'socket.io-client'
 
 interface ConversationSummary {
   id: string
@@ -103,14 +104,85 @@ export default function MessagingPage() {
   const [loading, setLoading] = useState(true)
   const [sendingMessage, setSendingMessage] = useState(false)
   const [mobileShowChat, setMobileShowChat] = useState(false)
+  const [socketConnected, setSocketConnected] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const socketRef = useRef<Socket | null>(null)
+  const prevConversationIdRef = useRef<string | null>(null)
 
   const authHeaders = useCallback(() => ({
     'Content-Type': 'application/json',
     'x-user-id': user!.id,
     'x-user-role': user!.role,
   }), [user])
+
+  // WebSocket connection
+  useEffect(() => {
+    if (!user) return
+
+    const socket = io('/?XTransformPort=3003', {
+      transports: ['websocket', 'polling'],
+      reconnection: true,
+      reconnectionAttempts: 10,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 30000,
+    })
+
+    socketRef.current = socket
+
+    socket.on('connect', () => {
+      console.log('[MessagingPage] WebSocket connected')
+      setSocketConnected(true)
+      // Re-join current room if one is selected
+      if (selectedConversationId) {
+        socket.emit('join', { room: `messaging-${selectedConversationId}` })
+      }
+    })
+
+    socket.on('disconnect', () => {
+      console.log('[MessagingPage] WebSocket disconnected')
+      setSocketConnected(false)
+    })
+
+    socket.on('reconnect', () => {
+      console.log('[MessagingPage] WebSocket reconnected')
+      setSocketConnected(true)
+      if (selectedConversationId) {
+        socket.emit('join', { room: `messaging-${selectedConversationId}` })
+      }
+    })
+
+    // Listen for real-time messages
+    socket.on('message', (data: ChatMessage) => {
+      // Only add if message is for the currently selected conversation
+      if (data.sender.id !== user.id) {
+        // Check if this message belongs to current conversation
+        // The message event includes conversationId via the room
+        setMessages((prev) => {
+          // Avoid duplicates
+          if (prev.some((m) => m.id === data.id)) return prev
+          return [...prev, data]
+        })
+
+        // Update conversation list
+        setConversations((prev) =>
+          prev.map((c) =>
+            c.id === selectedConversationId
+              ? { ...c, lastMessage: data.content, lastMessageAt: data.createdAt }
+              : c
+          )
+        )
+      }
+    })
+
+    return () => {
+      if (selectedConversationId) {
+        socket.emit('leave', { room: `messaging-${selectedConversationId}` })
+      }
+      socket.disconnect()
+      socketRef.current = null
+    }
+  }, [user, selectedConversationId])
 
   // Fetch conversations on mount
   useEffect(() => {
@@ -168,7 +240,7 @@ export default function MessagingPage() {
     startConversation()
   }, [user, pageParams.recipientId, authHeaders])
 
-  // Fetch messages when conversation selected
+  // Fetch messages when conversation selected + join/leave socket rooms
   useEffect(() => {
     if (!selectedConversationId || !user) return
 
@@ -195,6 +267,17 @@ export default function MessagingPage() {
     }
 
     fetchMessages()
+
+    // Join WebSocket room for this conversation
+    const socket = socketRef.current
+    if (socket && socket.connected) {
+      // Leave previous room
+      if (prevConversationIdRef.current) {
+        socket.emit('leave', { room: `messaging-${prevConversationIdRef.current}` })
+      }
+      socket.emit('join', { room: `messaging-${selectedConversationId}` })
+      prevConversationIdRef.current = selectedConversationId
+    }
   }, [selectedConversationId, user])
 
   // Auto-scroll to bottom
@@ -262,6 +345,15 @@ export default function MessagingPage() {
         setMessages((prev) =>
           prev.map((m) => (m.id === optimisticMessage.id ? data.message : m))
         )
+
+        // Emit via WebSocket for the other participant
+        const socket = socketRef.current
+        if (socket && socket.connected) {
+          socket.emit('message', {
+            room: `messaging-${selectedConversationId}`,
+            message: data.message,
+          })
+        }
       } else {
         toast.error(t('messaging.failedToSend'))
         // Remove optimistic message on failure
@@ -315,6 +407,23 @@ export default function MessagingPage() {
         <Badge className="bg-red-500/10 text-red-400 border-red-500/20 border">
           {conversations.length} {conversations.length !== 1 ? t('messaging.conversations_plural') : t('messaging.conversations')}
         </Badge>
+        {/* Connection Status */}
+        <div className={`flex items-center gap-1.5 ml-auto text-xs ${socketConnected ? 'text-green-400' : 'text-red-400'}`}>
+          {socketConnected ? (
+            <>
+              <Wifi className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Online</span>
+            </>
+          ) : (
+            <>
+              <WifiOff className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline flex items-center gap-1">
+                <Loader2 className="w-3 h-3 animate-spin" />
+                Reconnecting...
+              </span>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="flex gap-0 rounded-2xl overflow-hidden border border-white/5 bg-neutral-900/60" style={{ height: 'calc(100vh - 180px)', minHeight: '500px' }}>
@@ -435,9 +544,17 @@ export default function MessagingPage() {
                   <h3 className="text-sm font-semibold text-stone-100 truncate">
                     {fullConversation.otherParticipant.name}
                   </h3>
-                  <Badge className={`${ROLE_COLORS[fullConversation.otherParticipant.role] || ROLE_COLORS.BUYER} text-[10px] border px-1.5 py-0 mt-0.5`}>
-                    {fullConversation.otherParticipant.role}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge className={`${ROLE_COLORS[fullConversation.otherParticipant.role] || ROLE_COLORS.BUYER} text-[10px] border px-1.5 py-0`}>
+                      {fullConversation.otherParticipant.role}
+                    </Badge>
+                    {socketConnected && (
+                      <span className="flex items-center gap-1 text-[10px] text-green-400">
+                        <span className="w-1.5 h-1.5 bg-green-400 rounded-full" />
+                        Online
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -492,7 +609,7 @@ export default function MessagingPage() {
                                   ? <span className="text-[10px] text-blue-400">{t('messaging.read')}</span>
                                   : <span className="text-[10px] text-stone-600">{t('messaging.sent')}</span>
                               )
-                            }
+                              }
                             </div>
                           </div>
                         </div>
@@ -512,11 +629,12 @@ export default function MessagingPage() {
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className="flex-1 bg-neutral-800 border-white/10 text-stone-100 placeholder:text-stone-600 rounded-xl h-11"
+                    disabled={!socketConnected}
+                    className="flex-1 bg-neutral-800 border-white/10 text-stone-100 placeholder:text-stone-600 rounded-xl h-11 disabled:opacity-50"
                   />
                   <Button
                     onClick={handleSendMessage}
-                    disabled={!newMessage.trim() || sendingMessage}
+                    disabled={!newMessage.trim() || sendingMessage || !socketConnected}
                     className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl h-11 w-11 p-0 flex items-center justify-center flex-shrink-0 disabled:opacity-40"
                   >
                     <Send className="w-4 h-4" />

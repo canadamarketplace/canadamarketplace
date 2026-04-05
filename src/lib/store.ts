@@ -54,6 +54,7 @@ export type PageView =
   | "admin-order-detail"
   | "admin-dispute-detail"
   | "wishlist"
+  | "coupons"
 
 interface NavigationState {
   currentPage: PageView
@@ -95,6 +96,7 @@ function pageToUrlBase(page: PageView, params: Record<string, string>): string {
     "shipping": "/shipping",
     "faq": "/faq",
     "wishlist": "/wishlist",
+    "coupons": "/seller/coupons",
     "notifications": "/notifications",
     "messaging": "/messages",
     "profile": "/profile",
@@ -157,6 +159,7 @@ export function urlToPage(pathname: string, search: string): { page: PageView; p
   if (cleanPath === "/shipping") return { page: "shipping", params: {} }
   if (cleanPath === "/faq") return { page: "faq", params: {} }
   if (cleanPath === "/wishlist") return { page: "wishlist", params: {} }
+  if (cleanPath === "/seller/coupons") return { page: "coupons", params: {} }
   if (cleanPath === "/notifications") return { page: "notifications", params: {} }
   if (cleanPath === "/messages") return { page: "messaging", params: {} }
   if (cleanPath === "/profile") return { page: "profile", params: {} }
@@ -347,4 +350,21 @@ export const useAuth = create<AuthState>((set) => ({
   user: null,
   setUser: (user) => set({ user }),
   logout: () => set({ user: null }),
+}))
+
+interface CouponState {
+  appliedCoupon: {
+    code: string
+    type: string
+    value: number
+    discount: number
+  } | null
+  applyCoupon: (coupon: { code: string; type: string; value: number; discount: number }) => void
+  removeCoupon: () => void
+}
+
+export const useCoupon = create<CouponState>((set) => ({
+  appliedCoupon: null,
+  applyCoupon: (coupon) => set({ appliedCoupon: coupon }),
+  removeCoupon: () => set({ appliedCoupon: null }),
 }))
