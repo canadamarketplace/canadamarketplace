@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
-import { optionalAuth } from "@/lib/auth-guard"
+import { optionalAuth, requireRole } from "@/lib/auth-guard"
 
 export async function GET(req: NextRequest) {
   try {
@@ -113,6 +113,69 @@ export async function GET(req: NextRequest) {
       pages: Math.ceil(total / limit),
       page,
     })
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const auth = await requireRole(req, ['SELLER', 'ADMIN'])
+    if (!auth) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const body = await req.json()
+    const {
+      title,
+      description,
+      price,
+      comparePrice,
+      condition,
+      categorySlug,
+      stock,
+      images,
+      province,
+      city,
+      status,
+      storeId,
+    } = body
+
+    // Look up category by slug
+    const category = await db.category.findUnique({ where: { slug: categorySlug } })
+    if (!category) {
+      return NextResponse.json({ error: 'Category not found' }, { status: 400 })
+    }
+
+    // Generate slug from title
+    const slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '')
+
+    const product = await db.product.create({
+      data: {
+        title,
+        slug,
+        description,
+        price: parseFloat(price),
+        comparePrice: comparePrice ? parseFloat(comparePrice) : null,
+        condition: condition || 'NEW',
+        categoryId: category.id,
+        storeId,
+        province,
+        city,
+        stock: parseInt(stock) || 1,
+        images: images || '[]',
+        status: status || 'ACTIVE',
+      },
+      include: {
+        category: true,
+        store: { select: { id: true, name: true, slug: true, rating: true } },
+      },
+    })
+
+    return NextResponse.json(product, { status: 201 })
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
