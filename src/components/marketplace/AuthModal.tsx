@@ -136,19 +136,19 @@ export default function AuthModal() {
     setLoading(false)
   }
 
-  const inputClass = "bg-white/5 border-white/10 text-stone-100 placeholder:text-stone-600 focus:border-red-500/50 focus:ring-red-500/20 h-11 rounded-xl"
+  const inputClass = "bg-cm-hover border-cm-border-hover text-cm-primary placeholder:text-cm-faint focus:border-red-500/50 focus:ring-red-500/20 h-11 rounded-xl"
 
   return (
     <Dialog open={isAuthModalOpen} onOpenChange={(open) => { if (!open) { closeAuthModal(); resetForms() } }}>
-      <DialogContent className="sm:max-w-md bg-neutral-900 border-white/10 p-0 gap-0 overflow-hidden">
-        <div className="bg-gradient-to-r from-red-600/10 to-red-500/10 p-6 text-center border-b border-white/5">
+      <DialogContent className="sm:max-w-md bg-cm-elevated border-cm-border-hover p-0 gap-0 overflow-hidden">
+        <div className="bg-gradient-to-r from-red-600/10 to-red-500/10 p-6 text-center border-b border-cm-border-subtle">
           <div className="w-12 h-12 rounded-2xl overflow-hidden mx-auto mb-3 shadow-lg shadow-red-500/20">
             <img src="/logo-square.png" alt="Canada Marketplace" className="w-full h-full object-cover" />
           </div>
-          <DialogTitle className="text-xl font-bold text-stone-100">
+          <DialogTitle className="text-xl font-bold text-cm-primary">
             {success ? t('auth.welcome') : t('auth.welcomeTitle')}
           </DialogTitle>
-          <p className="text-sm text-stone-400 mt-1">
+          <p className="text-sm text-cm-muted mt-1">
             {success ? t('auth.accountCreatedDesc') : t('auth.welcomeSubtitle')}
           </p>
         </div>
@@ -156,8 +156,8 @@ export default function AuthModal() {
         {success ? (
           <div className="p-6 text-center">
             <CheckCircle2 className="w-16 h-16 text-green-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-stone-100 mb-2">{t('auth.accountCreated')}</h3>
-            <p className="text-sm text-stone-400 mb-4">{t('auth.accountCreatedDesc')}</p>
+            <h3 className="text-lg font-semibold text-cm-primary mb-2">{t('auth.accountCreated')}</h3>
+            <p className="text-sm text-cm-muted mb-4">{t('auth.accountCreatedDesc')}</p>
             <Button
               onClick={() => { resetForms(); }}
               className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl h-11"
@@ -167,14 +167,14 @@ export default function AuthModal() {
           </div>
         ) : (
           <Tabs defaultValue={authModalTab} className="mt-0">
-            <TabsList className="w-full grid grid-cols-3 bg-transparent border-b border-white/5 h-12 rounded-none p-0">
-              <TabsTrigger value="login" className="rounded-none data-[state=active]:bg-transparent data-[state=active]:text-red-400 data-[state=active]:border-b-2 data-[state=active]:border-red-500 text-stone-500 h-12 rounded-t-none text-sm">
+            <TabsList className="w-full grid grid-cols-3 bg-transparent border-b border-cm-border-subtle h-12 rounded-none p-0">
+              <TabsTrigger value="login" className="rounded-none data-[state=active]:bg-transparent data-[state=active]:text-red-400 data-[state=active]:border-b-2 data-[state=active]:border-red-500 text-cm-dim h-12 rounded-t-none text-sm">
                 {t('auth.login')}
               </TabsTrigger>
-              <TabsTrigger value="register" className="rounded-none data-[state=active]:bg-transparent data-[state=active]:text-red-400 data-[state=active]:border-b-2 data-[state=active]:border-red-500 text-stone-500 h-12 rounded-t-none text-sm">
+              <TabsTrigger value="register" className="rounded-none data-[state=active]:bg-transparent data-[state=active]:text-red-400 data-[state=active]:border-b-2 data-[state=active]:border-red-500 text-cm-dim h-12 rounded-t-none text-sm">
                 {t('auth.buyer')}
               </TabsTrigger>
-              <TabsTrigger value="register-seller" className="rounded-none data-[state=active]:bg-transparent data-[state=active]:text-red-400 data-[state=active]:border-b-2 data-[state=active]:border-red-500 text-stone-500 h-12 rounded-t-none text-sm">
+              <TabsTrigger value="register-seller" className="rounded-none data-[state=active]:bg-transparent data-[state=active]:text-red-400 data-[state=active]:border-b-2 data-[state=active]:border-red-500 text-cm-dim h-12 rounded-t-none text-sm">
                 {t('auth.seller')}
               </TabsTrigger>
             </TabsList>
@@ -183,7 +183,7 @@ export default function AuthModal() {
             <TabsContent value="login" className="p-6 mt-0">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.email')}</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.email')}</Label>
                   <Input
                     type="email"
                     value={loginEmail}
@@ -194,7 +194,7 @@ export default function AuthModal() {
                   />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.password')}</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.password')}</Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? 'text' : 'password'}
@@ -207,7 +207,7 @@ export default function AuthModal() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-cm-dim hover:text-cm-secondary"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -216,7 +216,7 @@ export default function AuthModal() {
                     <button
                       type="button"
                       onClick={() => { closeAuthModal(); resetForms(); navigate('forgot-password') }}
-                      className="text-xs text-stone-500 hover:text-red-400 transition-colors"
+                      className="text-xs text-cm-dim hover:text-red-400 transition-colors"
                     >
                       {t('auth.forgotPassword')}
                     </button>
@@ -232,10 +232,10 @@ export default function AuthModal() {
                 </Button>
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-white/5" />
+                    <div className="w-full border-t border-cm-border-subtle" />
                   </div>
                   <div className="relative flex justify-center text-xs">
-                    <span className="px-3 bg-neutral-900 text-stone-500">{t('auth.demoAccounts')}</span>
+                    <span className="px-3 bg-cm-elevated text-cm-dim">{t('auth.demoAccounts')}</span>
                   </div>
                 </div>
                 <div className="space-y-1.5">
@@ -248,10 +248,10 @@ export default function AuthModal() {
                       type="button"
                       key={demo.label}
                       onClick={() => { setLoginEmail(demo.email); setLoginPassword('') }}
-                      className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-stone-400 transition-colors"
+                      className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-cm-hover hover:bg-cm-hover-strong text-xs text-cm-muted transition-colors"
                     >
                       <span>{demo.label}: {demo.email}</span>
-                      <span className="text-stone-600 text-[10px]">{t('auth.useDemo')}</span>
+                      <span className="text-cm-faint text-[10px]">{t('auth.useDemo')}</span>
                     </button>
                   ))}
                 </div>
@@ -262,29 +262,29 @@ export default function AuthModal() {
             <TabsContent value="register" className="p-6 mt-0">
               <form onSubmit={handleBuyerRegister} className="space-y-4">
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.name')} *</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.name')} *</Label>
                   <Input value={regName} onChange={(e) => setRegName(e.target.value)} placeholder="John Doe" className={inputClass} required />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.email')} *</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.email')} *</Label>
                   <Input type="email" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} placeholder="you@example.com" className={inputClass} required />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.password')} *</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.password')} *</Label>
                   <Input type="password" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} placeholder="••••••••" className={inputClass} required />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.province')}</Label>
+                    <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.province')}</Label>
                     <Select value={regProvince} onValueChange={setRegProvince}>
                       <SelectTrigger className={`${inputClass} h-11`}><SelectValue placeholder={t('auth.select')} /></SelectTrigger>
-                      <SelectContent className="bg-neutral-900 border-white/10">
-                        {PROVINCES.map((p) => <SelectItem key={p.slug} value={p.slug} className="text-stone-300">{p.name}</SelectItem>)}
+                      <SelectContent className="bg-cm-elevated border-cm-border-hover">
+                        {PROVINCES.map((p) => <SelectItem key={p.slug} value={p.slug} className="text-cm-secondary">{p.name}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.city')}</Label>
+                    <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.city')}</Label>
                     <Input value={regCity} onChange={(e) => setRegCity(e.target.value)} placeholder={t('auth.city')} className={inputClass} />
                   </div>
                 </div>
@@ -299,37 +299,37 @@ export default function AuthModal() {
             <TabsContent value="register-seller" className="p-6 mt-0">
               <form onSubmit={handleSellerRegister} className="space-y-4">
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.name')} *</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.name')} *</Label>
                   <Input value={sellerName} onChange={(e) => setSellerName(e.target.value)} placeholder="Jane Smith" className={inputClass} required />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.email')} *</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.email')} *</Label>
                   <Input type="email" value={sellerEmail} onChange={(e) => setSellerEmail(e.target.value)} placeholder="you@example.com" className={inputClass} required />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.password')} *</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.password')} *</Label>
                   <Input type="password" value={sellerPassword} onChange={(e) => setSellerPassword(e.target.value)} placeholder="••••••••" className={inputClass} required />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.storeName')} *</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.storeName')} *</Label>
                   <Input value={storeName} onChange={(e) => setStoreName(e.target.value)} placeholder={t('auth.storeName')} className={inputClass} required />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.storeDescription')}</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.storeDescription')}</Label>
                   <Input value={storeDesc} onChange={(e) => setStoreDesc(e.target.value)} placeholder={t('auth.storeDescription')} className={inputClass} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.province')}</Label>
+                    <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.province')}</Label>
                     <Select value={sellerProvince} onValueChange={setSellerProvince}>
                       <SelectTrigger className={`${inputClass} h-11`}><SelectValue placeholder={t('auth.select')} /></SelectTrigger>
-                      <SelectContent className="bg-neutral-900 border-white/10">
-                        {PROVINCES.map((p) => <SelectItem key={p.slug} value={p.slug} className="text-stone-300">{p.name}</SelectItem>)}
+                      <SelectContent className="bg-cm-elevated border-cm-border-hover">
+                        {PROVINCES.map((p) => <SelectItem key={p.slug} value={p.slug} className="text-cm-secondary">{p.name}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-stone-300 text-xs mb-1.5 block">{t('auth.city')}</Label>
+                    <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.city')}</Label>
                     <Input value={sellerCity} onChange={(e) => setSellerCity(e.target.value)} placeholder={t('auth.city')} className={inputClass} />
                   </div>
                 </div>

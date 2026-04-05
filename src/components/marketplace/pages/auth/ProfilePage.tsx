@@ -50,13 +50,13 @@ export default function ProfilePage() {
     setLoading(false)
   }
 
-  const inputClass = "bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
+  const inputClass = "bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
 
   if (!user) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-        <User className="w-16 h-16 text-stone-700 mx-auto mb-4" />
-        <h1 className="text-2xl font-bold text-stone-200 mb-2">Please sign in</h1>
+        <User className="w-16 h-16 text-cm-faint mx-auto mb-4" />
+        <h1 className="text-2xl font-bold text-cm-secondary mb-2">Please sign in</h1>
         <Button onClick={() => navigate('home')} className="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl mt-4">Go Home</Button>
       </div>
     )
@@ -64,17 +64,17 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-stone-100 mb-8">My Profile</h1>
+      <h1 className="text-2xl font-bold text-cm-primary mb-8">My Profile</h1>
 
       {/* User Card */}
-      <div className="rounded-2xl bg-neutral-900/60 border border-white/5 p-6 mb-6">
+      <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6 mb-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center text-2xl font-bold text-white">
             {user.name.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-stone-100">{user.name}</h2>
-            <p className="text-sm text-stone-500">{user.email}</p>
+            <h2 className="text-lg font-semibold text-cm-primary">{user.name}</h2>
+            <p className="text-sm text-cm-dim">{user.email}</p>
             <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-500/10 text-red-400 border border-red-500/20">
               {user.role}
             </span>
@@ -83,45 +83,45 @@ export default function ProfilePage() {
       </div>
 
       {/* Edit Form */}
-      <div className="rounded-2xl bg-neutral-900/60 border border-white/5 p-6 space-y-4">
-        <h2 className="text-sm font-semibold text-stone-300">Personal Information</h2>
+      <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6 space-y-4">
+        <h2 className="text-sm font-semibold text-cm-secondary">Personal Information</h2>
 
         <div>
-          <Label className="text-stone-300 text-xs mb-1.5 block flex items-center gap-1.5"><User className="w-3 h-3" /> Full Name</Label>
+          <Label className="text-cm-secondary text-xs mb-1.5 block flex items-center gap-1.5"><User className="w-3 h-3" /> Full Name</Label>
           <Input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} />
         </div>
         <div>
-          <Label className="text-stone-300 text-xs mb-1.5 block flex items-center gap-1.5"><Mail className="w-3 h-3" /> Email</Label>
+          <Label className="text-cm-secondary text-xs mb-1.5 block flex items-center gap-1.5"><Mail className="w-3 h-3" /> Email</Label>
           <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
         </div>
         <div>
-          <Label className="text-stone-300 text-xs mb-1.5 block flex items-center gap-1.5"><Phone className="w-3 h-3" /> Phone</Label>
+          <Label className="text-cm-secondary text-xs mb-1.5 block flex items-center gap-1.5"><Phone className="w-3 h-3" /> Phone</Label>
           <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(555) 123-4567" className={inputClass} />
         </div>
 
-        <h2 className="text-sm font-semibold text-stone-300 pt-4">Address</h2>
+        <h2 className="text-sm font-semibold text-cm-secondary pt-4">Address</h2>
 
         <div>
-          <Label className="text-stone-300 text-xs mb-1.5 block flex items-center gap-1.5"><MapPin className="w-3 h-3" /> Street Address</Label>
+          <Label className="text-cm-secondary text-xs mb-1.5 block flex items-center gap-1.5"><MapPin className="w-3 h-3" /> Street Address</Label>
           <Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Main St" className={inputClass} />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label className="text-stone-300 text-xs mb-1.5 block">Province</Label>
+            <Label className="text-cm-secondary text-xs mb-1.5 block">Province</Label>
             <Select value={province} onValueChange={setProvince}>
               <SelectTrigger className={`${inputClass} h-11`}><SelectValue placeholder="Select" /></SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-white/10">
-                {PROVINCES.map((p) => <SelectItem key={p.slug} value={p.slug} className="text-stone-300">{p.name}</SelectItem>)}
+              <SelectContent className="bg-cm-elevated border-cm-border-hover">
+                {PROVINCES.map((p) => <SelectItem key={p.slug} value={p.slug} className="text-cm-secondary">{p.name}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label className="text-stone-300 text-xs mb-1.5 block">City</Label>
+            <Label className="text-cm-secondary text-xs mb-1.5 block">City</Label>
             <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" className={inputClass} />
           </div>
         </div>
         <div className="w-1/2">
-          <Label className="text-stone-300 text-xs mb-1.5 block">Postal Code</Label>
+          <Label className="text-cm-secondary text-xs mb-1.5 block">Postal Code</Label>
           <Input value={postalCode} onChange={(e) => setPostalCode(e.target.value)} placeholder="M5V 3L9" className={inputClass} />
         </div>
 

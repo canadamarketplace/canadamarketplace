@@ -46,7 +46,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-cm-bg">
       {/* Hero Banner */}
       <section className="relative py-20 px-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-red-900/10 via-transparent to-transparent" />
@@ -54,19 +54,19 @@ export default function ContactPage() {
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <button
             onClick={() => navigate('home')}
-            className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 mb-6 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-cm-dim hover:text-cm-secondary mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Home
           </button>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-neutral-800 mb-6">
             <MessageSquare className="w-4 h-4 text-red-400" />
-            <span className="text-xs font-medium text-stone-400 uppercase tracking-[0.2em]">Get In Touch</span>
+            <span className="text-xs font-medium text-cm-muted uppercase tracking-[0.2em]">Get In Touch</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
             Contact <span className="bg-gradient-to-r from-red-400 via-red-500 to-red-500 bg-clip-text text-transparent">Us</span>
           </h1>
-          <p className="text-lg text-stone-400 font-light max-w-2xl mx-auto">
+          <p className="text-lg text-cm-muted font-light max-w-2xl mx-auto">
             Have a question, concern, or just want to say hello? We&apos;re here to help. Our Canadian-based support team is ready to assist you.
           </p>
         </div>
@@ -77,12 +77,12 @@ export default function ContactPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Address */}
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all group">
+            <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle hover:border-cm-border-hover transition-all group">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-red-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Building2 className="w-5 h-5 text-red-400" />
               </div>
-              <h3 className="text-sm font-semibold text-stone-200 mb-1">Our Office</h3>
-              <p className="text-sm text-stone-400 leading-relaxed">
+              <h3 className="text-sm font-semibold text-cm-secondary mb-1">Our Office</h3>
+              <p className="text-sm text-cm-muted leading-relaxed">
                 Canada Marketplace Inc.<br />
                 14914 104 Ave, Unit 105<br />
                 Surrey, BC V3R 1M7<br />
@@ -91,40 +91,40 @@ export default function ContactPage() {
             </div>
 
             {/* Phone */}
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all group">
+            <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle hover:border-cm-border-hover transition-all group">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-red-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Phone className="w-5 h-5 text-red-300" />
               </div>
-              <h3 className="text-sm font-semibold text-stone-200 mb-1">Phone</h3>
-              <p className="text-sm text-stone-400 leading-relaxed">
+              <h3 className="text-sm font-semibold text-cm-secondary mb-1">Phone</h3>
+              <p className="text-sm text-cm-muted leading-relaxed">
                 <a href="tel:+16044971001" className="hover:text-red-300 transition-colors">(604) 497-1001</a>
               </p>
-              <p className="text-xs text-stone-600 mt-2">Mon-Fri, 10AM - 6PM PST</p>
+              <p className="text-xs text-cm-faint mt-2">Mon-Fri, 10AM - 6PM PST</p>
             </div>
 
             {/* Email */}
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all group">
+            <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle hover:border-cm-border-hover transition-all group">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Mail className="w-5 h-5 text-green-400" />
               </div>
-              <h3 className="text-sm font-semibold text-stone-200 mb-1">Email</h3>
-              <p className="text-sm text-stone-400 leading-relaxed">
+              <h3 className="text-sm font-semibold text-cm-secondary mb-1">Email</h3>
+              <p className="text-sm text-cm-muted leading-relaxed">
                 <a href="mailto:support@canadamarketplace.ca" className="hover:text-green-400 transition-colors">support@canadamarketplace.ca</a>
               </p>
-              <p className="text-xs text-stone-600 mt-2">We respond within 24 hours</p>
+              <p className="text-xs text-cm-faint mt-2">We respond within 24 hours</p>
             </div>
 
             {/* Hours */}
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all group">
+            <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle hover:border-cm-border-hover transition-all group">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Clock className="w-5 h-5 text-purple-400" />
               </div>
-              <h3 className="text-sm font-semibold text-stone-200 mb-1">Business Hours</h3>
-              <div className="text-sm text-stone-400 leading-relaxed">
+              <h3 className="text-sm font-semibold text-cm-secondary mb-1">Business Hours</h3>
+              <div className="text-sm text-cm-muted leading-relaxed">
                 <p>Mon - Fri: 10:00 AM - 6:00 PM</p>
                 <p>Sat: 11:00 AM - 4:00 PM</p>
                 <p>Sun: Closed</p>
-                <p className="text-xs text-stone-600 mt-1">Pacific Standard Time (PST)</p>
+                <p className="text-xs text-cm-faint mt-1">Pacific Standard Time (PST)</p>
               </div>
             </div>
           </div>
@@ -135,21 +135,21 @@ export default function ContactPage() {
       <section className="px-6 pb-20">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Form */}
-          <div className="p-8 rounded-2xl bg-white/[0.03] border border-white/5">
-            <h2 className="text-xl font-bold text-stone-100 mb-1">Send Us a Message</h2>
-            <p className="text-sm text-stone-500 mb-6">Fill out the form below and we&apos;ll get back to you within 24 hours.</p>
+          <div className="p-8 rounded-2xl bg-cm-hover border border-cm-border-subtle">
+            <h2 className="text-xl font-bold text-cm-primary mb-1">Send Us a Message</h2>
+            <p className="text-sm text-cm-dim mb-6">Fill out the form below and we&apos;ll get back to you within 24 hours.</p>
 
             {submitted ? (
               <div className="text-center py-12">
                 <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-4">
                   <CheckCircle className="w-8 h-8 text-green-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-stone-100 mb-2">Message Sent!</h3>
-                <p className="text-sm text-stone-400 mb-6">Thank you for reaching out. Our team will review your message and respond within 24 hours.</p>
+                <h3 className="text-lg font-semibold text-cm-primary mb-2">Message Sent!</h3>
+                <p className="text-sm text-cm-muted mb-6">Thank you for reaching out. Our team will review your message and respond within 24 hours.</p>
                 <Button
                   onClick={() => { setSubmitted(false); setFormData({ name: '', email: '', phone: '', subject: 'general', message: '' }) }}
                   variant="outline"
-                  className="border-white/10 text-stone-300 hover:bg-white/5"
+                  className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover"
                 >
                   Send Another Message
                 </Button>
@@ -158,23 +158,23 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-stone-300 text-xs mb-1.5 block">Full Name *</Label>
+                    <Label className="text-cm-secondary text-xs mb-1.5 block">Full Name *</Label>
                     <Input
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="John Doe"
-                      className="bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 rounded-xl"
+                      className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl"
                       required
                     />
                   </div>
                   <div>
-                    <Label className="text-stone-300 text-xs mb-1.5 block">Email Address *</Label>
+                    <Label className="text-cm-secondary text-xs mb-1.5 block">Email Address *</Label>
                     <Input
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="john@example.com"
-                      className="bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 rounded-xl"
+                      className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl"
                       required
                     />
                   </div>
@@ -182,27 +182,27 @@ export default function ContactPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-stone-300 text-xs mb-1.5 block">Phone Number</Label>
+                    <Label className="text-cm-secondary text-xs mb-1.5 block">Phone Number</Label>
                     <Input
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="(604) 000-0000"
-                      className="bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 rounded-xl"
+                      className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl"
                     />
                   </div>
                   <div>
-                    <Label className="text-stone-300 text-xs mb-1.5 block">Subject *</Label>
+                    <Label className="text-cm-secondary text-xs mb-1.5 block">Subject *</Label>
                     <Select
                       value={formData.subject}
                       onValueChange={(v) => setFormData({ ...formData, subject: v })}
                     >
-                      <SelectTrigger className="bg-white/5 border-white/10 text-stone-200 rounded-xl">
+                      <SelectTrigger className="bg-cm-hover border-cm-border-hover text-cm-secondary rounded-xl">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-neutral-900 border-white/10">
+                      <SelectContent className="bg-cm-elevated border-cm-border-hover">
                         {SUBJECTS.map((s) => (
-                          <SelectItem key={s.value} value={s.value} className="text-stone-300">
+                          <SelectItem key={s.value} value={s.value} className="text-cm-secondary">
                             {s.label}
                           </SelectItem>
                         ))}
@@ -212,13 +212,13 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Message *</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">Message *</Label>
                   <Textarea
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Tell us how we can help you..."
                     rows={5}
-                    className="bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 rounded-xl resize-none"
+                    className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl resize-none"
                     required
                   />
                 </div>
@@ -250,11 +250,11 @@ export default function ContactPage() {
           {/* Map / Office Info */}
           <div className="space-y-6">
             {/* Embedded Map Placeholder */}
-            <div className="rounded-2xl overflow-hidden border border-white/5 h-72 bg-neutral-900 relative flex items-center justify-center">
+            <div className="rounded-2xl overflow-hidden border border-cm-border-subtle h-72 bg-cm-elevated relative flex items-center justify-center">
               <div className="text-center px-6">
                 <MapPin className="w-10 h-10 text-red-400 mx-auto mb-3" />
-                <h3 className="text-lg font-semibold text-stone-200 mb-1">Canada Marketplace HQ</h3>
-                <p className="text-sm text-stone-400">
+                <h3 className="text-lg font-semibold text-cm-secondary mb-1">Canada Marketplace HQ</h3>
+                <p className="text-sm text-cm-muted">
                   14914 104 Ave, Unit 105<br />
                   Surrey, BC V3R 1M7
                 </p>
@@ -269,12 +269,12 @@ export default function ContactPage() {
                 </a>
               </div>
               {/* Decorative grid overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a0a]/80 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-cm-bg/80 pointer-events-none" />
             </div>
 
             {/* FAQ Quick Links */}
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
-              <h3 className="text-sm font-semibold text-stone-200 mb-4">Quick Help</h3>
+            <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle">
+              <h3 className="text-sm font-semibold text-cm-secondary mb-4">Quick Help</h3>
               <div className="space-y-3">
                 {[
                   { label: 'How escrow payments protect you', page: 'safety' as const },
@@ -286,18 +286,18 @@ export default function ContactPage() {
                   <button
                     key={item.label}
                     onClick={() => navigate(item.page)}
-                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm text-stone-400 hover:text-stone-200 hover:bg-white/5 transition-all"
+                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm text-cm-muted hover:text-cm-secondary hover:bg-cm-hover transition-all"
                   >
                     {item.label}
-                    <span className="text-stone-600">→</span>
+                    <span className="text-cm-faint">→</span>
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Trust Badges */}
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
-              <h3 className="text-sm font-semibold text-stone-200 mb-4">Why Choose Us</h3>
+            <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle">
+              <h3 className="text-sm font-semibold text-cm-secondary mb-4">Why Choose Us</h3>
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { icon: '🇨🇦', label: '100% Canadian' },
@@ -305,9 +305,9 @@ export default function ContactPage() {
                   { icon: '🛡️', label: 'Escrow Protected' },
                   { icon: '⚡', label: '24hr Response' },
                 ].map((badge) => (
-                  <div key={badge.label} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.03]">
+                  <div key={badge.label} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-cm-hover">
                     <span className="text-lg">{badge.icon}</span>
-                    <span className="text-xs text-stone-400">{badge.label}</span>
+                    <span className="text-xs text-cm-muted">{badge.label}</span>
                   </div>
                 ))}
               </div>

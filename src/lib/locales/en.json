@@ -292,7 +292,6 @@
       "top5": "Top 5",
       "product": "Product",
       "unitsSold": "Units Sold",
-      "revenue": "Revenue",
       "views": "Views",
       "conversion": "Conv.",
       "noProductData": "No product data yet",
@@ -473,7 +472,7 @@
     "beta": "BETA",
     "yourAssistant": "Your Canadian shopping assistant",
     "mapleThinking": "Maple is thinking...",
-    "aiDisclaimer": "AI-powered assistant \u2022 May not always be accurate",
+    "aiDisclaimer": "AI-powered assistant • May not always be accurate",
     "findAProduct": "Find a product",
     "howCheckoutWorks": "How checkout works",
     "isItSafe": "Is it safe to buy?",
@@ -482,7 +481,7 @@
   },
   "forgotPassword": {
     "title": "Forgot Your Password?",
-    "subtitle": "No worries \u2014 we'll send you a reset link",
+    "subtitle": "No worries — we'll send you a reset link",
     "subtitleSent": "Check your inbox for a reset link",
     "emailAddress": "Email Address",
     "sendResetLink": "Send Reset Link",
@@ -844,5 +843,10 @@
     "ship": "Ship",
     "orderShipped": "Order marked as shipped",
     "orderDelivered": "Order marked as delivered"
+  },
+  "theme": {
+    "dark": "Dark",
+    "light": "Light",
+    "system": "System"
   }
 }

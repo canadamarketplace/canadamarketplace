@@ -41,6 +41,22 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  /* Marketplace Custom Theme Colors */
+  --color-cm-bg: var(--cm-bg);
+  --color-cm-elevated: var(--cm-bg-elevated);
+  --color-cm-deep: var(--cm-bg-deep);
+  --color-cm-input: var(--cm-bg-input);
+  --color-cm-hover: var(--cm-bg-hover);
+  --color-cm-hover-strong: var(--cm-bg-hover-strong);
+  --color-cm-border-subtle: var(--cm-border);
+  --color-cm-border-hover: var(--cm-border-hover);
+  --color-cm-primary: var(--cm-text-primary);
+  --color-cm-secondary: var(--cm-text-secondary);
+  --color-cm-muted: var(--cm-text-muted);
+  --color-cm-dim: var(--cm-text-dim);
+  --color-cm-faint: var(--cm-text-faint);
+  --color-cm-nav: var(--cm-nav-bg);
+  --color-cm-overlay: var(--cm-bg-overlay);
 }
 
 :root {
@@ -76,6 +92,24 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  /* Marketplace Custom Properties - Light Theme */
+  --cm-bg: oklch(0.985 0.002 260);
+  --cm-bg-elevated: oklch(0.96 0.002 260);
+  --cm-bg-deep: oklch(0.94 0.002 260);
+  --cm-bg-input: oklch(0.95 0 0);
+  --cm-bg-hover: oklch(0.93 0.005 260);
+  --cm-bg-hover-strong: oklch(0.88 0.005 260);
+  --cm-bg-overlay: oklch(0.3 0 0 / 50%);
+  --cm-border: oklch(0.88 0.005 260);
+  --cm-border-hover: oklch(0.78 0.005 260);
+  --cm-text-primary: oklch(0.15 0.01 260);
+  --cm-text-secondary: oklch(0.25 0.005 260);
+  --cm-text-muted: oklch(0.45 0.005 260);
+  --cm-text-dim: oklch(0.55 0.005 260);
+  --cm-text-faint: oklch(0.65 0.005 260);
+  --cm-nav-bg: oklch(0.985 0.002 260 / 80%);
+  --cm-scrollbar: oklch(0.82 0 0);
+  --cm-scrollbar-hover: oklch(0.65 0 0);
 }
 
 .dark {
@@ -110,6 +144,24 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  /* Marketplace Custom Properties - Dark Theme */
+  --cm-bg: oklch(0.08 0 0);
+  --cm-bg-elevated: oklch(0.14 0 0);
+  --cm-bg-deep: oklch(0.05 0 0);
+  --cm-bg-input: oklch(0.12 0 0);
+  --cm-bg-hover: oklch(1 0 0 / 5%);
+  --cm-bg-hover-strong: oklch(1 0 0 / 10%);
+  --cm-bg-overlay: oklch(0 0 0 / 50%);
+  --cm-border: oklch(1 0 0 / 5%);
+  --cm-border-hover: oklch(1 0 0 / 10%);
+  --cm-text-primary: oklch(0.97 0 0);
+  --cm-text-secondary: oklch(0.92 0 0);
+  --cm-text-muted: oklch(0.75 0 0);
+  --cm-text-dim: oklch(0.6 0 0);
+  --cm-text-faint: oklch(0.45 0 0);
+  --cm-nav-bg: oklch(0.08 0 0 / 80%);
+  --cm-scrollbar: oklch(1 0 0 / 10%);
+  --cm-scrollbar-hover: oklch(1 0 0 / 20%);
 }
 
 @layer base {
@@ -130,17 +182,17 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--cm-scrollbar);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--cm-scrollbar-hover);
 }
 
 /* Selection */
 ::selection {
   background: rgba(220, 38, 38, 0.3);
-  color: white;
+  color: var(--cm-text-primary);
 }
 
 /* Smooth scroll */
@@ -148,8 +200,8 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Fix for dark theme select dropdowns */
+/* Fix for select dropdowns - theme-aware */
 select option {
-  background-color: #171717;
-  color: #e7e5e4;
+  background-color: var(--cm-bg-elevated);
+  color: var(--cm-text-primary);
 }

@@ -143,7 +143,7 @@ export default function BrowsePage() {
     <div className="space-y-6">
       {/* Category */}
       <div>
-        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('filters.category')}</h3>
+        <h3 className="text-xs font-semibold text-cm-muted uppercase tracking-wider mb-3">{t('filters.category')}</h3>
         <div className="space-y-1.5 max-h-48 overflow-y-auto">
           {CATEGORIES.map((c) => (
             <label key={c.slug} className="flex items-center gap-2.5 cursor-pointer group">
@@ -154,7 +154,7 @@ export default function BrowsePage() {
                 onChange={() => { setCategory(category === c.slug ? '' : c.slug); setPage(1) }}
                 className="w-3.5 h-3.5 accent-red-500"
               />
-              <span className="text-sm text-stone-300 group-hover:text-stone-100">{c.name}</span>
+              <span className="text-sm text-cm-secondary group-hover:text-cm-primary">{c.name}</span>
             </label>
           ))}
         </div>
@@ -162,23 +162,23 @@ export default function BrowsePage() {
 
       {/* Price Range */}
       <div>
-        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('filters.priceRange')}</h3>
+        <h3 className="text-xs font-semibold text-cm-muted uppercase tracking-wider mb-3">{t('filters.priceRange')}</h3>
         <div className="flex items-center gap-2">
           <Input
             type="number"
             placeholder="Min"
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
-            className="w-full bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 h-9 rounded-lg text-sm"
+            className="w-full bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint h-9 rounded-lg text-sm"
             min="0"
           />
-          <span className="text-stone-600 text-sm">—</span>
+          <span className="text-cm-faint text-sm">—</span>
           <Input
             type="number"
             placeholder="Max"
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
-            className="w-full bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 h-9 rounded-lg text-sm"
+            className="w-full bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint h-9 rounded-lg text-sm"
             min="0"
           />
         </div>
@@ -186,7 +186,7 @@ export default function BrowsePage() {
 
       {/* Condition */}
       <div>
-        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('filters.condition')}</h3>
+        <h3 className="text-xs font-semibold text-cm-muted uppercase tracking-wider mb-3">{t('filters.condition')}</h3>
         <div className="space-y-1.5">
           {CONDITIONS.map((c) => (
             <label key={c.value} className="flex items-center gap-2.5 cursor-pointer group">
@@ -196,7 +196,7 @@ export default function BrowsePage() {
                 onChange={() => toggleCondition(c.value)}
                 className="w-3.5 h-3.5 accent-red-500 rounded"
               />
-              <span className="text-sm text-stone-300 group-hover:text-stone-100">{c.label}</span>
+              <span className="text-sm text-cm-secondary group-hover:text-cm-primary">{c.label}</span>
             </label>
           ))}
         </div>
@@ -204,14 +204,14 @@ export default function BrowsePage() {
 
       {/* Seller Rating */}
       <div>
-        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('filters.sellerRating')}</h3>
+        <h3 className="text-xs font-semibold text-cm-muted uppercase tracking-wider mb-3">{t('filters.sellerRating')}</h3>
         <div className="space-y-1.5">
           {RATING_OPTIONS.map((r) => (
             <button
               key={r.value}
               onClick={() => { setRating(r.value); setPage(1) }}
               className={`flex items-center gap-2 w-full text-left px-2 py-1.5 rounded-lg transition-all ${
-                rating === r.value ? 'bg-red-500/10 text-red-300' : 'text-stone-300 hover:bg-white/5'
+                rating === r.value ? 'bg-red-500/10 text-red-300' : 'text-cm-secondary hover:bg-cm-hover'
               }`}
             >
               {r.value !== '0' && (
@@ -230,7 +230,7 @@ export default function BrowsePage() {
 
       {/* Location */}
       <div>
-        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('filters.location')}</h3>
+        <h3 className="text-xs font-semibold text-cm-muted uppercase tracking-wider mb-3">{t('filters.location')}</h3>
         <div className="space-y-1.5">
           {topProvinces.map((p) => (
             <label key={p.slug} className="flex items-center gap-2.5 cursor-pointer group">
@@ -241,12 +241,12 @@ export default function BrowsePage() {
                 onChange={() => { setProvince(province === p.slug ? '' : p.slug); setPage(1) }}
                 className="w-3.5 h-3.5 accent-red-500"
               />
-              <span className="text-sm text-stone-300 group-hover:text-stone-100">{p.name}</span>
+              <span className="text-sm text-cm-secondary group-hover:text-cm-primary">{p.name}</span>
             </label>
           ))}
           {showMoreProvinces && (
             <>
-              <div className="border-t border-white/5 my-2" />
+              <div className="border-t border-cm-border-subtle my-2" />
               {moreProvinces.map((p) => (
                 <label key={p.slug} className="flex items-center gap-2.5 cursor-pointer group">
                   <input
@@ -256,7 +256,7 @@ export default function BrowsePage() {
                     onChange={() => { setProvince(province === p.slug ? '' : p.slug); setPage(1) }}
                     className="w-3.5 h-3.5 accent-red-500"
                   />
-                  <span className="text-sm text-stone-300 group-hover:text-stone-100">{p.name}</span>
+                  <span className="text-sm text-cm-secondary group-hover:text-cm-primary">{p.name}</span>
                 </label>
               ))}
             </>
@@ -273,17 +273,17 @@ export default function BrowsePage() {
 
       {/* Sort By */}
       <div>
-        <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('browse.sortBy')}</h3>
+        <h3 className="text-xs font-semibold text-cm-muted uppercase tracking-wider mb-3">{t('browse.sortBy')}</h3>
         <Select value={sort} onValueChange={(v) => { setSort(v); setPage(1) }}>
-          <SelectTrigger className="bg-white/5 border-white/10 text-stone-200 h-10 rounded-xl">
+          <SelectTrigger className="bg-cm-hover border-cm-border-hover text-cm-secondary h-10 rounded-xl">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="bg-neutral-900 border-white/10">
-            <SelectItem value="newest" className="text-stone-300">{t('filters.sortNewest')}</SelectItem>
-            <SelectItem value="price-low" className="text-stone-300">{t('filters.sortPriceLow')}</SelectItem>
-            <SelectItem value="price-high" className="text-stone-300">{t('filters.sortPriceHigh')}</SelectItem>
-            <SelectItem value="popular" className="text-stone-300">{t('filters.sortPopular')}</SelectItem>
-            <SelectItem value="rating" className="text-stone-300">{t('filters.sortRating')}</SelectItem>
+          <SelectContent className="bg-cm-elevated border-cm-border-hover">
+            <SelectItem value="newest" className="text-cm-secondary">{t('filters.sortNewest')}</SelectItem>
+            <SelectItem value="price-low" className="text-cm-secondary">{t('filters.sortPriceLow')}</SelectItem>
+            <SelectItem value="price-high" className="text-cm-secondary">{t('filters.sortPriceHigh')}</SelectItem>
+            <SelectItem value="popular" className="text-cm-secondary">{t('filters.sortPopular')}</SelectItem>
+            <SelectItem value="rating" className="text-cm-secondary">{t('filters.sortRating')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -299,20 +299,20 @@ export default function BrowsePage() {
   return (
     <div className="min-h-screen">
       {/* Search Header */}
-      <div className="bg-[#050505] border-b border-white/5">
+      <div className="bg-cm-deep border-b border-cm-border-subtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-cm-faint" />
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && setPage(1)}
                 placeholder={t('browse.title') + '...'}
-                className="pl-10 bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 h-12 rounded-xl focus:border-red-500/50"
+                className="pl-10 bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint h-12 rounded-xl focus:border-red-500/50"
               />
               {search && (
-                <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300">
+                <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-cm-dim hover:text-cm-secondary">
                   <X className="w-4 h-4" />
                 </button>
               )}
@@ -320,7 +320,7 @@ export default function BrowsePage() {
             <Button
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className="border-white/10 text-stone-300 hover:bg-white/5 lg:hidden"
+              className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover lg:hidden"
             >
               <SlidersHorizontal className="w-4 h-4 mr-2" />
               {t('browse.filters')}
@@ -331,11 +331,11 @@ export default function BrowsePage() {
               )}
             </Button>
             <Select value={sort} onValueChange={(v) => { setSort(v); setPage(1) }}>
-              <SelectTrigger className="w-48 bg-white/5 border-white/10 text-stone-200 h-12 rounded-xl hidden lg:flex">
-                <ArrowUpDown className="w-4 h-4 mr-2 text-stone-500" />
+              <SelectTrigger className="w-48 bg-cm-hover border-cm-border-hover text-cm-secondary h-12 rounded-xl hidden lg:flex">
+                <ArrowUpDown className="w-4 h-4 mr-2 text-cm-dim" />
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-white/10">
+              <SelectContent className="bg-cm-elevated border-cm-border-hover">
                 <SelectItem value="newest">{t('filters.sortNewest')}</SelectItem>
                 <SelectItem value="price-low">{t('filters.sortPriceLow')}</SelectItem>
                 <SelectItem value="price-high">{t('filters.sortPriceHigh')}</SelectItem>
@@ -349,37 +349,37 @@ export default function BrowsePage() {
           {hasActiveFilters && (
             <div className="flex flex-wrap gap-2 mt-3">
               {category && (
-                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => { setCategory(''); setPage(1) }}>
+                <Badge variant="secondary" className="bg-cm-hover text-cm-secondary border-cm-border-hover gap-1 cursor-pointer hover:bg-cm-hover-strong" onClick={() => { setCategory(''); setPage(1) }}>
                   {CATEGORIES.find(c => c.slug === category)?.name || category} <X className="w-3 h-3" />
                 </Badge>
               )}
               {province && (
-                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => { setProvince(''); setPage(1) }}>
+                <Badge variant="secondary" className="bg-cm-hover text-cm-secondary border-cm-border-hover gap-1 cursor-pointer hover:bg-cm-hover-strong" onClick={() => { setProvince(''); setPage(1) }}>
                   {PROVINCES.find(p => p.slug === province)?.name || province} <X className="w-3 h-3" />
                 </Badge>
               )}
               {search && (
-                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => { setSearch(''); setPage(1) }}>
+                <Badge variant="secondary" className="bg-cm-hover text-cm-secondary border-cm-border-hover gap-1 cursor-pointer hover:bg-cm-hover-strong" onClick={() => { setSearch(''); setPage(1) }}>
                   &quot;{search}&quot; <X className="w-3 h-3" />
                 </Badge>
               )}
               {selectedConditions.map(c => (
-                <Badge key={c} variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => toggleCondition(c)}>
+                <Badge key={c} variant="secondary" className="bg-cm-hover text-cm-secondary border-cm-border-hover gap-1 cursor-pointer hover:bg-cm-hover-strong" onClick={() => toggleCondition(c)}>
                   {c.replace('_', ' ')} <X className="w-3 h-3" />
                 </Badge>
               ))}
               {minPrice && (
-                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => setMinPrice('')}>
+                <Badge variant="secondary" className="bg-cm-hover text-cm-secondary border-cm-border-hover gap-1 cursor-pointer hover:bg-cm-hover-strong" onClick={() => setMinPrice('')}>
                   ${minPrice}+ <X className="w-3 h-3" />
                 </Badge>
               )}
               {maxPrice && (
-                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => setMaxPrice('')}>
+                <Badge variant="secondary" className="bg-cm-hover text-cm-secondary border-cm-border-hover gap-1 cursor-pointer hover:bg-cm-hover-strong" onClick={() => setMaxPrice('')}>
                   &lt;${maxPrice} <X className="w-3 h-3" />
                 </Badge>
               )}
               {rating !== '0' && (
-                <Badge variant="secondary" className="bg-white/5 text-stone-300 border-white/10 gap-1 cursor-pointer hover:bg-white/10" onClick={() => { setRating('0'); setPage(1) }}>
+                <Badge variant="secondary" className="bg-cm-hover text-cm-secondary border-cm-border-hover gap-1 cursor-pointer hover:bg-cm-hover-strong" onClick={() => { setRating('0'); setPage(1) }}>
                   {rating}+ ★ <X className="w-3 h-3" />
                 </Badge>
               )}
@@ -392,9 +392,9 @@ export default function BrowsePage() {
         <div className="flex gap-8">
           {/* Desktop Sidebar */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-24 rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-white/5 p-5">
+            <div className="sticky top-24 rounded-2xl bg-cm-elevated backdrop-blur-xl border border-cm-border-subtle p-5">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-stone-200">{t('browse.filters')}</h3>
+                <h3 className="text-sm font-semibold text-cm-secondary">{t('browse.filters')}</h3>
                 {activeFilterCount > 0 && (
                   <span className="w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
                     {activeFilterCount}
@@ -407,11 +407,11 @@ export default function BrowsePage() {
 
           {/* Mobile Filters */}
           {showFilters && (
-            <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm lg:hidden" onClick={() => setShowFilters(false)}>
-              <div className="absolute bottom-0 left-0 right-0 bg-neutral-900 border-t border-white/10 rounded-t-3xl p-6 max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="fixed inset-0 z-50 bg-cm-overlay backdrop-blur-sm lg:hidden" onClick={() => setShowFilters(false)}>
+              <div className="absolute bottom-0 left-0 right-0 bg-cm-elevated border-t border-cm-border-hover rounded-t-3xl p-6 max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-stone-100">{t('browse.filters')}</h3>
-                  <button onClick={() => setShowFilters(false)} className="p-2 text-stone-400"><X className="w-5 h-5" /></button>
+                  <h3 className="text-lg font-semibold text-cm-primary">{t('browse.filters')}</h3>
+                  <button onClick={() => setShowFilters(false)} className="p-2 text-cm-muted"><X className="w-5 h-5" /></button>
                 </div>
                 {filterContent}
                 <Button
@@ -427,7 +427,7 @@ export default function BrowsePage() {
           {/* Products Grid */}
           <div className="flex-1">
             <div className="flex items-center justify-between mb-6">
-              <p className="text-sm text-stone-500">
+              <p className="text-sm text-cm-dim">
                 {loading ? t('common.loading') : `${total} product${total !== 1 ? 's' : ''} found`}
               </p>
             </div>
@@ -435,21 +435,21 @@ export default function BrowsePage() {
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                 {Array.from({ length: 9 }).map((_, i) => (
-                  <div key={i} className="rounded-2xl bg-neutral-900/60 border border-white/5 overflow-hidden animate-pulse">
-                    <div className="aspect-square bg-neutral-800" />
+                  <div key={i} className="rounded-2xl bg-cm-elevated border border-cm-border-subtle overflow-hidden animate-pulse">
+                    <div className="aspect-square bg-cm-input" />
                     <div className="p-4 space-y-3">
-                      <div className="h-4 bg-neutral-800 rounded w-3/4" />
-                      <div className="h-3 bg-neutral-800 rounded w-1/2" />
+                      <div className="h-4 bg-cm-input rounded w-3/4" />
+                      <div className="h-3 bg-cm-input rounded w-1/2" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : products.length === 0 ? (
-              <div className="text-center py-20 rounded-2xl bg-neutral-900/60 border border-white/5">
-                <Package className="w-16 h-16 text-stone-700 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-stone-400 mb-2">{t('browse.noResults')}</h3>
-                <p className="text-sm text-stone-600 mb-4">{t('filters.noResultsDesc')}</p>
-                <Button variant="outline" onClick={clearFilters} className="border-white/10 text-stone-300">
+              <div className="text-center py-20 rounded-2xl bg-cm-elevated border border-cm-border-subtle">
+                <Package className="w-16 h-16 text-cm-faint mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-cm-muted mb-2">{t('browse.noResults')}</h3>
+                <p className="text-sm text-cm-faint mb-4">{t('filters.noResultsDesc')}</p>
+                <Button variant="outline" onClick={clearFilters} className="border-cm-border-hover text-cm-secondary">
                   {t('filters.clearAll')}
                 </Button>
               </div>
@@ -465,17 +465,17 @@ export default function BrowsePage() {
                     const maxVariantPrice = hasVariants ? product.price + Math.max(...product.variants!.map(v => v.priceDelta || 0)) : product.price
                     const hasPriceRange = hasVariants && minVariantPrice !== maxVariantPrice
                     return (
-                      <div key={product.id} className="rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-white/5 hover:border-white/10 overflow-hidden transition-all group">
+                      <div key={product.id} className="rounded-2xl bg-cm-elevated backdrop-blur-xl border border-cm-border-subtle hover:border-cm-border-hover overflow-hidden transition-all group">
                         <button onClick={() => navigate('product-detail', { id: product.id })} className="block w-full">
-                          <div className="aspect-square bg-neutral-800 relative overflow-hidden">
+                          <div className="aspect-square bg-cm-input relative overflow-hidden">
                             {images.length > 0 ? (
                               <img src={images[0]} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-stone-700"><Package className="w-12 h-12" /></div>
+                              <div className="w-full h-full flex items-center justify-center text-cm-faint"><Package className="w-12 h-12" /></div>
                             )}
                             <button
                               onClick={(e) => { e.stopPropagation(); toggleItem({ productId: product.id, title: product.title, price: product.price, image: getImages(product.images)[0], storeName: product.store.name, storeSlug: product.store.slug }) }}
-                              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-stone-300 hover:text-red-400 transition-all z-10"
+                              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-cm-secondary hover:text-red-400 transition-all z-10"
                             >
                               <Heart className={`w-4 h-4 ${isWished(product.id) ? 'fill-red-500 text-red-500' : ''}`} />
                             </button>
@@ -489,31 +489,31 @@ export default function BrowsePage() {
                             )}
                           </div>
                           <div className="p-4">
-                            <h3 className="text-sm font-medium text-stone-200 truncate group-hover:text-stone-100">{product.title}</h3>
-                            <p className="text-xs text-stone-600 mt-0.5">{product.store.name}</p>
+                            <h3 className="text-sm font-medium text-cm-secondary truncate group-hover:text-cm-primary">{product.title}</h3>
+                            <p className="text-xs text-cm-faint mt-0.5">{product.store.name}</p>
                             <div className="flex items-center gap-1 mt-1.5">
                               <div className="flex">
                                 {Array.from({ length: 5 }).map((_, i) => (
                                   <Star key={i} className={`w-3 h-3 ${i < Math.round(product.store.rating || 0) ? 'text-red-300 fill-red-300' : 'text-neutral-700'}`} />
                                 ))}
                               </div>
-                              <span className="text-[10px] text-stone-600">({product._count.reviews})</span>
+                              <span className="text-[10px] text-cm-faint">({product._count.reviews})</span>
                             </div>
                             <div className="flex items-center gap-2 mt-2">
                               <span className="text-base font-bold text-red-400">
                                 {hasPriceRange ? `$${minVariantPrice.toFixed(2)} - $${maxVariantPrice.toFixed(2)}` : `$${product.price.toFixed(2)}`}
                               </span>
                               {hasDiscount && !hasVariants && (
-                                <span className="text-xs text-stone-600 line-through">${product.comparePrice!.toFixed(2)}</span>
+                                <span className="text-xs text-cm-faint line-through">${product.comparePrice!.toFixed(2)}</span>
                               )}
                             </div>
                             {hasVariants && (
-                              <Badge className="mt-1.5 bg-white/5 text-stone-400 text-[10px] px-2 py-0.5 rounded-lg border-0">
+                              <Badge className="mt-1.5 bg-cm-hover text-cm-muted text-[10px] px-2 py-0.5 rounded-lg border-0">
                                 Multiple options
                               </Badge>
                             )}
                             {product.province && (
-                              <div className="flex items-center gap-1 mt-1.5 text-[10px] text-stone-600">
+                              <div className="flex items-center gap-1 mt-1.5 text-[10px] text-cm-faint">
                                 <MapPin className="w-3 h-3" /> {product.city}{product.province ? `, ${product.province}` : ''}
                               </div>
                             )}
@@ -540,7 +540,7 @@ export default function BrowsePage() {
                       variant="outline"
                       onClick={() => setPage(p => Math.max(1, p - 1))}
                       disabled={page === 1}
-                      className="border-white/10 text-stone-400 hover:bg-white/5 disabled:opacity-30 rounded-xl"
+                      className="border-cm-border-hover text-cm-muted hover:bg-cm-hover disabled:opacity-30 rounded-xl"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </Button>
@@ -562,7 +562,7 @@ export default function BrowsePage() {
                           onClick={() => setPage(pageNum)}
                           className={pageNum === page
                             ? 'bg-red-600 text-white hover:bg-red-500 rounded-xl min-w-[40px]'
-                            : 'border-white/10 text-stone-400 hover:bg-white/5 rounded-xl min-w-[40px]'
+                            : 'border-cm-border-hover text-cm-muted hover:bg-cm-hover rounded-xl min-w-[40px]'
                           }
                         >
                           {pageNum}
@@ -573,7 +573,7 @@ export default function BrowsePage() {
                       variant="outline"
                       onClick={() => setPage(p => Math.min(pages, p + 1))}
                       disabled={page === pages}
-                      className="border-white/10 text-stone-400 hover:bg-white/5 disabled:opacity-30 rounded-xl"
+                      className="border-cm-border-hover text-cm-muted hover:bg-cm-hover disabled:opacity-30 rounded-xl"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </Button>

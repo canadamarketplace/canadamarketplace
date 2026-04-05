@@ -354,9 +354,9 @@ export default function MessagingPage() {
     return (
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
-          <MessageCircle className="w-16 h-16 text-stone-700 mb-4" />
-          <h2 className="text-xl font-semibold text-stone-300 mb-2">{t('messaging.signInToMessage')}</h2>
-          <p className="text-stone-500 mb-6">{t('messaging.signInToMessageDesc')}</p>
+          <MessageCircle className="w-16 h-16 text-cm-faint mb-4" />
+          <h2 className="text-xl font-semibold text-cm-secondary mb-2">{t('messaging.signInToMessage')}</h2>
+          <p className="text-cm-dim mb-6">{t('messaging.signInToMessageDesc')}</p>
           <Button onClick={() => useNavigation.getState().openAuthModal('login')} className="bg-red-600 hover:bg-red-700 text-white rounded-xl">
             {t('nav.signIn')}
           </Button>
@@ -369,7 +369,7 @@ export default function MessagingPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
       {/* Page Header */}
       <div className="flex items-center gap-3 mb-6">
-        <h1 className="text-2xl font-bold text-stone-100">{t('messaging.title')}</h1>
+        <h1 className="text-2xl font-bold text-cm-primary">{t('messaging.title')}</h1>
         <Badge className="bg-red-500/10 text-red-400 border-red-500/20 border">
           {conversations.length} {conversations.length !== 1 ? t('messaging.conversations_plural') : t('messaging.conversations')}
         </Badge>
@@ -392,22 +392,22 @@ export default function MessagingPage() {
         </div>
       </div>
 
-      <div className="flex gap-0 rounded-2xl overflow-hidden border border-white/5 bg-neutral-900/60" style={{ height: 'calc(100vh - 180px)', minHeight: '500px' }}>
+      <div className="flex gap-0 rounded-2xl overflow-hidden border border-cm-border-subtle bg-cm-elevated" style={{ height: 'calc(100vh - 180px)', minHeight: '500px' }}>
         {/* Left Panel — Conversation List */}
         <div
-          className={`flex flex-col border-r border-white/5 ${
+          className={`flex flex-col border-r border-cm-border-subtle ${
             mobileShowChat ? 'hidden md:flex' : 'flex'
           } w-full md:w-[360px] flex-shrink-0`}
         >
           {/* Search */}
-          <div className="p-4 border-b border-white/5">
+          <div className="p-4 border-b border-cm-border-subtle">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cm-dim" />
               <Input
                 placeholder={t('messaging.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 bg-neutral-800 border-white/10 text-stone-100 placeholder:text-stone-600 rounded-xl h-10"
+                className="pl-9 bg-cm-input border-cm-border-hover text-cm-primary placeholder:text-cm-faint rounded-xl h-10"
               />
             </div>
           </div>
@@ -417,15 +417,15 @@ export default function MessagingPage() {
             {loading ? (
               <div className="flex flex-col items-center justify-center py-16">
                 <div className="w-8 h-8 border-2 border-red-500/30 border-t-red-500 rounded-full animate-spin" />
-                <p className="text-sm text-stone-500 mt-3">{t('messaging.loadingConversations')}</p>
+                <p className="text-sm text-cm-dim mt-3">{t('messaging.loadingConversations')}</p>
               </div>
             ) : filteredConversations.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 px-4">
-                <MessageCircle className="w-12 h-12 text-stone-700 mb-3" />
-                <p className="text-stone-400 font-medium mb-1">
+                <MessageCircle className="w-12 h-12 text-cm-faint mb-3" />
+                <p className="text-cm-muted font-medium mb-1">
                   {searchQuery ? t('messaging.noConversationsFound') : t('messaging.noConversations')}
                 </p>
-                <p className="text-sm text-stone-600 text-center">
+                <p className="text-sm text-cm-faint text-center">
                   {searchQuery
                     ? t('messaging.tryDifferentSearch')
                     : t('messaging.noConversationsDesc')}
@@ -439,8 +439,8 @@ export default function MessagingPage() {
                     onClick={() => handleSelectConversation(conv.id)}
                     className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left group ${
                       selectedConversationId === conv.id
-                        ? 'bg-white/5 border border-white/10'
-                        : 'hover:bg-white/[0.03] border border-transparent'
+                        ? 'bg-cm-hover border border-cm-border-hover'
+                        : 'hover:bg-cm-hover border border-transparent'
                     }`}
                   >
                     <div className="relative flex-shrink-0">
@@ -459,15 +459,15 @@ export default function MessagingPage() {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-sm font-medium text-stone-200 truncate">
+                        <span className="text-sm font-medium text-cm-secondary truncate">
                           {conv.otherParticipant.name}
                         </span>
-                        <span className="text-[10px] text-stone-600 flex-shrink-0">
+                        <span className="text-[10px] text-cm-faint flex-shrink-0">
                           {formatTime(conv.lastMessageAt)}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <p className={`text-xs truncate flex-1 ${conv.unreadCount > 0 ? 'text-stone-300 font-medium' : 'text-stone-500'}`}>
+                        <p className={`text-xs truncate flex-1 ${conv.unreadCount > 0 ? 'text-cm-secondary font-medium' : 'text-cm-dim'}`}>
                           {conv.lastMessage || ''}
                         </p>
                         {conv.unreadCount > 0 && (
@@ -491,11 +491,11 @@ export default function MessagingPage() {
           {selectedConversationId && fullConversation ? (
             <>
               {/* Chat Header */}
-              <div className="flex items-center gap-3 p-4 border-b border-white/5 bg-neutral-900/80">
+              <div className="flex items-center gap-3 p-4 border-b border-cm-border-subtle bg-cm-elevated/80">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="md:hidden text-stone-400 hover:text-stone-200 hover:bg-white/5 h-9 w-9"
+                  className="md:hidden text-cm-muted hover:text-cm-secondary hover:bg-cm-hover h-9 w-9"
                   onClick={handleBackToList}
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -513,14 +513,14 @@ export default function MessagingPage() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-semibold text-stone-100 truncate">
+                  <h3 className="text-sm font-semibold text-cm-primary truncate">
                     {fullConversation.otherParticipant.name}
                   </h3>
                   <div className="flex items-center gap-2">
                     <Badge className={`${ROLE_COLORS[fullConversation.otherParticipant.role] || ROLE_COLORS.BUYER} text-[10px] border px-1.5 py-0`}>
                       {fullConversation.otherParticipant.role}
                     </Badge>
-                    <span className={`flex items-center gap-1 text-[10px] ${isParticipantOnline ? 'text-green-400' : 'text-stone-500'}`}>
+                    <span className={`flex items-center gap-1 text-[10px] ${isParticipantOnline ? 'text-green-400' : 'text-cm-dim'}`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${isParticipantOnline ? 'bg-green-400' : 'bg-stone-500'}`} />
                       {isParticipantOnline ? 'Online' : 'Offline'}
                     </span>
@@ -533,9 +533,9 @@ export default function MessagingPage() {
                 <div className="space-y-3 max-w-3xl mx-auto">
                   {messages.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-16">
-                      <MessageCircle className="w-12 h-12 text-stone-700 mb-3" />
-                      <p className="text-stone-400 font-medium">{t('messaging.noMessagesYet')}</p>
-                      <p className="text-sm text-stone-600 mt-1">
+                      <MessageCircle className="w-12 h-12 text-cm-faint mb-3" />
+                      <p className="text-cm-muted font-medium">{t('messaging.noMessagesYet')}</p>
+                      <p className="text-sm text-cm-faint mt-1">
                         {t('messaging.sayHelloTo', { name: fullConversation.otherParticipant.name })}
                       </p>
                     </div>
@@ -565,19 +565,19 @@ export default function MessagingPage() {
                               className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
                                 msg.isOwn
                                   ? 'bg-gradient-to-br from-red-600 to-red-700 text-white rounded-br-md'
-                                  : 'bg-neutral-800 text-stone-200 rounded-bl-md'
+                                  : 'bg-cm-input text-cm-secondary rounded-bl-md'
                               }`}
                             >
                               {msg.content}
                             </div>
                             <div className={`flex items-center gap-1.5 mt-1 px-1 ${msg.isOwn ? 'flex-row-reverse' : 'flex-row'}`}>
-                              <span className="text-[10px] text-stone-600">
+                              <span className="text-[10px] text-cm-faint">
                                 {formatMessageTime(msg.createdAt)}
                               </span>
                               {msg.isOwn && (
                                 msg.isRead
                                   ? <span className="text-[10px] text-blue-400">{t('messaging.read')}</span>
-                                  : <span className="text-[10px] text-stone-600">{t('messaging.sent')}</span>
+                                  : <span className="text-[10px] text-cm-faint">{t('messaging.sent')}</span>
                               )
                               }
                             </div>
@@ -597,7 +597,7 @@ export default function MessagingPage() {
                             {getInitials(fullConversation.otherParticipant.name)}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="bg-neutral-800 px-4 py-3 rounded-2xl rounded-bl-md">
+                        <div className="bg-cm-input px-4 py-3 rounded-2xl rounded-bl-md">
                           <div className="flex items-center gap-1">
                             <span className="w-2 h-2 bg-stone-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                             <span className="w-2 h-2 bg-stone-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -613,7 +613,7 @@ export default function MessagingPage() {
               </ScrollArea>
 
               {/* Message Input */}
-              <div className="p-4 border-t border-white/5 bg-neutral-900/80">
+              <div className="p-4 border-t border-cm-border-subtle bg-cm-elevated/80">
                 <div className="flex items-center gap-2 max-w-3xl mx-auto">
                   <Input
                     ref={inputRef}
@@ -622,7 +622,7 @@ export default function MessagingPage() {
                     onChange={(e) => handleInputChange(e.target.value)}
                     onKeyDown={handleKeyDown}
                     disabled={sendingMessage}
-                    className="flex-1 bg-neutral-800 border-white/10 text-stone-100 placeholder:text-stone-600 rounded-xl h-11 disabled:opacity-50"
+                    className="flex-1 bg-cm-input border-cm-border-hover text-cm-primary placeholder:text-cm-faint rounded-xl h-11 disabled:opacity-50"
                   />
                   <Button
                     onClick={handleSendMessage}
@@ -642,17 +642,17 @@ export default function MessagingPage() {
           ) : (
             /* Empty state — no conversation selected */
             <div className="flex-1 flex flex-col items-center justify-center px-4">
-              <div className="w-20 h-20 rounded-2xl bg-neutral-800/60 border border-white/5 flex items-center justify-center mb-5">
-                <MessageCircle className="w-10 h-10 text-stone-600" />
+              <div className="w-20 h-20 rounded-2xl bg-cm-input border border-cm-border-subtle flex items-center justify-center mb-5">
+                <MessageCircle className="w-10 h-10 text-cm-faint" />
               </div>
-              <h3 className="text-lg font-semibold text-stone-300 mb-2">{t('messaging.selectConversation')}</h3>
-              <p className="text-sm text-stone-500 text-center max-w-sm">
+              <h3 className="text-lg font-semibold text-cm-secondary mb-2">{t('messaging.selectConversation')}</h3>
+              <p className="text-sm text-cm-dim text-center max-w-sm">
                 {t('messaging.selectConversationDesc')}
               </p>
               <Button
                 variant="outline"
                 onClick={() => navigate('browse')}
-                className="mt-5 border-white/10 text-stone-400 hover:bg-white/5 hover:text-stone-200 rounded-xl"
+                className="mt-5 border-cm-border-hover text-cm-muted hover:bg-cm-hover hover:text-cm-secondary rounded-xl"
               >
                 {t('browse.title')}
               </Button>

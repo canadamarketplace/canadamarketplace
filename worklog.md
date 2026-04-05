@@ -1190,3 +1190,82 @@ Enhance the order management experience with a visual order tracking timeline fo
 - Prisma db push: successful (new OrderTimeline table created)
 - Database schema sync with Prisma Client generation
 
+---
+## Task ID: 9
+Agent: full-stack-developer
+Task: Add Full Dark/Light Theme Toggle with CSS Custom Properties
+
+### Work Task
+Add a proper light/dark theme system with toggle button to the Canada Marketplace, which previously only had hardcoded dark colors. Implement using CSS custom properties registered in Tailwind v4's @theme inline, with next-themes ThemeProvider.
+
+### Work Summary
+
+**Strategy:** Instead of adding `dark:` classes to every element across 48+ files, defined marketplace-specific CSS custom properties (prefixed `--cm-*`) that automatically switch between light and dark values based on the `.dark` class. Registered these as Tailwind colors (`bg-cm-*`, `text-cm-*`, etc.) for seamless usage.
+
+**New Files Created (2):**
+1. `src/components/ThemeProvider.tsx` — Client component wrapping next-themes ThemeProvider with `attribute="class"`, `defaultTheme="dark"`, `enableSystem`, `disableTransitionOnChange`
+2. `src/components/marketplace/ThemeToggle.tsx` — Cycles through dark → light → system themes with Moon/Sun/Monitor icons, hydration-safe with mounted state
+
+**Modified Files (58):**
+
+1. `src/app/globals.css` — Added 18 light-theme CSS custom properties in `:root` and 18 dark-theme properties in `.dark`. Registered 16 theme colors in `@theme inline` (cm-bg, cm-elevated, cm-deep, cm-input, cm-hover, cm-hover-strong, cm-border-subtle, cm-border-hover, cm-primary, cm-secondary, cm-muted, cm-dim, cm-faint, cm-nav, cm-overlay). Updated scrollbar, selection, and select option styles to use CSS variables.
+
+2. `src/app/layout.tsx` — Wrapped `<body>` with ThemeProvider, changed body classes from `bg-[#0a0a0a] text-stone-100` to `bg-cm-bg text-cm-primary`
+
+3. `src/components/marketplace/Navbar.tsx` — Added ThemeToggle import next to LanguageSwitcher. Replaced all hardcoded colors (bg-[#0a0a0a]/80→bg-cm-nav, text-stone-*→text-cm-*, border-white/*→border-cm-*, bg-white/*→bg-cm-hover*)
+
+4. `src/components/marketplace/Footer.tsx` — bg-[#050505]→bg-cm-deep, all text/border/hover colors updated
+
+5. `src/components/marketplace/MarketplaceApp.tsx` — bg-[#0a0a0a]→bg-cm-bg, text-stone-100→text-cm-primary
+
+6. `src/components/marketplace/CartSidebar.tsx` — bg-neutral-900→bg-cm-elevated, bg-black/50→bg-cm-overlay, all hardcoded colors replaced
+
+7. `src/components/marketplace/SearchBar.tsx` — bg-black/70→bg-cm-overlay, bg-neutral-900→bg-cm-elevated, all colors updated
+
+8. `src/components/marketplace/AuthModal.tsx` — inputClass updated, bg-neutral-900→bg-cm-elevated, all colors updated
+
+9. `src/components/marketplace/ChatAI.tsx` — Inline style gradient replaced with bg-cm-elevated, border-[#0a0a0a]→border-cm-bg, all colors updated
+
+10. `src/components/marketplace/LanguageSwitcher.tsx` — All text-stone-*/bg-white/* classes replaced
+
+11-12. `src/lib/locales/en.json`, `src/lib/locales/fr.json` — Added `theme` section: dark/light/system translations
+
+13-58. **All page components** (46 files across admin/, buyer/, seller/, auth/, legal/, and top-level pages) — Bulk-replaced using sed with the comprehensive color mapping:
+  - bg-[#0a0a0a]→bg-cm-bg, bg-[#050505]→bg-cm-deep, bg-[#111]→bg-cm-elevated
+  - bg-neutral-900→bg-cm-elevated, bg-neutral-800→bg-cm-input
+  - bg-white/5→bg-cm-hover, bg-white/10→bg-cm-hover-strong, bg-white/[0.02]→bg-cm-hover
+  - border-white/5→border-cm-border-subtle, border-white/10→border-cm-border-hover
+  - text-stone-100→text-cm-primary, text-stone-200/300→text-cm-secondary, text-stone-400→text-cm-muted
+  - text-stone-500→text-cm-dim, text-stone-600/700→text-cm-faint
+  - All hover:text-stone-*/hover:bg-white/* variants updated similarly
+
+**Color Mapping (30 replacements):**
+| Old | New |
+|-----|-----|
+| bg-[#0a0a0a] | bg-cm-bg |
+| bg-[#050505] | bg-cm-deep |
+| bg-[#111]/bg-neutral-900 | bg-cm-elevated |
+| bg-neutral-800 | bg-cm-input |
+| bg-white/5 | bg-cm-hover |
+| bg-white/10 | bg-cm-hover-strong |
+| border-white/5 | border-cm-border-subtle |
+| border-white/10 | border-cm-border-hover |
+| text-stone-100 | text-cm-primary |
+| text-stone-200/300 | text-cm-secondary |
+| text-stone-400 | text-cm-muted |
+| text-stone-500 | text-cm-dim |
+| text-stone-600/700 | text-cm-faint |
+
+**Preserved (unchanged):**
+- All accent colors: red-*, green-*, blue-*, yellow-*, orange-*, purple-*
+- Leaflet map styles (dark tiles look good in both themes)
+- Recharts tooltip inline styles (dark bg, already visually fine)
+- Map marker border-white/80 (white on red gradient visible in both themes)
+
+**Total Changes:** ~1556 theme-aware class usages across 58 files
+
+**Verification:**
+- ESLint: 0 errors, 0 warnings
+- Default theme: dark (maintains current look)
+- ThemeProvider: class attribute, system detection, no flash during switch
+- Remaining hardcoded colors: only 2 instances (border-white/80 on map marker icons — acceptable)

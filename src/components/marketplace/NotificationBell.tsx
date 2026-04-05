@@ -35,7 +35,7 @@ const typeIcons: Record<string, { icon: typeof Package; color: string; bg: strin
 }
 
 function getTypeIcon(type: string) {
-  return typeIcons[type] || { icon: Bell, color: 'text-stone-400', bg: 'bg-white/5' }
+  return typeIcons[type] || { icon: Bell, color: 'text-cm-muted', bg: 'bg-cm-hover' }
 }
 
 function formatRelativeTime(dateStr: string, t: (key: string, params?: Record<string, string | number>) => string): string {
@@ -196,7 +196,7 @@ export default function NotificationBell() {
       <button
         ref={bellRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-stone-400 hover:text-stone-100 rounded-lg hover:bg-white/5 transition-all"
+        className="relative p-2 text-cm-muted hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all"
         aria-label={t('notifications.title')}
       >
         <Bell className="w-5 h-5" />
@@ -211,11 +211,11 @@ export default function NotificationBell() {
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute right-0 top-full mt-2 w-96 bg-neutral-900 border border-white/10 rounded-xl shadow-2xl shadow-black/40 z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
+          className="absolute right-0 top-full mt-2 w-96 bg-cm-elevated border border-cm-border-hover rounded-xl shadow-2xl shadow-black/40 z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-            <h3 className="text-sm font-semibold text-stone-100">{t('notifications.title')}</h3>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-cm-border-hover">
+            <h3 className="text-sm font-semibold text-cm-primary">{t('notifications.title')}</h3>
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
@@ -232,9 +232,9 @@ export default function NotificationBell() {
           <div className="max-h-96 overflow-y-auto custom-scrollbar">
             {notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 px-4">
-                <BellOff className="w-10 h-10 text-stone-600 mb-3" />
-                <p className="text-sm text-stone-500">{t('notifications.noNotifications')}</p>
-                <p className="text-xs text-stone-600 mt-1">{t('notifications.noNotificationsDesc')}</p>
+                <BellOff className="w-10 h-10 text-cm-faint mb-3" />
+                <p className="text-sm text-cm-dim">{t('notifications.noNotifications')}</p>
+                <p className="text-xs text-cm-faint mt-1">{t('notifications.noNotificationsDesc')}</p>
               </div>
             ) : (
               <div>
@@ -244,8 +244,8 @@ export default function NotificationBell() {
                     <button
                       key={notification.id}
                       onClick={() => handleMarkAsRead(notification.id, notification.link)}
-                      className={`w-full flex items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 border-b border-white/5 last:border-b-0 ${
-                        !notification.isRead ? 'bg-white/[0.02]' : ''
+                      className={`w-full flex items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-cm-hover border-b border-cm-border-subtle last:border-b-0 ${
+                        !notification.isRead ? 'bg-cm-hover' : ''
                       }`}
                     >
                       {/* Type Icon */}
@@ -256,17 +256,17 @@ export default function NotificationBell() {
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start gap-2">
-                          <p className={`text-sm leading-snug flex-1 ${!notification.isRead ? 'font-semibold text-stone-100' : 'text-stone-300'}`}>
+                          <p className={`text-sm leading-snug flex-1 ${!notification.isRead ? 'font-semibold text-cm-primary' : 'text-cm-secondary'}`}>
                             {notification.title}
                           </p>
                           {!notification.isRead && (
                             <span className="shrink-0 w-2 h-2 rounded-full bg-blue-500 mt-1.5" />
                           )}
                         </div>
-                        <p className="text-xs text-stone-500 mt-0.5 line-clamp-2">
+                        <p className="text-xs text-cm-dim mt-0.5 line-clamp-2">
                           {notification.message}
                         </p>
-                        <p className="text-[11px] text-stone-600 mt-1">
+                        <p className="text-[11px] text-cm-faint mt-1">
                           {formatRelativeTime(notification.createdAt, t)}
                         </p>
                       </div>
@@ -279,13 +279,13 @@ export default function NotificationBell() {
 
           {/* Footer */}
           {notifications.length > 0 && (
-            <div className="border-t border-white/10">
+            <div className="border-t border-cm-border-hover">
               <button
                 onClick={() => {
                   setIsOpen(false)
                   navigate('notifications')
                 }}
-                className="w-full flex items-center justify-center gap-1 px-4 py-2.5 text-xs text-red-400 hover:text-red-300 hover:bg-white/5 transition-colors"
+                className="w-full flex items-center justify-center gap-1 px-4 py-2.5 text-xs text-red-400 hover:text-red-300 hover:bg-cm-hover transition-colors"
               >
                 {t('notifications.viewAll')}
                 <ChevronRight className="w-3.5 h-3.5" />

@@ -291,7 +291,6 @@
       "top5": "Top 5",
       "product": "Produit",
       "unitsSold": "Unités vendues",
-      "revenue": "Revenus",
       "views": "Vues",
       "conversion": "Conv.",
       "noProductData": "Aucune donnée de produit",
@@ -472,7 +471,7 @@
     "beta": "BÊTA",
     "yourAssistant": "Votre assistant d'achat canadien",
     "mapleThinking": "Érable réfléchit...",
-    "aiDisclaimer": "Assistant IA \u2022 Peut ne pas toujours être exact",
+    "aiDisclaimer": "Assistant IA • Peut ne pas toujours être exact",
     "findAProduct": "Trouver un produit",
     "howCheckoutWorks": "La commande en détail",
     "isItSafe": "Est-ce sécuritaire?",
@@ -843,5 +842,10 @@
     "ship": "Expédier",
     "orderShipped": "Commande marquée comme expédiée",
     "orderDelivered": "Commande marquée comme livrée"
+  },
+  "theme": {
+    "dark": "Sombre",
+    "light": "Clair",
+    "system": "Système"
   }
 }

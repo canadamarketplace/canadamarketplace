@@ -80,14 +80,14 @@ export default function BecomeSellerPage() {
   const { openAuthModal } = useNavigation.getState()
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-cm-bg">
       {/* Hero */}
       <section className="relative py-24 px-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-red-900/10 via-transparent to-transparent" />
         <div className="absolute top-10 left-1/3 w-72 h-72 bg-red-600/5 rounded-full blur-3xl" />
         <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-red-600/5 rounded-full blur-3xl" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <button onClick={() => navigate('home')} className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 mb-6 group">
+          <button onClick={() => navigate('home')} className="inline-flex items-center gap-2 text-sm text-cm-dim hover:text-cm-secondary mb-6 group">
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Home
           </button>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-red-500/20 bg-red-500/5 mb-6">
@@ -97,7 +97,7 @@ export default function BecomeSellerPage() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
             Become a <span className="bg-gradient-to-r from-red-300 via-red-400 to-red-500 bg-clip-text text-transparent">Verified Seller</span>
           </h1>
-          <p className="text-lg text-stone-400 font-light max-w-2xl mx-auto mb-8 leading-relaxed">
+          <p className="text-lg text-cm-muted font-light max-w-2xl mx-auto mb-8 leading-relaxed">
             Join thousands of Canadian entrepreneurs selling on Canada&apos;s most trusted marketplace. Low fees, fast payouts, escrow protection, and buyers across all 13 provinces.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -114,7 +114,7 @@ export default function BecomeSellerPage() {
             <Button
               variant="outline"
               onClick={() => navigate('seller-terms')}
-              className="border-white/10 text-stone-300 hover:bg-white/5 rounded-2xl px-8"
+              className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-2xl px-8"
             >
               Read Seller Agreement
             </Button>
@@ -124,15 +124,15 @@ export default function BecomeSellerPage() {
           <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto mt-16">
             <div className="text-center">
               <div className="text-2xl md:text-3xl font-bold text-red-300">8%</div>
-              <div className="text-xs text-stone-500 mt-1">Marketplace Fee</div>
+              <div className="text-xs text-cm-dim mt-1">Marketplace Fee</div>
             </div>
             <div className="text-center">
               <div className="text-2xl md:text-3xl font-bold text-red-300">2 Days</div>
-              <div className="text-xs text-stone-500 mt-1">Payout Speed</div>
+              <div className="text-xs text-cm-dim mt-1">Payout Speed</div>
             </div>
             <div className="text-center">
               <div className="text-2xl md:text-3xl font-bold text-red-300">$0</div>
-              <div className="text-xs text-stone-500 mt-1">Monthly Fees</div>
+              <div className="text-xs text-cm-dim mt-1">Monthly Fees</div>
             </div>
           </div>
         </div>
@@ -149,17 +149,17 @@ export default function BecomeSellerPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {STEPS.map((item, idx) => (
-              <div key={item.step} className="relative p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all group">
+              <div key={item.step} className="relative p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle hover:border-cm-border-hover transition-all group">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-bold text-stone-600">{item.step}</span>
+                  <span className="text-xs font-bold text-cm-faint">{item.step}</span>
                   <div className={`w-12 h-12 rounded-xl bg-${item.color}-500/10 flex items-center justify-center group-hover:scale-110 transition-transform`}>
                     <item.icon className={`w-5 h-5 text-${item.color}-400`} />
                   </div>
                 </div>
-                <h3 className="text-base font-semibold text-stone-200 mb-2">{item.title}</h3>
-                <p className="text-sm text-stone-400 leading-relaxed">{item.desc}</p>
+                <h3 className="text-base font-semibold text-cm-secondary mb-2">{item.title}</h3>
+                <p className="text-sm text-cm-muted leading-relaxed">{item.desc}</p>
                 {idx < STEPS.length - 1 && (
-                  <ChevronRight className="absolute -right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-700 hidden lg:block" />
+                  <ChevronRight className="absolute -right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-cm-faint hidden lg:block" />
                 )}
               </div>
             ))}
@@ -178,12 +178,12 @@ export default function BecomeSellerPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {BENEFITS.map((item) => (
-              <div key={item.title} className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all">
+              <div key={item.title} className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle hover:border-cm-border-hover transition-all">
                 <div className={`w-12 h-12 rounded-xl bg-${item.color}-500/10 flex items-center justify-center mb-4`}>
                   <item.icon className={`w-5 h-5 text-${item.color}-400`} />
                 </div>
-                <h3 className="text-base font-semibold text-stone-200 mb-2">{item.title}</h3>
-                <p className="text-sm text-stone-400 leading-relaxed">{item.desc}</p>
+                <h3 className="text-base font-semibold text-cm-secondary mb-2">{item.title}</h3>
+                <p className="text-sm text-cm-muted leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -198,9 +198,9 @@ export default function BecomeSellerPage() {
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">
               Your Seller <span className="bg-gradient-to-r from-red-300 to-red-400 bg-clip-text text-transparent">Dashboard</span>
             </h2>
-            <p className="text-stone-400 mt-3 max-w-2xl mx-auto">Everything you need to manage your store, track sales, and grow your business — all in one place.</p>
+            <p className="text-cm-muted mt-3 max-w-2xl mx-auto">Everything you need to manage your store, track sales, and grow your business — all in one place.</p>
           </div>
-          <div className="rounded-2xl bg-white/[0.03] border border-white/5 p-6 md:p-8">
+          <div className="rounded-2xl bg-cm-hover border border-cm-border-subtle p-6 md:p-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               {[
                 { icon: BarChart3, label: 'Revenue Analytics', desc: 'Track sales trends and monthly growth' },
@@ -208,25 +208,25 @@ export default function BecomeSellerPage() {
                 { icon: CreditCard, label: 'Order Management', desc: 'View, fulfill, and track all orders' },
                 { icon: TrendingUp, label: 'Payout History', desc: 'Monitor earnings and withdrawal status' },
               ].map((item) => (
-                <div key={item.label} className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5">
+                <div key={item.label} className="flex items-start gap-3 p-4 rounded-xl bg-cm-hover border border-cm-border-subtle">
                   <item.icon className="w-5 h-5 text-red-300 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="text-sm font-semibold text-stone-200">{item.label}</h4>
-                    <p className="text-xs text-stone-500 mt-0.5">{item.desc}</p>
+                    <h4 className="text-sm font-semibold text-cm-secondary">{item.label}</h4>
+                    <p className="text-xs text-cm-dim mt-0.5">{item.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
             <div className="flex flex-wrap items-center justify-center gap-4">
-              <Button variant="outline" onClick={() => navigate('seller-terms')} className="border-white/10 text-stone-300 hover:bg-white/5 rounded-xl">
+              <Button variant="outline" onClick={() => navigate('seller-terms')} className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl">
                 <FileCheck className="w-4 h-4 mr-2" />
                 Seller Agreement
               </Button>
-              <Button variant="outline" onClick={() => navigate('privacy')} className="border-white/10 text-stone-300 hover:bg-white/5 rounded-xl">
+              <Button variant="outline" onClick={() => navigate('privacy')} className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl">
                 <Lock className="w-4 h-4 mr-2" />
                 Privacy & PIPEDA
               </Button>
-              <Button variant="outline" onClick={() => navigate('dispute-policy')} className="border-white/10 text-stone-300 hover:bg-white/5 rounded-xl">
+              <Button variant="outline" onClick={() => navigate('dispute-policy')} className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl">
                 <Shield className="w-4 h-4 mr-2" />
                 Dispute Policy
               </Button>
@@ -246,12 +246,12 @@ export default function BecomeSellerPage() {
           </div>
           <div className="space-y-4">
             {FAQS.map((faq) => (
-              <div key={faq.q} className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
-                <h3 className="text-base font-semibold text-stone-200 mb-2 flex items-start gap-2">
+              <div key={faq.q} className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle">
+                <h3 className="text-base font-semibold text-cm-secondary mb-2 flex items-start gap-2">
                   <span className="text-red-300 flex-shrink-0 mt-0.5">Q:</span>
                   {faq.q}
                 </h3>
-                <p className="text-sm text-stone-400 leading-relaxed pl-5">{faq.a}</p>
+                <p className="text-sm text-cm-muted leading-relaxed pl-5">{faq.a}</p>
               </div>
             ))}
           </div>
@@ -263,10 +263,10 @@ export default function BecomeSellerPage() {
         <div className="max-w-3xl mx-auto text-center">
           <div className="p-10 rounded-2xl bg-gradient-to-br from-red-900/20 via-neutral-900/50 to-red-900/10 border border-red-500/10">
             <Award className="w-12 h-12 text-red-300 mx-auto mb-4" />
-            <h2 className="text-2xl md:text-3xl font-bold text-stone-100 mb-3">
+            <h2 className="text-2xl md:text-3xl font-bold text-cm-primary mb-3">
               Ready to Start Selling?
             </h2>
-            <p className="text-stone-400 font-light mb-8 max-w-lg mx-auto">
+            <p className="text-cm-muted font-light mb-8 max-w-lg mx-auto">
               Join our community of verified Canadian sellers. Set up your store in minutes, list your first product today, and start earning.
             </p>
             <Button
@@ -280,7 +280,7 @@ export default function BecomeSellerPage() {
                 <ArrowRight className="w-5 h-5" />
               </span>
             </Button>
-            <p className="text-xs text-stone-600 mt-4">No credit card required • Free to list • Only pay when you sell</p>
+            <p className="text-xs text-cm-faint mt-4">No credit card required • Free to list • Only pay when you sell</p>
           </div>
         </div>
       </section>

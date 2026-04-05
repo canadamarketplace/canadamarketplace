@@ -28,21 +28,21 @@ export default function LanguageSwitcher() {
       variant="ghost"
       size="sm"
       onClick={switchLocale}
-      className="h-8 px-2 text-stone-400 hover:text-stone-100 hover:bg-white/5 gap-1.5 text-xs font-medium"
+      className="h-8 px-2 text-cm-muted hover:text-cm-primary hover:bg-cm-hover gap-1.5 text-xs font-medium"
     >
       <Globe className="w-3.5 h-3.5" />
       <span className="hidden sm:inline">
         {locale === 'en' ? (
           <>
-            <span className="text-stone-100">🇨🇦 EN</span>
-            <span className="text-stone-600 mx-0.5">/</span>
+            <span className="text-cm-primary">🇨🇦 EN</span>
+            <span className="text-cm-faint mx-0.5">/</span>
             <span>🇫🇷 FR</span>
           </>
         ) : (
           <>
             <span>🇨🇦 EN</span>
-            <span className="text-stone-600 mx-0.5">/</span>
-            <span className="text-stone-100">🇫🇷 FR</span>
+            <span className="text-cm-faint mx-0.5">/</span>
+            <span className="text-cm-primary">🇫🇷 FR</span>
           </>
         )}
       </span>

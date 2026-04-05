@@ -83,7 +83,7 @@ export default function SellerGuidePage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-cm-bg">
       {/* Hero */}
       <section className="relative py-24 px-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-red-900/10 via-transparent to-transparent" />
@@ -92,7 +92,7 @@ export default function SellerGuidePage() {
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <button
             onClick={() => navigate('home')}
-            className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 mb-6 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-cm-dim hover:text-cm-secondary mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             {t('common.back')}
@@ -104,7 +104,7 @@ export default function SellerGuidePage() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
             {t('sellerGuide.heroTitle')}
           </h1>
-          <p className="text-lg text-stone-400 font-light max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-cm-muted font-light max-w-2xl mx-auto leading-relaxed">
             {t('sellerGuide.heroSubtitle')}
           </p>
         </div>
@@ -121,17 +121,17 @@ export default function SellerGuidePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {regSteps.map((item, idx) => (
-              <div key={item.step} className="relative p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all group">
+              <div key={item.step} className="relative p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle hover:border-cm-border-hover transition-all group">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-bold text-stone-600">{item.step}</span>
+                  <span className="text-xs font-bold text-cm-faint">{item.step}</span>
                   <div className={`w-10 h-10 rounded-lg ${item.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                     <item.icon className="w-5 h-5" />
                   </div>
                 </div>
-                <h3 className="text-sm font-semibold text-stone-200 mb-2">{item.title}</h3>
-                <p className="text-xs text-stone-500 leading-relaxed">{item.desc}</p>
+                <h3 className="text-sm font-semibold text-cm-secondary mb-2">{item.title}</h3>
+                <p className="text-xs text-cm-dim leading-relaxed">{item.desc}</p>
                 {idx < regSteps.length - 1 && (
-                  <ChevronRight className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-700 hidden lg:block" />
+                  <ChevronRight className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-cm-faint hidden lg:block" />
                 )}
               </div>
             ))}
@@ -150,11 +150,11 @@ export default function SellerGuidePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {checklist.map((item) => (
-              <div key={item.label} className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/5">
-                <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
+              <div key={item.label} className="flex items-center gap-3 p-4 rounded-xl bg-cm-hover border border-cm-border-subtle">
+                <div className="w-10 h-10 rounded-lg bg-cm-hover flex items-center justify-center flex-shrink-0">
                   <item.icon className={`w-5 h-5 ${item.color}`} />
                 </div>
-                <span className="text-sm text-stone-300 font-medium">{item.label}</span>
+                <span className="text-sm text-cm-secondary font-medium">{item.label}</span>
               </div>
             ))}
           </div>
@@ -172,12 +172,12 @@ export default function SellerGuidePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tips.map((tip) => (
-              <div key={tip.title} className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all">
+              <div key={tip.title} className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle hover:border-cm-border-hover transition-all">
                 <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center mb-4">
                   <CheckCircle2 className="w-4 h-4 text-red-300" />
                 </div>
-                <h3 className="text-base font-semibold text-stone-200 mb-2">{tip.title}</h3>
-                <p className="text-sm text-stone-400 font-light leading-relaxed">{tip.desc}</p>
+                <h3 className="text-base font-semibold text-cm-secondary mb-2">{tip.title}</h3>
+                <p className="text-sm text-cm-muted font-light leading-relaxed">{tip.desc}</p>
               </div>
             ))}
           </div>
@@ -194,20 +194,20 @@ export default function SellerGuidePage() {
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
+            <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle text-center">
               <div className="text-3xl font-bold text-green-400 mb-1">8%</div>
-              <div className="text-sm text-stone-300 font-medium mb-1">{t('sellerGuide.basicFee')}</div>
-              <div className="text-xs text-stone-500">{t('sellerGuide.noMonthly')}</div>
+              <div className="text-sm text-cm-secondary font-medium mb-1">{t('sellerGuide.basicFee')}</div>
+              <div className="text-xs text-cm-dim">{t('sellerGuide.noMonthly')}</div>
             </div>
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-red-500/20 text-center">
+            <div className="p-6 rounded-2xl bg-cm-hover border border-red-500/20 text-center">
               <div className="text-3xl font-bold text-red-300 mb-1">5%</div>
-              <div className="text-sm text-stone-300 font-medium mb-1">{t('sellerGuide.goldFee')}</div>
-              <div className="text-xs text-stone-500">{t('sellerGuide.goldLabel')}</div>
+              <div className="text-sm text-cm-secondary font-medium mb-1">{t('sellerGuide.goldFee')}</div>
+              <div className="text-xs text-cm-dim">{t('sellerGuide.goldLabel')}</div>
             </div>
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
-              <div className="text-3xl font-bold text-stone-100 mb-1">$0</div>
-              <div className="text-sm text-stone-300 font-medium mb-1">{t('sellerGuide.freeToStart')}</div>
-              <div className="text-xs text-stone-500">{t('sellerGuide.onlyPayWhenSell')}</div>
+            <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle text-center">
+              <div className="text-3xl font-bold text-cm-primary mb-1">$0</div>
+              <div className="text-sm text-cm-secondary font-medium mb-1">{t('sellerGuide.freeToStart')}</div>
+              <div className="text-xs text-cm-dim">{t('sellerGuide.onlyPayWhenSell')}</div>
             </div>
           </div>
         </div>
@@ -224,14 +224,14 @@ export default function SellerGuidePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Basic */}
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
+            <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-lg bg-stone-500/10 flex items-center justify-center">
-                  <Star className="w-5 h-5 text-stone-400" />
+                  <Star className="w-5 h-5 text-cm-muted" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-stone-200">{t('sellerGuide.basicLevel')}</h3>
-                  <p className="text-xs text-stone-500">{t('sellerGuide.basicLabel')}</p>
+                  <h3 className="text-lg font-semibold text-cm-secondary">{t('sellerGuide.basicLevel')}</h3>
+                  <p className="text-xs text-cm-dim">{t('sellerGuide.basicLabel')}</p>
                 </div>
               </div>
               <ul className="space-y-3">
@@ -241,8 +241,8 @@ export default function SellerGuidePage() {
                   t('sellerGuide.basicF3'),
                   t('sellerGuide.basicF4'),
                 ].map((f, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-stone-400">
-                    <CheckCircle2 className="w-4 h-4 text-stone-500 flex-shrink-0" />
+                  <li key={i} className="flex items-center gap-2 text-sm text-cm-muted">
+                    <CheckCircle2 className="w-4 h-4 text-cm-dim flex-shrink-0" />
                     {f}
                   </li>
                 ))}
@@ -273,7 +273,7 @@ export default function SellerGuidePage() {
                   t('sellerGuide.goldF5'),
                   t('sellerGuide.goldF6'),
                 ].map((f, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-stone-300">
+                  <li key={i} className="flex items-center gap-2 text-sm text-cm-secondary">
                     <CheckCircle2 className="w-4 h-4 text-red-300 flex-shrink-0" />
                     {f}
                   </li>
@@ -289,10 +289,10 @@ export default function SellerGuidePage() {
         <div className="max-w-3xl mx-auto text-center">
           <div className="p-10 rounded-2xl bg-gradient-to-br from-red-900/20 via-neutral-900/50 to-red-900/10 border border-red-500/10">
             <Award className="w-12 h-12 text-red-300 mx-auto mb-4" />
-            <h2 className="text-2xl md:text-3xl font-bold text-stone-100 mb-3">
+            <h2 className="text-2xl md:text-3xl font-bold text-cm-primary mb-3">
               {t('sellerGuide.ctaTitle')}
             </h2>
-            <p className="text-stone-400 font-light mb-8 max-w-lg mx-auto">
+            <p className="text-cm-muted font-light mb-8 max-w-lg mx-auto">
               {t('sellerGuide.ctaDesc')}
             </p>
             <Button
@@ -306,7 +306,7 @@ export default function SellerGuidePage() {
                 <ArrowRight className="w-5 h-5" />
               </span>
             </Button>
-            <p className="text-xs text-stone-600 mt-4">{t('sellerGuide.ctaNote')}</p>
+            <p className="text-xs text-cm-faint mt-4">{t('sellerGuide.ctaNote')}</p>
           </div>
         </div>
       </section>

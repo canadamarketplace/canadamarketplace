@@ -91,8 +91,8 @@ export default function FileDisputePage() {
         <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-6">
           <Shield className="w-8 h-8 text-red-300" />
         </div>
-        <h1 className="text-2xl font-bold text-stone-100 mb-2">Dispute Filed</h1>
-        <p className="text-stone-400 mb-6">Your dispute has been submitted. Our team will review it and get back to you within 48 hours.</p>
+        <h1 className="text-2xl font-bold text-cm-primary mb-2">Dispute Filed</h1>
+        <p className="text-cm-muted mb-6">Your dispute has been submitted. Our team will review it and get back to you within 48 hours.</p>
         <Button onClick={() => navigate('orders')} className="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl">
           View My Orders
         </Button>
@@ -111,7 +111,7 @@ export default function FileDisputePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <button onClick={() => navigate('order-detail', { id: pageParams.id })} className="flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 mb-6 group">
+      <button onClick={() => navigate('order-detail', { id: pageParams.id })} className="flex items-center gap-2 text-sm text-cm-dim hover:text-cm-secondary mb-6 group">
         <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
         Back to Order
       </button>
@@ -121,39 +121,39 @@ export default function FileDisputePage() {
           <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center">
             <AlertTriangle className="w-5 h-5 text-red-300" />
           </div>
-          <h1 className="text-2xl font-bold text-stone-100">File a Dispute</h1>
+          <h1 className="text-2xl font-bold text-cm-primary">File a Dispute</h1>
         </div>
-        <p className="text-sm text-stone-500">We take disputes seriously. Please provide detailed information about the issue.</p>
+        <p className="text-sm text-cm-dim">We take disputes seriously. Please provide detailed information about the issue.</p>
       </div>
 
-      <div className="rounded-2xl bg-neutral-900/60 border border-white/5 p-6">
+      <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <Label className="text-stone-300 text-xs mb-2 block">Reason for Dispute *</Label>
+            <Label className="text-cm-secondary text-xs mb-2 block">Reason for Dispute *</Label>
             <Select value={reason} onValueChange={setReason}>
-              <SelectTrigger className="bg-white/5 border-white/10 text-stone-200 rounded-xl h-11">
+              <SelectTrigger className="bg-cm-hover border-cm-border-hover text-cm-secondary rounded-xl h-11">
                 <SelectValue placeholder="Select a reason" />
               </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-white/10">
+              <SelectContent className="bg-cm-elevated border-cm-border-hover">
                 {reasons.map((r) => (
-                  <SelectItem key={r} value={r} className="text-stone-300">{r}</SelectItem>
+                  <SelectItem key={r} value={r} className="text-cm-secondary">{r}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <Label className="text-stone-300 text-xs mb-2 block">Description *</Label>
+            <Label className="text-cm-secondary text-xs mb-2 block">Description *</Label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Please describe the issue in detail. Include any relevant information such as communication with the seller, photos of damage, etc."
-              className="bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 rounded-xl min-h-[160px]"
+              className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl min-h-[160px]"
               required
             />
           </div>
 
-          <Separator className="bg-white/5" />
+          <Separator className="bg-cm-hover" />
 
           <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
             <p className="text-xs text-blue-300 flex items-start gap-2">
@@ -163,7 +163,7 @@ export default function FileDisputePage() {
           </div>
 
           <div className="flex gap-3">
-            <Button type="button" variant="outline" onClick={() => navigate('order-detail', { id: pageParams.id })} className="border-white/10 text-stone-300 rounded-xl flex-1">
+            <Button type="button" variant="outline" onClick={() => navigate('order-detail', { id: pageParams.id })} className="border-cm-border-hover text-cm-secondary rounded-xl flex-1">
               Cancel
             </Button>
             <Button type="submit" disabled={loading} className="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl h-11">

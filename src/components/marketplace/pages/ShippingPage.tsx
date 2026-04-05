@@ -69,7 +69,7 @@ export default function ShippingPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-cm-bg">
       {/* Hero */}
       <section className="relative py-24 px-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/10 via-transparent to-transparent" />
@@ -78,7 +78,7 @@ export default function ShippingPage() {
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <button
             onClick={() => navigate('home')}
-            className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 mb-6 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-cm-dim hover:text-cm-secondary mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             {t('common.back')}
@@ -90,7 +90,7 @@ export default function ShippingPage() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
             {t('shipping.heroTitle')}
           </h1>
-          <p className="text-lg text-stone-400 font-light max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-cm-muted font-light max-w-2xl mx-auto leading-relaxed">
             {t('shipping.heroSubtitle')}
           </p>
         </div>
@@ -107,12 +107,12 @@ export default function ShippingPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {shippingPartners.map((partner) => (
-              <div key={partner.name} className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all">
+              <div key={partner.name} className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle hover:border-cm-border-hover transition-all">
                 <div className={`w-12 h-12 rounded-xl ${partner.color} flex items-center justify-center mb-4`}>
                   <Truck className="w-5 h-5" />
                 </div>
-                <h3 className="text-base font-semibold text-stone-200 mb-2">{partner.name}</h3>
-                <p className="text-sm text-stone-400 font-light leading-relaxed">{partner.desc}</p>
+                <h3 className="text-base font-semibold text-cm-secondary mb-2">{partner.name}</h3>
+                <p className="text-sm text-cm-muted font-light leading-relaxed">{partner.desc}</p>
               </div>
             ))}
           </div>
@@ -132,8 +132,8 @@ export default function ShippingPage() {
             {timelines.map((item) => (
               <div key={item.zone} className={`p-5 rounded-xl border ${item.color} flex items-center justify-between gap-4`}>
                 <div className="flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-stone-400 flex-shrink-0" />
-                  <span className="text-sm font-medium text-stone-200">{item.zone}</span>
+                  <MapPin className="w-5 h-5 text-cm-muted flex-shrink-0" />
+                  <span className="text-sm font-medium text-cm-secondary">{item.zone}</span>
                 </div>
                 <div className={`px-3 py-1 rounded-full text-xs font-semibold ${item.badge}`}>
                   <span className="flex items-center gap-1.5">
@@ -156,8 +156,8 @@ export default function ShippingPage() {
                 <Package className="w-6 h-6 text-emerald-400" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-stone-100 mb-3">{t('shipping.costsTitle')}</h2>
-                <p className="text-stone-400 font-light leading-relaxed">{t('shipping.costsDesc')}</p>
+                <h2 className="text-2xl font-bold text-cm-primary mb-3">{t('shipping.costsTitle')}</h2>
+                <p className="text-cm-muted font-light leading-relaxed">{t('shipping.costsDesc')}</p>
               </div>
             </div>
           </div>
@@ -179,12 +179,12 @@ export default function ShippingPage() {
               { title: t('shipping.tracking2Title'), desc: t('shipping.tracking2Desc') },
               { title: t('shipping.tracking3Title'), desc: t('shipping.tracking3Desc') },
             ].map((item) => (
-              <div key={item.title} className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
+              <div key={item.title} className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle">
                 <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
                   <MapPin className="w-5 h-5 text-blue-400" />
                 </div>
-                <h3 className="text-base font-semibold text-stone-200 mb-2">{item.title}</h3>
-                <p className="text-sm text-stone-400 font-light leading-relaxed">{item.desc}</p>
+                <h3 className="text-base font-semibold text-cm-secondary mb-2">{item.title}</h3>
+                <p className="text-sm text-cm-muted font-light leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -202,12 +202,12 @@ export default function ShippingPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {packageTips.map((tip) => (
-              <div key={tip.title} className="p-5 rounded-2xl bg-white/[0.03] border border-white/5">
+              <div key={tip.title} className="p-5 rounded-2xl bg-cm-hover border border-cm-border-subtle">
                 <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center mb-3">
                   <tip.icon className="w-5 h-5 text-red-300" />
                 </div>
-                <h3 className="text-sm font-semibold text-stone-200 mb-1.5">{tip.title}</h3>
-                <p className="text-xs text-stone-500 leading-relaxed">{tip.desc}</p>
+                <h3 className="text-sm font-semibold text-cm-secondary mb-1.5">{tip.title}</h3>
+                <p className="text-xs text-cm-dim leading-relaxed">{tip.desc}</p>
               </div>
             ))}
           </div>
@@ -229,12 +229,12 @@ export default function ShippingPage() {
               { icon: Clock, title: t('shipping.return2Title'), desc: t('shipping.return2Desc') },
               { icon: Shield, title: t('shipping.return3Title'), desc: t('shipping.return3Desc') },
             ].map((item) => (
-              <div key={item.title} className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
+              <div key={item.title} className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle">
                 <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center mb-4">
                   <item.icon className="w-5 h-5 text-red-400" />
                 </div>
-                <h3 className="text-base font-semibold text-stone-200 mb-2">{item.title}</h3>
-                <p className="text-sm text-stone-400 font-light leading-relaxed">{item.desc}</p>
+                <h3 className="text-base font-semibold text-cm-secondary mb-2">{item.title}</h3>
+                <p className="text-sm text-cm-muted font-light leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -245,14 +245,14 @@ export default function ShippingPage() {
       <section className="px-6 py-16 bg-gradient-to-b from-transparent via-emerald-900/[0.03] to-transparent">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
+            <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
                   <MapPin className="w-6 h-6 text-emerald-400" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-stone-100 mb-2">{t('shipping.territoriesTitle')}</h2>
-                  <p className="text-sm text-stone-400 font-light leading-relaxed">
+                  <h2 className="text-lg font-bold text-cm-primary mb-2">{t('shipping.territoriesTitle')}</h2>
+                  <p className="text-sm text-cm-muted font-light leading-relaxed">
                     {t('shipping.territoriesDesc')}
                   </p>
                   <div className="flex flex-wrap gap-2 mt-3">
@@ -263,14 +263,14 @@ export default function ShippingPage() {
                 </div>
               </div>
             </div>
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
+            <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center flex-shrink-0">
                   <CheckCircle2 className="w-6 h-6 text-blue-400" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-stone-100 mb-2">{t('shipping.pickupTitle')}</h2>
-                  <p className="text-sm text-stone-400 font-light leading-relaxed">
+                  <h2 className="text-lg font-bold text-cm-primary mb-2">{t('shipping.pickupTitle')}</h2>
+                  <p className="text-sm text-cm-muted font-light leading-relaxed">
                     {t('shipping.pickupDesc')}
                   </p>
                 </div>
@@ -283,11 +283,11 @@ export default function ShippingPage() {
       {/* CTA */}
       <section className="px-6 py-20">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="p-10 rounded-2xl bg-gradient-to-br from-emerald-900/20 via-neutral-900/50 to-blue-900/10 border border-white/5">
-            <h2 className="text-2xl md:text-3xl font-bold text-stone-100 mb-3">
+          <div className="p-10 rounded-2xl bg-gradient-to-br from-emerald-900/20 via-neutral-900/50 to-blue-900/10 border border-cm-border-subtle">
+            <h2 className="text-2xl md:text-3xl font-bold text-cm-primary mb-3">
               {t('shipping.ctaTitle')}
             </h2>
-            <p className="text-stone-400 font-light mb-8">
+            <p className="text-cm-muted font-light mb-8">
               {t('shipping.ctaDesc')}
             </p>
             <Button

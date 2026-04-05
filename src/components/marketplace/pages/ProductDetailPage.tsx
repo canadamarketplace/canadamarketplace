@@ -69,13 +69,13 @@ function Lightbox({ images, initialIndex, onClose }: {
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-cm-hover-strong hover:bg-cm-hover-strong flex items-center justify-center text-white transition-colors"
       >
         <X className="w-5 h-5" />
       </button>
 
       {/* Image counter */}
-      <div className="absolute top-4 left-4 z-10 px-3 py-1.5 rounded-lg bg-white/10 text-sm text-white font-medium">
+      <div className="absolute top-4 left-4 z-10 px-3 py-1.5 rounded-lg bg-cm-hover-strong text-sm text-white font-medium">
         {current + 1} / {images.length}
       </div>
 
@@ -83,7 +83,7 @@ function Lightbox({ images, initialIndex, onClose }: {
       {images.length > 1 && (
         <button
           onClick={(e) => { e.stopPropagation(); goPrev() }}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-cm-hover-strong hover:bg-cm-hover-strong flex items-center justify-center text-white transition-colors"
         >
           <ChevronLeftIcon className="w-6 h-6" />
         </button>
@@ -101,7 +101,7 @@ function Lightbox({ images, initialIndex, onClose }: {
       {images.length > 1 && (
         <button
           onClick={(e) => { e.stopPropagation(); goNext() }}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-cm-hover-strong hover:bg-cm-hover-strong flex items-center justify-center text-white transition-colors"
         >
           <ChevronRightIcon className="w-6 h-6" />
         </button>
@@ -118,7 +118,7 @@ function Lightbox({ images, initialIndex, onClose }: {
               key={i}
               onClick={() => setCurrent(i)}
               className={`w-14 h-14 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all ${
-                i === current ? 'border-red-500 opacity-100' : 'border-white/20 opacity-50 hover:opacity-80'
+                i === current ? 'border-red-500 opacity-100' : 'border-cm-border-hover opacity-50 hover:opacity-80'
               }`}
             >
               <img src={img} alt="" className="w-full h-full object-cover" />
@@ -271,12 +271,12 @@ export default function ProductDetailPage() {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-2 gap-8 animate-pulse">
-          <div className="aspect-square rounded-2xl bg-neutral-800" />
+          <div className="aspect-square rounded-2xl bg-cm-input" />
           <div className="space-y-4">
-            <div className="h-8 bg-neutral-800 rounded w-3/4" />
-            <div className="h-6 bg-neutral-800 rounded w-1/2" />
-            <div className="h-20 bg-neutral-800 rounded" />
-            <div className="h-12 bg-neutral-800 rounded w-1/3" />
+            <div className="h-8 bg-cm-input rounded w-3/4" />
+            <div className="h-6 bg-cm-input rounded w-1/2" />
+            <div className="h-20 bg-cm-input rounded" />
+            <div className="h-12 bg-cm-input rounded w-1/3" />
           </div>
         </div>
       </div>
@@ -291,14 +291,14 @@ export default function ProductDetailPage() {
     LIKE_NEW: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
     GOOD: 'bg-red-500/10 text-red-300 border-red-500/20',
     FAIR: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
-    USED: 'bg-stone-500/10 text-stone-400 border-stone-500/20',
+    USED: 'bg-stone-500/10 text-cm-muted border-stone-500/20',
   }
 
   return (
     <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
-        <button onClick={() => navigate('browse')} className="flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 mb-6 group">
+        <button onClick={() => navigate('browse')} className="flex items-center gap-2 text-sm text-cm-dim hover:text-cm-secondary mb-6 group">
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Back to Browse
         </button>
@@ -307,7 +307,7 @@ export default function ProductDetailPage() {
           {/* Image Gallery */}
           <div className="space-y-4">
             <div
-              className="aspect-square rounded-2xl bg-neutral-800 overflow-hidden border border-white/5 cursor-zoom-in relative group"
+              className="aspect-square rounded-2xl bg-cm-input overflow-hidden border border-cm-border-subtle cursor-zoom-in relative group"
               onClick={() => images.length > 0 && setLightboxOpen(true)}
             >
               {images.length > 0 ? (
@@ -318,7 +318,7 @@ export default function ProductDetailPage() {
                   </div>
                 </>
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-stone-700">
+                <div className="w-full h-full flex items-center justify-center text-cm-faint">
                   <Package className="w-20 h-20" />
                 </div>
               )}
@@ -330,7 +330,7 @@ export default function ProductDetailPage() {
                     key={i}
                     onClick={() => setSelectedImage(i)}
                     className={`w-16 h-16 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all ${
-                      i === selectedImage ? 'border-red-500' : 'border-white/10 hover:border-white/20'
+                      i === selectedImage ? 'border-red-500' : 'border-cm-border-hover hover:border-cm-border-hover'
                     }`}
                   >
                     <img src={img} alt="" className="w-full h-full object-cover" />
@@ -353,26 +353,26 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold text-stone-100 mb-2">{product.title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-cm-primary mb-2">{product.title}</h1>
 
-            <p className="text-sm text-stone-500 mb-4">
+            <p className="text-sm text-cm-dim mb-4">
               {product.category.name} · {product.sold} sold · {product.views} views
             </p>
 
             <div className="flex items-baseline gap-3 mb-4">
               <span className="text-3xl font-bold text-red-400">${effectivePrice.toFixed(2)}</span>
               {currentPriceDelta !== 0 && (
-                <span className="text-sm text-stone-600">Base: ${product.price.toFixed(2)}</span>
+                <span className="text-sm text-cm-faint">Base: ${product.price.toFixed(2)}</span>
               )}
               {hasDiscount && (
                 <>
-                  <span className="text-lg text-stone-600 line-through">${(product.comparePrice! + currentPriceDelta).toFixed(2)}</span>
+                  <span className="text-lg text-cm-faint line-through">${(product.comparePrice! + currentPriceDelta).toFixed(2)}</span>
                   <Badge className="bg-red-500 text-white text-xs">
                     Save {Math.round(((product.comparePrice! - product.price) / product.comparePrice!) * 100)}%
                   </Badge>
                 </>
               )}
-              <span className="text-sm text-stone-600">CAD</span>
+              <span className="text-sm text-cm-faint">CAD</span>
             </div>
 
             {/* Variant Selector */}
@@ -380,7 +380,7 @@ export default function ProductDetailPage() {
               <div className="mb-6 space-y-4">
                 {variantNames.map(name => (
                   <div key={name}>
-                    <label className="text-sm font-medium text-stone-300 mb-2 block">{name}: <span className="text-stone-100">{selectedVariants[name] ? product?.variants?.find(v => v.id === selectedVariants[name])?.value : ''}</span></label>
+                    <label className="text-sm font-medium text-cm-secondary mb-2 block">{name}: <span className="text-cm-primary">{selectedVariants[name] ? product?.variants?.find(v => v.id === selectedVariants[name])?.value : ''}</span></label>
                     <div className="flex flex-wrap gap-2">
                       {variantGroups[name].map(variant => {
                         const isSelected = selectedVariants[name] === variant.id
@@ -391,7 +391,7 @@ export default function ProductDetailPage() {
                             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border ${
                               isSelected
                                 ? 'bg-red-500/10 text-red-300 border-red-500/40'
-                                : 'bg-white/5 text-stone-400 border-white/10 hover:border-white/20 hover:text-stone-200'
+                                : 'bg-cm-hover text-cm-muted border-cm-border-hover hover:border-cm-border-hover hover:text-cm-secondary'
                             }`}
                           >
                             {variant.value}
@@ -407,12 +407,12 @@ export default function ProductDetailPage() {
                   </div>
                 ))}
                 {selectedVariantInfo && (
-                  <p className="text-xs text-stone-500">{selectedVariantInfo} · ${effectivePrice.toFixed(2)}</p>
+                  <p className="text-xs text-cm-dim">{selectedVariantInfo} · ${effectivePrice.toFixed(2)}</p>
                 )}
               </div>
             )}
 
-            <p className="text-sm text-stone-400 leading-relaxed mb-6 whitespace-pre-wrap">{product.description}</p>
+            <p className="text-sm text-cm-muted leading-relaxed mb-6 whitespace-pre-wrap">{product.description}</p>
 
             <div className="flex items-center gap-3 mb-6">
               <Button
@@ -426,7 +426,7 @@ export default function ProductDetailPage() {
                 onClick={handleMessageSeller}
                 variant="outline"
                 size="lg"
-                className="flex-1 border-white/10 text-stone-300 hover:bg-white/5 hover:text-red-400 rounded-xl h-12"
+                className="flex-1 border-cm-border-hover text-cm-secondary hover:bg-cm-hover hover:text-red-400 rounded-xl h-12"
               >
                 <MessageCircle className="w-5 h-5 mr-2" />
                 {user && user.id === product.store.seller.id ? 'Your Listing' : 'Message Seller'}
@@ -435,49 +435,49 @@ export default function ProductDetailPage() {
                 onClick={handleToggleWishlist}
                 variant="outline"
                 size="lg"
-                className={`border-white/10 rounded-xl h-12 ${wished ? 'text-red-500 hover:text-red-400 border-red-500/30 hover:bg-red-500/10' : 'text-stone-400 hover:bg-white/5'}`}
+                className={`border-cm-border-hover rounded-xl h-12 ${wished ? 'text-red-500 hover:text-red-400 border-red-500/30 hover:bg-red-500/10' : 'text-cm-muted hover:bg-cm-hover'}`}
               >
                 <Heart className={`w-5 h-5 ${wished ? 'fill-red-500' : ''}`} />
               </Button>
-              <Button variant="outline" size="lg" className="border-white/10 text-stone-400 hover:bg-white/5 rounded-xl h-12">
+              <Button variant="outline" size="lg" className="border-cm-border-hover text-cm-muted hover:bg-cm-hover rounded-xl h-12">
                 <Share2 className="w-5 h-5" />
               </Button>
             </div>
 
-            <Separator className="bg-white/5 my-6" />
+            <Separator className="bg-cm-hover my-6" />
 
             {/* Store Info */}
             <button
               onClick={() => navigate('storefront', { slug: product.store.slug })}
-              className="w-full p-4 rounded-2xl bg-neutral-900/60 border border-white/5 hover:border-white/10 transition-all text-left group"
+              className="w-full p-4 rounded-2xl bg-cm-elevated border border-cm-border-subtle hover:border-cm-border-hover transition-all text-left group"
             >
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500/10 to-red-500/10 border border-white/5 flex items-center justify-center">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500/10 to-red-500/10 border border-cm-border-subtle flex items-center justify-center">
                   <Store className="w-7 h-7 text-red-400" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-base font-semibold text-stone-100 group-hover:text-red-400 transition-colors truncate">{product.store.name}</h3>
+                    <h3 className="text-base font-semibold text-cm-primary group-hover:text-red-400 transition-colors truncate">{product.store.name}</h3>
                     {product.store.seller.isVerified && (
                       <CheckCircle2 className="w-4 h-4 text-blue-400 flex-shrink-0" />
                     )}
                   </div>
-                  <p className="text-xs text-stone-500 mt-0.5">by {product.store.seller.name}</p>
+                  <p className="text-xs text-cm-dim mt-0.5">by {product.store.seller.name}</p>
                   <div className="flex items-center gap-3 mt-1">
                     <div className="flex items-center gap-1">
                       <Star className="w-3 h-3 text-red-300 fill-red-300" />
-                      <span className="text-xs text-stone-400">{product.store.rating.toFixed(1)}</span>
+                      <span className="text-xs text-cm-muted">{product.store.rating.toFixed(1)}</span>
                     </div>
-                    <span className="text-xs text-stone-600">|</span>
-                    <span className="text-xs text-stone-500">{product.store.totalSales} sales</span>
-                    <span className="text-xs text-stone-600">|</span>
-                    <div className="flex items-center gap-1 text-xs text-stone-500">
+                    <span className="text-xs text-cm-faint">|</span>
+                    <span className="text-xs text-cm-dim">{product.store.totalSales} sales</span>
+                    <span className="text-xs text-cm-faint">|</span>
+                    <div className="flex items-center gap-1 text-xs text-cm-dim">
                       <MapPin className="w-3 h-3" />
                       {product.store.seller.city}, {product.store.seller.province}
                     </div>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-stone-600 group-hover:text-stone-400 group-hover:translate-x-1 transition-all" />
+                <ChevronRight className="w-5 h-5 text-cm-faint group-hover:text-cm-muted group-hover:translate-x-1 transition-all" />
               </div>
             </button>
 
@@ -492,48 +492,48 @@ export default function ProductDetailPage() {
 
         {/* Reviews */}
         <div className="mt-12">
-          <h2 className="text-xl font-bold text-stone-100 mb-6">Customer Reviews</h2>
+          <h2 className="text-xl font-bold text-cm-primary mb-6">Customer Reviews</h2>
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Rating Summary */}
-            <div className="rounded-2xl bg-neutral-900/60 border border-white/5 p-6 text-center">
-              <p className="text-5xl font-bold text-stone-100">{product.avgRating.toFixed(1)}</p>
+            <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6 text-center">
+              <p className="text-5xl font-bold text-cm-primary">{product.avgRating.toFixed(1)}</p>
               <div className="flex justify-center gap-0.5 mt-2">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} className={`w-5 h-5 ${i < Math.round(product.avgRating) ? 'text-red-300 fill-red-300' : 'text-neutral-700'}`} />
                 ))}
               </div>
-              <p className="text-sm text-stone-500 mt-2">{product._count.reviews} review{product._count.reviews !== 1 ? 's' : ''}</p>
+              <p className="text-sm text-cm-dim mt-2">{product._count.reviews} review{product._count.reviews !== 1 ? 's' : ''}</p>
             </div>
 
             {/* Reviews List */}
             <div className="lg:col-span-2 space-y-4">
               {product.reviews.length === 0 ? (
-                <div className="text-center py-12 rounded-2xl bg-neutral-900/60 border border-white/5">
-                  <ThumbsUp className="w-12 h-12 text-stone-700 mx-auto mb-3" />
-                  <p className="text-stone-500">No reviews yet</p>
+                <div className="text-center py-12 rounded-2xl bg-cm-elevated border border-cm-border-subtle">
+                  <ThumbsUp className="w-12 h-12 text-cm-faint mx-auto mb-3" />
+                  <p className="text-cm-dim">No reviews yet</p>
                 </div>
               ) : (
                 product.reviews.map((review) => (
-                  <div key={review.id} className="p-4 rounded-2xl bg-neutral-900/60 border border-white/5">
+                  <div key={review.id} className="p-4 rounded-2xl bg-cm-elevated border border-cm-border-subtle">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center text-xs font-bold text-white">
                         {review.reviewer.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-stone-200">{review.reviewer.name}</p>
+                        <p className="text-sm font-medium text-cm-secondary">{review.reviewer.name}</p>
                         <div className="flex items-center gap-2">
                           <div className="flex gap-0.5">
                             {Array.from({ length: 5 }).map((_, i) => (
                               <Star key={i} className={`w-3 h-3 ${i < review.rating ? 'text-red-300 fill-red-300' : 'text-neutral-700'}`} />
                             ))}
                           </div>
-                          <span className="text-[10px] text-stone-600">{new Date(review.createdAt).toLocaleDateString()}</span>
+                          <span className="text-[10px] text-cm-faint">{new Date(review.createdAt).toLocaleDateString()}</span>
                         </div>
                       </div>
                     </div>
-                    {review.title && <p className="text-sm font-medium text-stone-300 mb-1">{review.title}</p>}
-                    {review.comment && <p className="text-sm text-stone-500 leading-relaxed">{review.comment}</p>}
+                    {review.title && <p className="text-sm font-medium text-cm-secondary mb-1">{review.title}</p>}
+                    {review.comment && <p className="text-sm text-cm-dim leading-relaxed">{review.comment}</p>}
                   </div>
                 ))
               )}
@@ -544,7 +544,7 @@ export default function ProductDetailPage() {
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <div className="mt-16">
-            <h2 className="text-xl font-bold text-stone-100 mb-6">Related Products</h2>
+            <h2 className="text-xl font-bold text-cm-primary mb-6">Related Products</h2>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {relatedProducts.map((rp) => {
                 const rpImages = getImages(rp.images)
@@ -552,17 +552,17 @@ export default function ProductDetailPage() {
                   <button
                     key={rp.id}
                     onClick={() => { navigate('product-detail', { id: rp.id }); setSelectedImage(0) }}
-                    className="rounded-2xl bg-neutral-900/60 border border-white/5 hover:border-white/10 overflow-hidden transition-all text-left group"
+                    className="rounded-2xl bg-cm-elevated border border-cm-border-subtle hover:border-cm-border-hover overflow-hidden transition-all text-left group"
                   >
-                    <div className="aspect-square bg-neutral-800 overflow-hidden">
+                    <div className="aspect-square bg-cm-input overflow-hidden">
                       {rpImages.length > 0 ? (
                         <img src={rpImages[0]} alt={rp.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-stone-700"><Package className="w-10 h-10" /></div>
+                        <div className="w-full h-full flex items-center justify-center text-cm-faint"><Package className="w-10 h-10" /></div>
                       )}
                     </div>
                     <div className="p-3">
-                      <p className="text-xs font-medium text-stone-300 truncate">{rp.title}</p>
+                      <p className="text-xs font-medium text-cm-secondary truncate">{rp.title}</p>
                       <p className="text-sm font-bold text-red-400 mt-1">${rp.price.toFixed(2)}</p>
                     </div>
                   </button>

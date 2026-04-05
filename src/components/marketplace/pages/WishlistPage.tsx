@@ -55,11 +55,11 @@ export default function WishlistPage() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-4">
         <div className="text-center max-w-md">
-          <div className="w-20 h-20 rounded-full bg-neutral-900/60 border border-white/5 flex items-center justify-center mx-auto mb-6">
-            <Heart className="w-10 h-10 text-stone-600" />
+          <div className="w-20 h-20 rounded-full bg-cm-elevated border border-cm-border-subtle flex items-center justify-center mx-auto mb-6">
+            <Heart className="w-10 h-10 text-cm-faint" />
           </div>
-          <h1 className="text-2xl font-bold text-stone-100 mb-2">{t('wishlist.empty')}</h1>
-          <p className="text-sm text-stone-500 mb-6">{t('wishlist.emptyDesc')}</p>
+          <h1 className="text-2xl font-bold text-cm-primary mb-2">{t('wishlist.empty')}</h1>
+          <p className="text-sm text-cm-dim mb-6">{t('wishlist.emptyDesc')}</p>
           <Button
             onClick={() => navigate('browse')}
             className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl"
@@ -77,14 +77,14 @@ export default function WishlistPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <button onClick={() => navigate('browse')} className="flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 mb-3 group">
+          <button onClick={() => navigate('browse')} className="flex items-center gap-2 text-sm text-cm-dim hover:text-cm-secondary mb-3 group">
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             {t('common.back')}
           </button>
           <div className="flex items-center gap-3">
             <Heart className="w-6 h-6 text-red-500 fill-red-500" />
-            <h1 className="text-2xl font-bold text-stone-100">{t('wishlist.title')}</h1>
-            <span className="px-2 py-0.5 rounded-full bg-white/5 text-xs text-stone-400 border border-white/10">
+            <h1 className="text-2xl font-bold text-cm-primary">{t('wishlist.title')}</h1>
+            <span className="px-2 py-0.5 rounded-full bg-cm-hover text-xs text-cm-muted border border-cm-border-hover">
               {items.length} {items.length === 1 ? t('wishlist.item') : t('wishlist.items')}
             </span>
           </div>
@@ -93,7 +93,7 @@ export default function WishlistPage() {
           <Button
             onClick={handleMoveAllToCart}
             variant="outline"
-            className="border-white/10 text-stone-300 hover:bg-white/5 hidden sm:flex"
+            className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover hidden sm:flex"
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
             {t('wishlist.moveAllToCart')}
@@ -112,17 +112,17 @@ export default function WishlistPage() {
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {items.map((item) => (
-          <div key={item.productId} className="rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-white/5 hover:border-white/10 overflow-hidden transition-all group">
+          <div key={item.productId} className="rounded-2xl bg-cm-elevated backdrop-blur-xl border border-cm-border-subtle hover:border-cm-border-hover overflow-hidden transition-all group">
             <div className="relative">
               <button
                 onClick={() => navigate('product-detail', { id: item.productId })}
                 className="block w-full"
               >
-                <div className="aspect-square bg-neutral-800 overflow-hidden">
+                <div className="aspect-square bg-cm-input overflow-hidden">
                   {item.image ? (
                     <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-stone-700">
+                    <div className="w-full h-full flex items-center justify-center text-cm-faint">
                       <ShoppingCart className="w-12 h-12" />
                     </div>
                   )}
@@ -130,17 +130,17 @@ export default function WishlistPage() {
               </button>
               <button
                 onClick={() => handleRemove(item.productId)}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-stone-300 hover:text-red-400 hover:bg-black/80 transition-all"
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-cm-secondary hover:text-red-400 hover:bg-black/80 transition-all"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
             <div className="p-4">
               <button onClick={() => navigate('product-detail', { id: item.productId })} className="block w-full text-left">
-                <h3 className="text-sm font-medium text-stone-200 truncate group-hover:text-stone-100">{item.title}</h3>
+                <h3 className="text-sm font-medium text-cm-secondary truncate group-hover:text-cm-primary">{item.title}</h3>
                 <div className="flex items-center gap-1 mt-0.5">
-                  <Store className="w-3 h-3 text-stone-600" />
-                  <p className="text-xs text-stone-500 truncate">{item.storeName}</p>
+                  <Store className="w-3 h-3 text-cm-faint" />
+                  <p className="text-xs text-cm-dim truncate">{item.storeName}</p>
                 </div>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="text-base font-bold text-red-400">${item.price.toFixed(2)}</span>

@@ -294,7 +294,7 @@ export default function SellerLocatorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-cm-bg">
       {/* ── Custom Leaflet overrides (scoped via a wrapper class) ── */}
       <style>{`
         .cm-seller-locator .leaflet-container        { background: #0a0a0a !important; z-index:1; }
@@ -323,7 +323,7 @@ export default function SellerLocatorPage() {
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <button
             onClick={() => navigate('home')}
-            className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 mb-6 group"
+            className="inline-flex items-center gap-2 text-sm text-cm-dim hover:text-cm-secondary mb-6 group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Home
           </button>
@@ -334,18 +334,18 @@ export default function SellerLocatorPage() {
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
             Seller <span className="bg-gradient-to-r from-red-300 to-red-400 bg-clip-text text-transparent">Locator</span>
           </h1>
-          <p className="text-stone-400 font-light max-w-2xl mx-auto mb-8">
+          <p className="text-cm-muted font-light max-w-2xl mx-auto mb-8">
             Discover verified sellers across Canada. Click any marker to view their storefront and browse their products.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-stone-500">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-cm-dim">
             <span className="flex items-center gap-1.5">
               <MapPin className="w-4 h-4 text-red-400" />
-              <strong className="text-stone-200">{allSellers.length}</strong> verified sellers
+              <strong className="text-cm-secondary">{allSellers.length}</strong> verified sellers
             </span>
-            <span className="text-stone-600">|</span>
+            <span className="text-cm-faint">|</span>
             <span className="flex items-center gap-1.5">
               <Navigation className="w-4 h-4 text-red-300" />
-              <strong className="text-stone-200">{sellerProvinces.length}</strong> provinces
+              <strong className="text-cm-secondary">{sellerProvinces.length}</strong> provinces
             </span>
           </div>
         </div>
@@ -357,26 +357,26 @@ export default function SellerLocatorPage() {
           <div className="flex flex-col lg:flex-row gap-6" style={{ height: '620px' }}>
 
             {/* ── Sidebar ── */}
-            <div className="w-full lg:w-80 flex-shrink-0 flex flex-col rounded-2xl border border-white/5 bg-[#111]/80 backdrop-blur-sm overflow-hidden">
+            <div className="w-full lg:w-80 flex-shrink-0 flex flex-col rounded-2xl border border-cm-border-subtle bg-cm-elevated/80 backdrop-blur-sm overflow-hidden">
               {/* Search + Filter Toggle */}
-              <div className="p-4 border-b border-white/5">
+              <div className="p-4 border-b border-cm-border-subtle">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cm-dim" />
                   <Input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search sellers, cities..."
-                    className="w-full pl-10 pr-9 h-10 bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 rounded-xl text-sm focus:border-red-500/30 focus:ring-1 focus:ring-red-500/20"
+                    className="w-full pl-10 pr-9 h-10 bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl text-sm focus:border-red-500/30 focus:ring-1 focus:ring-red-500/20"
                   />
                   {searchQuery && (
-                    <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300">
+                    <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-cm-dim hover:text-cm-secondary">
                       <X className="w-4 h-4" />
                     </button>
                   )}
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className="mt-2 flex items-center gap-2 w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-stone-400 hover:bg-white/10 hover:text-stone-200 transition-all"
+                  className="mt-2 flex items-center gap-2 w-full px-3 py-2 rounded-xl bg-cm-hover border border-cm-border-hover text-sm text-cm-muted hover:bg-cm-hover-strong hover:text-cm-secondary transition-all"
                 >
                   <Filter className="w-4 h-4" />
                   {showFilters ? 'Hide Filters' : 'Filter by Province'}
@@ -390,10 +390,10 @@ export default function SellerLocatorPage() {
 
               {/* Province Filter Panel */}
               {showFilters && (
-                <div className="px-4 py-3 border-b border-white/5 space-y-1 max-h-52 overflow-y-auto">
+                <div className="px-4 py-3 border-b border-cm-border-subtle space-y-1 max-h-52 overflow-y-auto">
                   <button
                     onClick={() => setSelectedProvince(null)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${!selectedProvince ? 'bg-red-500/10 text-white' : 'text-stone-400 hover:bg-white/5'}`}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${!selectedProvince ? 'bg-red-500/10 text-white' : 'text-cm-muted hover:bg-cm-hover'}`}
                   >
                     All Provinces ({allSellers.length})
                   </button>
@@ -401,13 +401,13 @@ export default function SellerLocatorPage() {
                     <button
                       key={prov}
                       onClick={() => setSelectedProvince(selectedProvince === prov ? null : prov)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${selectedProvince === prov ? 'bg-red-500/10 text-white' : 'text-stone-400 hover:bg-white/5'}`}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${selectedProvince === prov ? 'bg-red-500/10 text-white' : 'text-cm-muted hover:bg-cm-hover'}`}
                     >
                       <span className="flex items-center gap-2">
-                        <MapPin className="w-3 h-3 text-stone-600" />
+                        <MapPin className="w-3 h-3 text-cm-faint" />
                         {prov}
                       </span>
-                      <span className="text-xs text-stone-600 bg-white/5 px-2 py-0.5 rounded-full">
+                      <span className="text-xs text-cm-faint bg-cm-hover px-2 py-0.5 rounded-full">
                         {provinceCounts[prov] || 0}
                       </span>
                     </button>
@@ -417,7 +417,7 @@ export default function SellerLocatorPage() {
 
               {/* Selected Seller Detail Card */}
               {selectedSeller && (
-                <div className="px-4 py-4 border-b border-white/5 bg-red-500/5">
+                <div className="px-4 py-4 border-b border-cm-border-subtle bg-red-500/5">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2 min-w-0">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold text-white ${
@@ -427,25 +427,25 @@ export default function SellerLocatorPage() {
                       }`}>
                         {selectedSeller.storeName.charAt(0).toUpperCase()}
                       </div>
-                      <h3 className="text-sm font-semibold text-stone-200 truncate">{selectedSeller.storeName}</h3>
+                      <h3 className="text-sm font-semibold text-cm-secondary truncate">{selectedSeller.storeName}</h3>
                     </div>
-                    <button onClick={() => setSelectedSeller(null)} className="text-stone-500 hover:text-stone-300 flex-shrink-0">
+                    <button onClick={() => setSelectedSeller(null)} className="text-cm-dim hover:text-cm-secondary flex-shrink-0">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
                   <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2 text-stone-400">
-                      <MapPin className="w-3.5 h-3.5 text-stone-500 flex-shrink-0" />
+                    <div className="flex items-center gap-2 text-cm-muted">
+                      <MapPin className="w-3.5 h-3.5 text-cm-dim flex-shrink-0" />
                       {selectedSeller.city}, {selectedSeller.province}
                     </div>
-                    <div className="flex items-center gap-2 text-stone-400">
+                    <div className="flex items-center gap-2 text-cm-muted">
                       <Star className="w-3.5 h-3.5 text-red-300 fill-red-300 flex-shrink-0" />
                       <span>{selectedSeller.rating.toFixed(1)} rating</span>
-                      <span className="text-stone-600">· {selectedSeller.totalSales} sales</span>
+                      <span className="text-cm-faint">· {selectedSeller.totalSales} sales</span>
                     </div>
-                    <div className="flex items-center gap-2 text-stone-400">
-                      <Store className="w-3.5 h-3.5 text-stone-500 flex-shrink-0" />
-                      <span className="text-xs text-stone-500">{selectedSeller.totalProducts} products listed</span>
+                    <div className="flex items-center gap-2 text-cm-muted">
+                      <Store className="w-3.5 h-3.5 text-cm-dim flex-shrink-0" />
+                      <span className="text-xs text-cm-dim">{selectedSeller.totalProducts} products listed</span>
                     </div>
                     <Button
                       onClick={() => goToStorefront(selectedSeller)}
@@ -463,12 +463,12 @@ export default function SellerLocatorPage() {
                 <div className="py-2 space-y-1.5">
                   {loading ? (
                     Array.from({ length: 6 }).map((_, i) => (
-                      <div key={i} className="p-4 rounded-xl bg-white/[0.02] animate-pulse" style={{ height: '72px' }} />
+                      <div key={i} className="p-4 rounded-xl bg-cm-hover animate-pulse" style={{ height: '72px' }} />
                     ))
                   ) : filteredSellers.length === 0 ? (
                     <div className="text-center py-10 px-4">
-                      <MapPin className="w-8 h-8 text-stone-700 mx-auto mb-2" />
-                      <p className="text-sm text-stone-600">No sellers found</p>
+                      <MapPin className="w-8 h-8 text-cm-faint mx-auto mb-2" />
+                      <p className="text-sm text-cm-faint">No sellers found</p>
                       <button
                         onClick={() => { setSearchQuery(''); setSelectedProvince(null) }}
                         className="text-xs text-red-400 hover:underline mt-2"
@@ -484,7 +484,7 @@ export default function SellerLocatorPage() {
                         className={`w-full text-left p-3 rounded-xl transition-all group ${
                           selectedSeller?.storeId === seller.storeId
                             ? 'bg-red-500/10 border border-red-500/20'
-                            : 'hover:bg-white/5 border border-transparent'
+                            : 'hover:bg-cm-hover border border-transparent'
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -496,16 +496,16 @@ export default function SellerLocatorPage() {
                             {seller.storeName.charAt(0).toUpperCase()}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-medium text-stone-200 truncate group-hover:text-white transition-colors">
+                            <h4 className="text-sm font-medium text-cm-secondary truncate group-hover:text-white transition-colors">
                               {seller.storeName}
                             </h4>
-                            <p className="text-xs text-stone-500 truncate">{seller.city}, {seller.province}</p>
+                            <p className="text-xs text-cm-dim truncate">{seller.city}, {seller.province}</p>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="flex items-center gap-0.5 text-xs text-stone-500">
+                              <span className="flex items-center gap-0.5 text-xs text-cm-dim">
                                 <Star className="w-3 h-3 text-red-300 fill-red-300" />
                                 {seller.rating.toFixed(1)}
                               </span>
-                              <span className="text-[10px] text-stone-600">{seller.totalProducts} products</span>
+                              <span className="text-[10px] text-cm-faint">{seller.totalProducts} products</span>
                               {seller.totalSales >= 50 && (
                                 <Badge className="bg-red-500/10 text-red-300 border-red-500/20 text-[9px] px-1.5 py-0 border">
                                   GOLD
@@ -513,7 +513,7 @@ export default function SellerLocatorPage() {
                               )}
                             </div>
                           </div>
-                          <ChevronRight className="w-4 h-4 text-stone-700 group-hover:text-stone-400 flex-shrink-0 mt-1" />
+                          <ChevronRight className="w-4 h-4 text-cm-faint group-hover:text-cm-muted flex-shrink-0 mt-1" />
                         </div>
                       </button>
                     ))
@@ -522,7 +522,7 @@ export default function SellerLocatorPage() {
               </ScrollArea>
 
               {/* Bottom Bar */}
-              <div className="px-4 py-3 border-t border-white/5 flex items-center justify-between text-xs text-stone-600">
+              <div className="px-4 py-3 border-t border-cm-border-subtle flex items-center justify-between text-xs text-cm-faint">
                 <span>{filteredSellers.length} of {allSellers.length} sellers</span>
                 <button onClick={goToRandomStore} className="text-red-400 hover:text-red-300 hover:underline flex items-center gap-1">
                   Random Store <ChevronRight className="w-3 h-3" />
@@ -531,15 +531,15 @@ export default function SellerLocatorPage() {
             </div>
 
             {/* ── Map ── */}
-            <div className="flex-1 rounded-2xl border border-white/5 overflow-hidden relative cm-seller-locator">
+            <div className="flex-1 rounded-2xl border border-cm-border-subtle overflow-hidden relative cm-seller-locator">
               {/* Top gradient accent */}
               <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-red-500/20 to-transparent z-10 pointer-events-none" />
 
               {loading ? (
-                <div className="w-full h-full flex items-center justify-center bg-neutral-900">
+                <div className="w-full h-full flex items-center justify-center bg-cm-elevated">
                   <div className="text-center">
                     <div className="w-10 h-10 border-2 border-red-500/20 border-t-red-500 rounded-full animate-spin mx-auto mb-3" />
-                    <p className="text-sm text-stone-600">Loading map...</p>
+                    <p className="text-sm text-cm-faint">Loading map...</p>
                   </div>
                 </div>
               ) : (
@@ -553,16 +553,16 @@ export default function SellerLocatorPage() {
 
               {/* Map Legend */}
               <div className="absolute bottom-4 left-4 z-10">
-                <div className="p-3 rounded-xl bg-[#0a0a0a]/90 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/30">
-                  <p className="text-[10px] text-stone-500 uppercase tracking-wider font-medium mb-2">Legend</p>
+                <div className="p-3 rounded-xl bg-cm-bg/90 backdrop-blur-xl border border-cm-border-hover shadow-lg shadow-black/30">
+                  <p className="text-[10px] text-cm-dim uppercase tracking-wider font-medium mb-2">Legend</p>
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2">
                       <div className="w-5 h-5 rounded-full bg-gradient-to-br from-red-600 to-red-700 border-2 border-white/80 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">$</div>
-                      <span className="text-[10px] text-stone-400">Verified Seller</span>
+                      <span className="text-[10px] text-cm-muted">Verified Seller</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-[22px] h-[22px] rounded-full bg-gradient-to-br from-red-500 to-red-600 border-2 border-white/80 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">$</div>
-                      <span className="text-[10px] text-stone-400">Gold Seller (50+ sales)</span>
+                      <span className="text-[10px] text-cm-muted">Gold Seller (50+ sales)</span>
                     </div>
                   </div>
                 </div>
@@ -570,8 +570,8 @@ export default function SellerLocatorPage() {
 
               {/* Province Quick-Jump */}
               <div className="absolute top-3 right-3 z-10 hidden xl:block">
-                <div className="p-2 rounded-xl bg-[#0a0a0a]/90 backdrop-blur-xl border border-white/10 shadow-lg">
-                  <p className="text-[10px] text-stone-500 uppercase tracking-wider font-medium px-1 mb-1">Jump to</p>
+                <div className="p-2 rounded-xl bg-cm-bg/90 backdrop-blur-xl border border-cm-border-hover shadow-lg">
+                  <p className="text-[10px] text-cm-dim uppercase tracking-wider font-medium px-1 mb-1">Jump to</p>
                   <div className="grid grid-cols-2 gap-0.5">
                     {sellerProvinces.slice(0, 12).map((prov) => (
                       <button
@@ -589,7 +589,7 @@ export default function SellerLocatorPage() {
                             setTimeout(() => setFlyToTarget(null), 1500)
                           }
                         }}
-                        className="px-2 py-1 rounded-lg text-[10px] text-stone-400 hover:bg-white/10 hover:text-stone-200 transition-all text-left truncate"
+                        className="px-2 py-1 rounded-lg text-[10px] text-cm-muted hover:bg-cm-hover-strong hover:text-cm-secondary transition-all text-left truncate"
                       >
                         {prov.length > 14 ? prov.slice(0, 12) + '...' : prov}
                       </button>
@@ -606,31 +606,31 @@ export default function SellerLocatorPage() {
       <section className="px-6 pb-20">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-stone-100">
+            <h2 className="text-2xl md:text-3xl font-bold text-cm-primary">
               How It <span className="bg-gradient-to-r from-red-300 to-red-400 bg-clip-text text-transparent">Works</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
+            <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle text-center">
                 <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-3">
                   <Search className="w-5 h-5 text-red-400" />
                 </div>
-                <h3 className="text-sm font-semibold text-stone-200 mb-2">1. Search</h3>
-                <p className="text-xs text-stone-500 leading-relaxed">Browse the map or use the sidebar to search by seller name, city, or province. All sellers are verified Canadian businesses.</p>
+                <h3 className="text-sm font-semibold text-cm-secondary mb-2">1. Search</h3>
+                <p className="text-xs text-cm-dim leading-relaxed">Browse the map or use the sidebar to search by seller name, city, or province. All sellers are verified Canadian businesses.</p>
               </div>
-              <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
+              <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle text-center">
                 <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-3">
                   <MapPin className="w-5 h-5 text-red-300" />
                 </div>
-                <h3 className="text-sm font-semibold text-stone-200 mb-2">2. Click</h3>
-                <p className="text-xs text-stone-500 leading-relaxed">Click any seller marker on the map to see their details, rating, total sales, and product count at a glance.</p>
+                <h3 className="text-sm font-semibold text-cm-secondary mb-2">2. Click</h3>
+                <p className="text-xs text-cm-dim leading-relaxed">Click any seller marker on the map to see their details, rating, total sales, and product count at a glance.</p>
               </div>
-              <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
+              <div className="p-6 rounded-2xl bg-cm-hover border border-cm-border-subtle text-center">
                 <div className="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-3">
                   <ExternalLink className="w-5 h-5 text-green-400" />
                 </div>
-                <h3 className="text-sm font-semibold text-stone-200 mb-2">3. Visit</h3>
-                <p className="text-xs text-stone-500 leading-relaxed">Click &quot;Visit Storefront&quot; to browse their full product catalog and start shopping safely with escrow protection.</p>
+                <h3 className="text-sm font-semibold text-cm-secondary mb-2">3. Visit</h3>
+                <p className="text-xs text-cm-dim leading-relaxed">Click &quot;Visit Storefront&quot; to browse their full product catalog and start shopping safely with escrow protection.</p>
               </div>
           </div>
         </div>

@@ -52,8 +52,8 @@ export default function AdminDashboard() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-stone-100">Admin Dashboard</h1>
-          <p className="text-sm text-stone-500 mt-1">System overview and management</p>
+          <h1 className="text-2xl font-bold text-cm-primary">Admin Dashboard</h1>
+          <p className="text-sm text-cm-dim mt-1">System overview and management</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           {[
@@ -63,7 +63,7 @@ export default function AdminDashboard() {
             { label: 'Disputes', page: 'admin-disputes' as const },
             { label: 'Settings', page: 'admin-settings' as const },
           ].map((item) => (
-            <Button key={item.label} variant="outline" onClick={() => navigate(item.page)} className="border-white/10 text-stone-400 hover:text-stone-200 hover:bg-white/5 rounded-xl text-xs h-8">
+            <Button key={item.label} variant="outline" onClick={() => navigate(item.page)} className="border-cm-border-hover text-cm-muted hover:text-cm-secondary hover:bg-cm-hover rounded-xl text-xs h-8">
               {item.label}
             </Button>
           ))}
@@ -73,13 +73,13 @@ export default function AdminDashboard() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
         {stats.map((stat) => (
-          <Card key={stat.label} className="bg-neutral-900/60 border-white/5 rounded-2xl">
+          <Card key={stat.label} className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
             <CardContent className="p-4">
               <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-2`}>
                 <stat.icon className={`w-4 h-4 ${stat.textColor}`} />
               </div>
-              <p className="text-xl font-bold text-stone-100">{stat.value}</p>
-              <p className="text-[10px] text-stone-500 mt-0.5">{stat.label}</p>
+              <p className="text-xl font-bold text-cm-primary">{stat.value}</p>
+              <p className="text-[10px] text-cm-dim mt-0.5">{stat.label}</p>
             </CardContent>
           </Card>
         ))}
@@ -87,9 +87,9 @@ export default function AdminDashboard() {
 
       {/* Charts */}
       <div className="grid lg:grid-cols-3 gap-6 mb-8">
-        <Card className="lg:col-span-2 bg-neutral-900/60 border-white/5 rounded-2xl">
+        <Card className="lg:col-span-2 bg-cm-elevated border-cm-border-subtle rounded-2xl">
           <CardContent className="p-6">
-            <h2 className="text-base font-semibold text-stone-200 mb-4">Revenue (Last 6 Months)</h2>
+            <h2 className="text-base font-semibold text-cm-secondary mb-4">Revenue (Last 6 Months)</h2>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
@@ -106,9 +106,9 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+        <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
           <CardContent className="p-6">
-            <h2 className="text-base font-semibold text-stone-200 mb-4">Orders by Status</h2>
+            <h2 className="text-base font-semibold text-cm-secondary mb-4">Orders by Status</h2>
             <div className="h-64 flex items-center justify-center">
               {statusData.length > 0 ? (
                 <PieChart width={200} height={200}>
@@ -118,14 +118,14 @@ export default function AdminDashboard() {
                   <Tooltip contentStyle={{ backgroundColor: '#171717', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#e7e5e4' }} />
                 </PieChart>
               ) : (
-                <p className="text-sm text-stone-600">No data</p>
+                <p className="text-sm text-cm-faint">No data</p>
               )}
             </div>
             <div className="flex flex-wrap gap-3 mt-4">
               {statusData.map((s, i) => (
                 <div key={s.name} className="flex items-center gap-1.5">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: statusColors[i % statusColors.length] }} />
-                  <span className="text-[10px] text-stone-500">{s.name}: {s.value}</span>
+                  <span className="text-[10px] text-cm-dim">{s.name}: {s.value}</span>
                 </div>
               ))}
             </div>
@@ -134,30 +134,30 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Orders */}
-      <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+      <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold text-stone-200">Recent Orders</h2>
-            <Button variant="ghost" onClick={() => navigate('admin-orders')} className="text-xs text-stone-500 hover:text-stone-300">View All →</Button>
+            <h2 className="text-base font-semibold text-cm-secondary">Recent Orders</h2>
+            <Button variant="ghost" onClick={() => navigate('admin-orders')} className="text-xs text-cm-dim hover:text-cm-secondary">View All →</Button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/5">
-                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-stone-500 uppercase">Order</th>
-                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-stone-500 uppercase">Buyer</th>
-                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-stone-500 uppercase">Items</th>
-                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-stone-500 uppercase">Total</th>
-                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-stone-500 uppercase">Status</th>
+                <tr className="border-b border-cm-border-subtle">
+                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-cm-dim uppercase">Order</th>
+                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-cm-dim uppercase">Buyer</th>
+                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-cm-dim uppercase">Items</th>
+                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-cm-dim uppercase">Total</th>
+                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-cm-dim uppercase">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {(data?.recentOrders || []).slice(0, 8).map((order: any) => (
-                  <tr key={order.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02]">
-                    <td className="px-3 py-3 text-xs font-mono text-stone-400">{order.orderNumber}</td>
-                    <td className="px-3 py-3 text-xs text-stone-300">{order.buyer?.name}</td>
-                    <td className="px-3 py-3 text-xs text-stone-500">{order.items?.length || 0}</td>
-                    <td className="px-3 py-3 text-xs font-semibold text-stone-200">${order.total?.toFixed(2)}</td>
+                  <tr key={order.id} className="border-b border-cm-border-subtle last:border-0 hover:bg-cm-hover">
+                    <td className="px-3 py-3 text-xs font-mono text-cm-muted">{order.orderNumber}</td>
+                    <td className="px-3 py-3 text-xs text-cm-secondary">{order.buyer?.name}</td>
+                    <td className="px-3 py-3 text-xs text-cm-dim">{order.items?.length || 0}</td>
+                    <td className="px-3 py-3 text-xs font-semibold text-cm-secondary">${order.total?.toFixed(2)}</td>
                     <td className="px-3 py-3">
                       <Badge className={`${ORDER_STATUS_COLORS[order.status as keyof typeof ORDER_STATUS_COLORS] || ''} text-[10px] border`}>
                         {ORDER_STATUS_LABELS[order.status as keyof typeof ORDER_STATUS_LABELS] || order.status}

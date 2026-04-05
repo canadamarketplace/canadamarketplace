@@ -162,9 +162,9 @@ export default function CheckoutPage() {
   if (!user) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-        <ShoppingBag className="w-16 h-16 text-stone-700 mx-auto mb-4" />
-        <h1 className="text-2xl font-bold text-stone-200 mb-2">Please sign in</h1>
-        <p className="text-stone-500 mb-6">You need to be logged in to checkout</p>
+        <ShoppingBag className="w-16 h-16 text-cm-faint mx-auto mb-4" />
+        <h1 className="text-2xl font-bold text-cm-secondary mb-2">Please sign in</h1>
+        <p className="text-cm-dim mb-6">You need to be logged in to checkout</p>
         <Button onClick={() => useNavigation.getState().openAuthModal('login')} className="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl">
           Sign In
         </Button>
@@ -175,8 +175,8 @@ export default function CheckoutPage() {
   if (items.length === 0 && !orderPlaced) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-        <ShoppingBag className="w-16 h-16 text-stone-700 mx-auto mb-4" />
-        <h1 className="text-2xl font-bold text-stone-200 mb-2">Your cart is empty</h1>
+        <ShoppingBag className="w-16 h-16 text-cm-faint mx-auto mb-4" />
+        <h1 className="text-2xl font-bold text-cm-secondary mb-2">Your cart is empty</h1>
         <Button onClick={() => navigate('browse')} className="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl mt-4">
           Browse Products
         </Button>
@@ -190,14 +190,14 @@ export default function CheckoutPage() {
         <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-6">
           <CheckCircle2 className="w-10 h-10 text-green-400" />
         </div>
-        <h1 className="text-3xl font-bold text-stone-100 mb-2">Order Placed!</h1>
-        <p className="text-stone-400 mb-2">Your order has been placed successfully.</p>
-        <p className="text-sm text-stone-600 mb-8">Your payment is secured with escrow protection.</p>
+        <h1 className="text-3xl font-bold text-cm-primary mb-2">Order Placed!</h1>
+        <p className="text-cm-muted mb-2">Your order has been placed successfully.</p>
+        <p className="text-sm text-cm-faint mb-8">Your payment is secured with escrow protection.</p>
         <div className="flex gap-3 justify-center">
           <Button onClick={() => navigate('order-detail', { id: orderId })} className="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl">
             View Order
           </Button>
-          <Button variant="outline" onClick={() => navigate('orders')} className="border-white/10 text-stone-300 rounded-xl">
+          <Button variant="outline" onClick={() => navigate('orders')} className="border-cm-border-hover text-cm-secondary rounded-xl">
             My Orders
           </Button>
         </div>
@@ -205,41 +205,41 @@ export default function CheckoutPage() {
     )
   }
 
-  const inputClass = "bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
+  const inputClass = "bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-stone-100 mb-8">Checkout</h1>
+      <h1 className="text-2xl font-bold text-cm-primary mb-8">Checkout</h1>
 
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Shipping Form */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="rounded-2xl bg-neutral-900/60 border border-white/5 p-6">
-            <h2 className="text-lg font-semibold text-stone-100 mb-4 flex items-center gap-2">
+          <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6">
+            <h2 className="text-lg font-semibold text-cm-primary mb-4 flex items-center gap-2">
               <MapPin className="w-5 h-5 text-red-400" /> Shipping Address
             </h2>
             <div className="space-y-4">
               <div>
-                <Label className="text-stone-300 text-xs mb-1.5 block">Street Address *</Label>
+                <Label className="text-cm-secondary text-xs mb-1.5 block">Street Address *</Label>
                 <Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Main St" className={inputClass} required />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">City *</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">City *</Label>
                   <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Toronto" className={inputClass} required />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Province *</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">Province *</Label>
                   <div className="relative">
                     <select
                       value={province}
                       onChange={(e) => setProvince(e.target.value)}
-                      className={`w-full ${inputClass} appearance-none bg-white/5`}
+                      className={`w-full ${inputClass} appearance-none bg-cm-hover`}
                       required
                     >
-                      <option value="" className="bg-neutral-900">Select Province</option>
+                      <option value="" className="bg-cm-elevated">Select Province</option>
                       {PROVINCES.map((p) => (
-                        <option key={p.slug} value={p.slug} className="bg-neutral-900">
+                        <option key={p.slug} value={p.slug} className="bg-cm-elevated">
                           {p.name} ({p.code})
                         </option>
                       ))}
@@ -256,26 +256,26 @@ export default function CheckoutPage() {
                 </div>
               </div>
               <div className="w-1/2">
-                <Label className="text-stone-300 text-xs mb-1.5 block">Postal Code *</Label>
+                <Label className="text-cm-secondary text-xs mb-1.5 block">Postal Code *</Label>
                 <Input value={postalCode} onChange={(e) => setPostalCode(e.target.value)} placeholder="M5V 3L9" className={inputClass} required />
               </div>
               <div>
-                <Label className="text-stone-300 text-xs mb-1.5 block">Notes (optional)</Label>
-                <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Any special delivery instructions" className="bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 rounded-xl min-h-[80px]" />
+                <Label className="text-cm-secondary text-xs mb-1.5 block">Notes (optional)</Label>
+                <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Any special delivery instructions" className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl min-h-[80px]" />
               </div>
             </div>
           </div>
 
           {/* Payment Info */}
-          <div className="rounded-2xl bg-neutral-900/60 border border-white/5 p-6">
-            <h2 className="text-lg font-semibold text-stone-100 mb-4 flex items-center gap-2">
+          <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6">
+            <h2 className="text-lg font-semibold text-cm-primary mb-4 flex items-center gap-2">
               <Shield className="w-5 h-5 text-green-400" /> Payment Protection
             </h2>
             <div className="flex items-start gap-3 p-4 rounded-xl bg-green-500/5 border border-green-500/10">
               <CheckCircle2 className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-sm font-medium text-green-300">Escrow Protected</p>
-                <p className="text-xs text-stone-500 mt-1">Your payment is held securely and only released to the seller after you confirm receipt of your order.</p>
+                <p className="text-xs text-cm-dim mt-1">Your payment is held securely and only released to the seller after you confirm receipt of your order.</p>
               </div>
             </div>
           </div>
@@ -283,27 +283,27 @@ export default function CheckoutPage() {
 
         {/* Order Summary */}
         <div className="lg:col-span-1">
-          <div className="sticky top-24 rounded-2xl bg-neutral-900/60 border border-white/5 p-6">
-            <h2 className="text-lg font-semibold text-stone-100 mb-4">Order Summary</h2>
+          <div className="sticky top-24 rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6">
+            <h2 className="text-lg font-semibold text-cm-primary mb-4">Order Summary</h2>
 
             <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
               {items.map((item) => (
                 <div key={item.productId} className="flex gap-3">
-                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-neutral-800 flex-shrink-0">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-cm-input flex-shrink-0">
                     {item.image ? <img src={item.image} alt="" className="w-full h-full object-cover" /> : (
-                      <div className="w-full h-full flex items-center justify-center text-stone-600"><ShoppingBag className="w-5 h-5" /></div>
+                      <div className="w-full h-full flex items-center justify-center text-cm-faint"><ShoppingBag className="w-5 h-5" /></div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-stone-300 truncate">{item.title}</p>
-                    <p className="text-[10px] text-stone-600">Qty: {item.quantity}</p>
+                    <p className="text-xs text-cm-secondary truncate">{item.title}</p>
+                    <p className="text-[10px] text-cm-faint">Qty: {item.quantity}</p>
                   </div>
-                  <p className="text-sm font-medium text-stone-200">${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="text-sm font-medium text-cm-secondary">${(item.price * item.quantity).toFixed(2)}</p>
                 </div>
               ))}
             </div>
 
-            <Separator className="bg-white/5 my-4" />
+            <Separator className="bg-cm-hover my-4" />
 
             {/* Coupon Section */}
             {!appliedCoupon ? (
@@ -313,13 +313,13 @@ export default function CheckoutPage() {
                   className="flex items-center gap-2 w-full text-left group"
                 >
                   <Gift className="w-4 h-4 text-red-400" />
-                  <span className="text-sm text-stone-300 group-hover:text-stone-100 transition-colors">
+                  <span className="text-sm text-cm-secondary group-hover:text-cm-primary transition-colors">
                     Have a coupon?
                   </span>
                   {couponExpanded ? (
-                    <ChevronUp className="w-4 h-4 text-stone-500 ml-auto" />
+                    <ChevronUp className="w-4 h-4 text-cm-dim ml-auto" />
                   ) : (
-                    <ChevronDown className="w-4 h-4 text-stone-500 ml-auto" />
+                    <ChevronDown className="w-4 h-4 text-cm-dim ml-auto" />
                   )}
                 </button>
 
@@ -327,13 +327,13 @@ export default function CheckoutPage() {
                   <div className="mt-3 space-y-2">
                     <div className="flex gap-2">
                       <div className="relative flex-1">
-                        <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
+                        <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cm-faint" />
                         <Input
                           value={couponCode}
                           onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponError('') }}
                           onKeyDown={(e) => { if (e.key === 'Enter') handleApplyCoupon() }}
                           placeholder="Enter coupon code"
-                          className="bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11 pl-10 font-mono"
+                          className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11 pl-10 font-mono"
                         />
                       </div>
                       <Button
@@ -372,13 +372,13 @@ export default function CheckoutPage() {
                   </div>
                   <button
                     onClick={handleRemoveCoupon}
-                    className="text-stone-500 hover:text-red-400 transition-colors"
+                    className="text-cm-dim hover:text-red-400 transition-colors"
                     title="Remove coupon"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
-                <p className="text-xs text-stone-500 mt-1">
+                <p className="text-xs text-cm-dim mt-1">
                   {appliedCoupon.type === 'PERCENTAGE'
                     ? `${appliedCoupon.value}% off`
                     : `$${appliedCoupon.value.toFixed(2)} off`}
@@ -388,8 +388,8 @@ export default function CheckoutPage() {
 
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-stone-500">Subtotal</span>
-                <span className="text-stone-300">${subtotal.toFixed(2)}</span>
+                <span className="text-cm-dim">Subtotal</span>
+                <span className="text-cm-secondary">${subtotal.toFixed(2)}</span>
               </div>
 
               {/* Discount line */}
@@ -412,32 +412,32 @@ export default function CheckoutPage() {
                       <span className="text-xs font-medium text-white">
                         Tax — {taxResult.tax.province}
                       </span>
-                      <span className="text-[10px] text-stone-600 ml-auto">
+                      <span className="text-[10px] text-cm-faint ml-auto">
                         {taxResult.tax.totalRate}% combined
                       </span>
                     </div>
                     {taxResult.tax.hst > 0 && (
                       <div className="flex justify-between text-xs">
-                        <span className="text-stone-500 pl-5">HST ({taxResult.tax.hst / subtotal * 100}%)</span>
-                        <span className="text-stone-400">${taxResult.tax.hst.toFixed(2)}</span>
+                        <span className="text-cm-dim pl-5">HST ({taxResult.tax.hst / subtotal * 100}%)</span>
+                        <span className="text-cm-muted">${taxResult.tax.hst.toFixed(2)}</span>
                       </div>
                     )}
                     {taxResult.tax.gst > 0 && (
                       <div className="flex justify-between text-xs">
-                        <span className="text-stone-500 pl-5">GST (5%)</span>
-                        <span className="text-stone-400">${taxResult.tax.gst.toFixed(2)}</span>
+                        <span className="text-cm-dim pl-5">GST (5%)</span>
+                        <span className="text-cm-muted">${taxResult.tax.gst.toFixed(2)}</span>
                       </div>
                     )}
                     {taxResult.tax.pst > 0 && (
                       <div className="flex justify-between text-xs">
-                        <span className="text-stone-500 pl-5">
+                        <span className="text-cm-dim pl-5">
                           {taxResult.tax.provinceCode === 'QC' ? 'QST' : 'PST'} ({taxResult.tax.pst / subtotal * 100}%)
                         </span>
-                        <span className="text-stone-400">${taxResult.tax.pst.toFixed(2)}</span>
+                        <span className="text-cm-muted">${taxResult.tax.pst.toFixed(2)}</span>
                       </div>
                     )}
                     <div className="flex justify-between text-xs font-medium pt-1 border-t border-red-500/10">
-                      <span className="text-stone-400 pl-5">Total Tax</span>
+                      <span className="text-cm-muted pl-5">Total Tax</span>
                       <span className="text-white">${taxResult.tax.totalTax.toFixed(2)}</span>
                     </div>
                   </div>
@@ -445,19 +445,19 @@ export default function CheckoutPage() {
               )}
 
               {!province && (
-                <p className="text-xs text-stone-600 text-center py-1">
+                <p className="text-xs text-cm-faint text-center py-1">
                   Select a province to calculate tax
                 </p>
               )}
 
               <div className="flex justify-between text-sm">
-                <span className="text-stone-500">Marketplace fee (8%)</span>
-                <span className="text-stone-300">${fee.toFixed(2)}</span>
+                <span className="text-cm-dim">Marketplace fee (8%)</span>
+                <span className="text-cm-secondary">${fee.toFixed(2)}</span>
               </div>
-              <Separator className="bg-white/5" />
+              <Separator className="bg-cm-hover" />
               <div className="flex justify-between">
-                <span className="text-base font-semibold text-stone-200">Total</span>
-                <span className="text-xl font-bold text-stone-100">${cartTotal.toFixed(2)} <span className="text-xs text-stone-600">CAD</span></span>
+                <span className="text-base font-semibold text-cm-secondary">Total</span>
+                <span className="text-xl font-bold text-cm-primary">${cartTotal.toFixed(2)} <span className="text-xs text-cm-faint">CAD</span></span>
               </div>
             </div>
 
@@ -470,7 +470,7 @@ export default function CheckoutPage() {
               Place Order · ${cartTotal.toFixed(2)}
             </Button>
 
-            <div className="flex items-center justify-center gap-1 mt-4 text-[10px] text-stone-600">
+            <div className="flex items-center justify-center gap-1 mt-4 text-[10px] text-cm-faint">
               <Shield className="w-3 h-3" />
               Secured with escrow protection
             </div>

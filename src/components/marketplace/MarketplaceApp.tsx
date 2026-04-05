@@ -143,7 +143,7 @@ export default function MarketplaceApp() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-stone-100">
+    <div className="min-h-screen bg-cm-bg text-cm-primary">
       <Navbar />
       <main className="pt-16 lg:pt-20">
         <PageRenderer />

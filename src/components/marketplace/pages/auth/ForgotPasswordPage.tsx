@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
   }
 
   const inputClass =
-    'bg-white/5 border-white/10 text-stone-100 placeholder:text-stone-600 focus:border-red-500/50 focus:ring-red-500/20 h-11 rounded-xl'
+    'bg-cm-hover border-cm-border-hover text-cm-primary placeholder:text-cm-faint focus:border-red-500/50 focus:ring-red-500/20 h-11 rounded-xl'
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
@@ -55,10 +55,10 @@ export default function ForgotPasswordPage() {
           <div className="w-14 h-14 rounded-2xl overflow-hidden mx-auto mb-4 shadow-lg shadow-red-500/20">
             <img src="/logo-square.png" alt="Canada Marketplace" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-2xl font-bold text-stone-100 mb-1">
+          <h1 className="text-2xl font-bold text-cm-primary mb-1">
             {t('forgotPassword.title')}
           </h1>
-          <p className="text-sm text-stone-400">
+          <p className="text-sm text-cm-muted">
             {sent
               ? t('forgotPassword.subtitleSent')
               : t('forgotPassword.subtitle')}
@@ -66,11 +66,11 @@ export default function ForgotPasswordPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-neutral-900 border border-white/10 rounded-2xl p-6 sm:p-8">
+        <div className="bg-cm-elevated border border-cm-border-hover rounded-2xl p-6 sm:p-8">
           {!sent ? (
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <Label className="text-stone-300 text-xs mb-1.5 block">
+                <Label className="text-cm-secondary text-xs mb-1.5 block">
                   {t('forgotPassword.emailAddress')}
                 </Label>
                 <Input
@@ -97,7 +97,7 @@ export default function ForgotPasswordPage() {
                 {t('forgotPassword.sendResetLink')}
               </Button>
 
-              <p className="text-center text-xs text-stone-500">
+              <p className="text-center text-xs text-cm-dim">
                 {t('forgotPassword.infoText')}
               </p>
             </form>
@@ -108,17 +108,17 @@ export default function ForgotPasswordPage() {
                 <Mail className="w-8 h-8 text-green-400" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-stone-100 mb-1">
+                <h2 className="text-lg font-semibold text-cm-primary mb-1">
                   {t('forgotPassword.checkYourEmail')}
                 </h2>
-                <p className="text-sm text-stone-400">
+                <p className="text-sm text-cm-muted">
                   {t('forgotPassword.checkYourEmailDesc', { email })}
                 </p>
               </div>
 
-              <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-start gap-3">
+              <div className="bg-cm-hover border border-cm-border-hover rounded-xl p-3 flex items-start gap-3">
                 <KeyRound className="w-4 h-4 text-red-300 mt-0.5 shrink-0" />
-                <p className="text-xs text-stone-400 text-left">
+                <p className="text-xs text-cm-muted text-left">
                   {t('forgotPassword.didntReceive')}{' '}
                   <button
                     type="button"
@@ -153,7 +153,7 @@ export default function ForgotPasswordPage() {
             <button
               type="button"
               onClick={handleBackToSignIn}
-              className="inline-flex items-center gap-1.5 text-sm text-stone-400 hover:text-stone-200 transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm text-cm-muted hover:text-cm-secondary transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               {t('forgotPassword.backToSignIn')}

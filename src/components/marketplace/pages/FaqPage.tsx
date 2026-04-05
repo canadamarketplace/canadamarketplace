@@ -69,7 +69,7 @@ export default function FaqPage() {
   })
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-cm-bg">
       {/* Hero */}
       <section className="relative py-24 px-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-purple-900/10 via-transparent to-transparent" />
@@ -78,7 +78,7 @@ export default function FaqPage() {
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <button
             onClick={() => navigate('home')}
-            className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 mb-6 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-cm-dim hover:text-cm-secondary mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             {t('common.back')}
@@ -90,7 +90,7 @@ export default function FaqPage() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
             {t('faq.heroTitle')}
           </h1>
-          <p className="text-lg text-stone-400 font-light max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-cm-muted font-light max-w-2xl mx-auto leading-relaxed">
             {t('faq.heroSubtitle')}
           </p>
         </div>
@@ -100,13 +100,13 @@ export default function FaqPage() {
       <section className="px-6 pb-4">
         <div className="max-w-2xl mx-auto">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-cm-dim" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setOpenFaq(null) }}
               placeholder={t('faq.searchPlaceholder')}
-              className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/[0.03] border border-white/10 text-stone-200 placeholder:text-stone-600 text-sm focus:outline-none focus:border-purple-500/30 focus:ring-1 focus:ring-purple-500/20 transition-all"
+              className="w-full pl-11 pr-4 py-3 rounded-xl bg-cm-hover border border-cm-border-hover text-cm-secondary placeholder:text-cm-faint text-sm focus:outline-none focus:border-purple-500/30 focus:ring-1 focus:ring-purple-500/20 transition-all"
             />
           </div>
         </div>
@@ -123,7 +123,7 @@ export default function FaqPage() {
                 className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
                   activeCategory === cat.key
                     ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-                    : 'bg-white/[0.03] text-stone-400 border border-white/5 hover:bg-white/[0.06] hover:text-stone-300'
+                    : 'bg-cm-hover text-cm-muted border border-cm-border-subtle hover:bg-cm-hover hover:text-cm-secondary'
                 }`}
               >
                 {cat.label}
@@ -138,16 +138,16 @@ export default function FaqPage() {
         <div className="max-w-3xl mx-auto">
           {filteredItems.length === 0 ? (
             <div className="text-center py-16">
-              <HelpCircle className="w-12 h-12 text-stone-700 mx-auto mb-4" />
-              <p className="text-stone-500">{t('faq.noResults')}</p>
+              <HelpCircle className="w-12 h-12 text-cm-faint mx-auto mb-4" />
+              <p className="text-cm-dim">{t('faq.noResults')}</p>
             </div>
           ) : (
             <div className="space-y-3">
               {filteredItems.map((item, idx) => (
-                <div key={`${item.category}-${idx}`} className="rounded-2xl bg-white/[0.03] border border-white/5 overflow-hidden">
+                <div key={`${item.category}-${idx}`} className="rounded-2xl bg-cm-hover border border-cm-border-subtle overflow-hidden">
                   <button
                     onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                    className="w-full flex items-center justify-between p-5 text-left hover:bg-white/[0.02] transition-colors"
+                    className="w-full flex items-center justify-between p-5 text-left hover:bg-cm-hover transition-colors"
                   >
                     <div className="flex items-start gap-3">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider flex-shrink-0 mt-0.5 ${
@@ -160,17 +160,17 @@ export default function FaqPage() {
                       }`}>
                         {categories.find(c => c.key === item.category)?.label}
                       </span>
-                      <h3 className="text-sm font-semibold text-stone-200">{item.q}</h3>
+                      <h3 className="text-sm font-semibold text-cm-secondary">{item.q}</h3>
                     </div>
                     {openFaq === idx ? (
-                      <ChevronUp className="w-4 h-4 text-stone-500 flex-shrink-0 ml-2" />
+                      <ChevronUp className="w-4 h-4 text-cm-dim flex-shrink-0 ml-2" />
                     ) : (
-                      <ChevronDown className="w-4 h-4 text-stone-500 flex-shrink-0 ml-2" />
+                      <ChevronDown className="w-4 h-4 text-cm-dim flex-shrink-0 ml-2" />
                     )}
                   </button>
                   {openFaq === idx && (
                     <div className="px-5 pb-5 pl-16">
-                      <p className="text-sm text-stone-400 leading-relaxed">{item.a}</p>
+                      <p className="text-sm text-cm-muted leading-relaxed">{item.a}</p>
                     </div>
                   )}
                 </div>
@@ -179,7 +179,7 @@ export default function FaqPage() {
           )}
 
           {/* Result count */}
-          <p className="text-xs text-stone-600 text-center mt-6">
+          <p className="text-xs text-cm-faint text-center mt-6">
             {filteredItems.length} {t('faq.questionCount')}
           </p>
         </div>
@@ -188,11 +188,11 @@ export default function FaqPage() {
       {/* CTA */}
       <section className="px-6 py-20">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="p-10 rounded-2xl bg-gradient-to-br from-purple-900/20 via-neutral-900/50 to-red-900/10 border border-white/5">
-            <h2 className="text-2xl md:text-3xl font-bold text-stone-100 mb-3">
+          <div className="p-10 rounded-2xl bg-gradient-to-br from-purple-900/20 via-neutral-900/50 to-red-900/10 border border-cm-border-subtle">
+            <h2 className="text-2xl md:text-3xl font-bold text-cm-primary mb-3">
               {t('faq.ctaTitle')}
             </h2>
-            <p className="text-stone-400 font-light mb-8">
+            <p className="text-cm-muted font-light mb-8">
               {t('faq.ctaDesc')}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -208,7 +208,7 @@ export default function FaqPage() {
               <Button
                 variant="outline"
                 onClick={() => navigate('browse')}
-                className="border-white/10 text-stone-300 hover:bg-white/5 rounded-xl px-8"
+                className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl px-8"
               >
                 {t('faq.ctaBrowse')}
               </Button>

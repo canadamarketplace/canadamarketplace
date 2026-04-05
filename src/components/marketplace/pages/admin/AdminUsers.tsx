@@ -73,37 +73,37 @@ export default function AdminUsers() {
   return (
     <AdminAuthGuard>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-stone-100 mb-2">User Management</h1>
-      <p className="text-sm text-stone-500 mb-6">{total} total users</p>
+      <h1 className="text-2xl font-bold text-cm-primary mb-2">User Management</h1>
+      <p className="text-sm text-cm-dim mb-6">{total} total users</p>
 
       {/* Filters */}
       <div className="flex gap-3 mb-6 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cm-faint" />
           <Input
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1) }}
             placeholder="Search users..."
-            className="pl-9 bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 h-10 rounded-xl"
+            className="pl-9 bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint h-10 rounded-xl"
           />
         </div>
         <Select value={roleFilter} onValueChange={(v) => { setRoleFilter(v === "all" ? "" : v); setPage(1) }}>
-          <SelectTrigger className="w-40 bg-white/5 border-white/10 text-stone-200 h-10 rounded-xl">
+          <SelectTrigger className="w-40 bg-cm-hover border-cm-border-hover text-cm-secondary h-10 rounded-xl">
             <SelectValue placeholder="All Roles" />
           </SelectTrigger>
-          <SelectContent className="bg-neutral-900 border-white/10">
-            <SelectItem value="all" className="text-stone-300">All Roles</SelectItem>
+          <SelectContent className="bg-cm-elevated border-cm-border-hover">
+            <SelectItem value="all" className="text-cm-secondary">All Roles</SelectItem>
             <SelectItem value="BUYER">Buyer</SelectItem>
             <SelectItem value="SELLER">Seller</SelectItem>
             <SelectItem value="ADMIN">Admin</SelectItem>
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v === "all" ? "" : v); setPage(1) }}>
-          <SelectTrigger className="w-36 bg-white/5 border-white/10 text-stone-200 h-10 rounded-xl">
+          <SelectTrigger className="w-36 bg-cm-hover border-cm-border-hover text-cm-secondary h-10 rounded-xl">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
-          <SelectContent className="bg-neutral-900 border-white/10">
-            <SelectItem value="all" className="text-stone-300">All</SelectItem>
+          <SelectContent className="bg-cm-elevated border-cm-border-hover">
+            <SelectItem value="all" className="text-cm-secondary">All</SelectItem>
             <SelectItem value="active">Active</SelectItem>
             <SelectItem value="inactive">Inactive</SelectItem>
           </SelectContent>
@@ -111,35 +111,35 @@ export default function AdminUsers() {
       </div>
 
       {/* Table */}
-      <div className="rounded-2xl bg-neutral-900/60 border border-white/5 overflow-hidden">
+      <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/5">
-                <th className="text-left px-5 py-3 text-[10px] font-semibold text-stone-500 uppercase">User</th>
-                <th className="text-left px-5 py-3 text-[10px] font-semibold text-stone-500 uppercase">Role</th>
-                <th className="text-left px-5 py-3 text-[10px] font-semibold text-stone-500 uppercase">Status</th>
-                <th className="text-left px-5 py-3 text-[10px] font-semibold text-stone-500 uppercase">Joined</th>
-                <th className="text-left px-5 py-3 text-[10px] font-semibold text-stone-500 uppercase">Actions</th>
+              <tr className="border-b border-cm-border-subtle">
+                <th className="text-left px-5 py-3 text-[10px] font-semibold text-cm-dim uppercase">User</th>
+                <th className="text-left px-5 py-3 text-[10px] font-semibold text-cm-dim uppercase">Role</th>
+                <th className="text-left px-5 py-3 text-[10px] font-semibold text-cm-dim uppercase">Status</th>
+                <th className="text-left px-5 py-3 text-[10px] font-semibold text-cm-dim uppercase">Joined</th>
+                <th className="text-left px-5 py-3 text-[10px] font-semibold text-cm-dim uppercase">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                Array.from({ length: 5 }).map((_, i) => <tr key={i} className="border-b border-white/5"><td colSpan={5} className="px-5 py-4"><div className="h-6 bg-neutral-800 rounded animate-pulse" /></td></tr>)
+                Array.from({ length: 5 }).map((_, i) => <tr key={i} className="border-b border-cm-border-subtle"><td colSpan={5} className="px-5 py-4"><div className="h-6 bg-cm-input rounded animate-pulse" /></td></tr>)
               ) : users.length === 0 ? (
-                <tr><td colSpan={5} className="px-5 py-12 text-center text-stone-600">No users found</td></tr>
+                <tr><td colSpan={5} className="px-5 py-12 text-center text-cm-faint">No users found</td></tr>
               ) : (
                 users.map((u) => (
                   <>
-                    <tr key={u.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02]">
+                    <tr key={u.id} className="border-b border-cm-border-subtle last:border-0 hover:bg-cm-hover">
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
                             {u.name.charAt(0)}
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-stone-200">{u.name}</p>
-                            <p className="text-xs text-stone-600">{u.email}</p>
+                            <p className="text-sm font-medium text-cm-secondary">{u.name}</p>
+                            <p className="text-xs text-cm-faint">{u.email}</p>
                           </div>
                         </div>
                       </td>
@@ -158,16 +158,16 @@ export default function AdminUsers() {
                           )}
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-xs text-stone-500">{new Date(u.createdAt).toLocaleDateString()}</td>
+                      <td className="px-5 py-4 text-xs text-cm-dim">{new Date(u.createdAt).toLocaleDateString()}</td>
                       <td className="px-5 py-4">
                         <div className="flex gap-1">
-                          <button onClick={() => handleAction(u.id, 'isVerified', !u.isVerified)} disabled={updating} className="p-1.5 rounded-lg hover:bg-white/5 text-stone-500 hover:text-blue-400" title="Toggle Verified">
+                          <button onClick={() => handleAction(u.id, 'isVerified', !u.isVerified)} disabled={updating} className="p-1.5 rounded-lg hover:bg-cm-hover text-cm-dim hover:text-blue-400" title="Toggle Verified">
                             <Shield className="w-4 h-4" />
                           </button>
-                          <button onClick={() => handleAction(u.id, 'isActive', !u.isActive)} disabled={updating} className="p-1.5 rounded-lg hover:bg-white/5 text-stone-500 hover:text-green-400" title="Toggle Active">
+                          <button onClick={() => handleAction(u.id, 'isActive', !u.isActive)} disabled={updating} className="p-1.5 rounded-lg hover:bg-cm-hover text-cm-dim hover:text-green-400" title="Toggle Active">
                             {u.isActive ? <XCircle className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
                           </button>
-                          <button onClick={() => setExpandedId(expandedId === u.id ? null : u.id)} className="p-1.5 rounded-lg hover:bg-white/5 text-stone-500 hover:text-stone-300">
+                          <button onClick={() => setExpandedId(expandedId === u.id ? null : u.id)} className="p-1.5 rounded-lg hover:bg-cm-hover text-cm-dim hover:text-cm-secondary">
                             {expandedId === u.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                           </button>
                         </div>
@@ -175,20 +175,20 @@ export default function AdminUsers() {
                     </tr>
                     {expandedId === u.id && (
                       <tr key={`${u.id}-detail`}>
-                        <td colSpan={5} className="px-5 py-4 bg-white/[0.02]">
+                        <td colSpan={5} className="px-5 py-4 bg-cm-hover">
                           <div className="grid sm:grid-cols-3 gap-4 text-sm">
                             <div>
-                              <p className="text-xs text-stone-500 mb-1">Location</p>
-                              <p className="text-stone-300">{u.city || '-'}, {u.province || '-'}</p>
+                              <p className="text-xs text-cm-dim mb-1">Location</p>
+                              <p className="text-cm-secondary">{u.city || '-'}, {u.province || '-'}</p>
                             </div>
                             <div>
-                              <p className="text-xs text-stone-500 mb-1">Orders / Reviews / Disputes</p>
-                              <p className="text-stone-300">{u._count?.orders || 0} / {u._count?.reviews || 0} / {u._count?.disputes || 0}</p>
+                              <p className="text-xs text-cm-dim mb-1">Orders / Reviews / Disputes</p>
+                              <p className="text-cm-secondary">{u._count?.orders || 0} / {u._count?.reviews || 0} / {u._count?.disputes || 0}</p>
                             </div>
                             {u.store && (
                               <div>
-                                <p className="text-xs text-stone-500 mb-1">Store</p>
-                                <p className="text-stone-300">{u.store.name} · Rating: {u.store.rating.toFixed(1)} · Sales: {u.store.totalSales}</p>
+                                <p className="text-xs text-cm-dim mb-1">Store</p>
+                                <p className="text-cm-secondary">{u.store.name} · Rating: {u.store.rating.toFixed(1)} · Sales: {u.store.totalSales}</p>
                               </div>
                             )}
                           </div>

@@ -33,13 +33,13 @@ function renderInline(text: string): React.ReactNode[] {
     }
     if (match[0].startsWith('**')) {
       parts.push(
-        <strong key={`b-${keyIdx}`} className="font-semibold text-stone-100">
+        <strong key={`b-${keyIdx}`} className="font-semibold text-cm-primary">
           {match[0].slice(2, -2)}
         </strong>
       )
     } else {
       parts.push(
-        <em key={`i-${keyIdx}`} className="italic text-stone-300">
+        <em key={`i-${keyIdx}`} className="italic text-cm-secondary">
           {match[0].slice(1, -1)}
         </em>
       )
@@ -272,7 +272,7 @@ export default function ChatAI() {
         >
           <MessageCircle className="w-6 h-6 group-hover:scale-110 transition-transform" />
           <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-20" />
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-[#0a0a0a]" />
+          <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-cm-bg" />
         </motion.button>
       )}
 
@@ -284,43 +284,42 @@ export default function ChatAI() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-6 right-6 z-[60] w-[400px] max-w-[calc(100vw-2rem)] h-[580px] max-h-[calc(100vh-6rem)] flex flex-col rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border border-white/10"
-            style={{ background: 'linear-gradient(180deg, #111111 0%, #0a0a0a 100%)' }}
+            className="fixed bottom-6 right-6 z-[60] w-[400px] max-w-[calc(100vw-2rem)] h-[580px] max-h-[calc(100vh-6rem)] flex flex-col rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border border-cm-border-hover bg-cm-elevated"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-[#111]/80 backdrop-blur-sm">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-cm-border-subtle bg-cm-elevated/80 backdrop-blur-sm">
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center">
                     <Sparkles className="w-4 h-4 text-white" />
                   </div>
-                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-[#111]" />
+                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-cm-elevated" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-stone-100 flex items-center gap-1.5">
+                  <h3 className="text-sm font-semibold text-cm-primary flex items-center gap-1.5">
                     {t('chat.mapleAI')}
                     <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-500/10 text-red-300 font-medium border border-red-500/20">{t('chat.beta')}</span>
                   </h3>
-                  <p className="text-[11px] text-stone-500">{t('chat.yourAssistant')}</p>
+                  <p className="text-[11px] text-cm-dim">{t('chat.yourAssistant')}</p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
                 <button
                   onClick={clearChat}
-                  className="p-1.5 rounded-lg text-stone-500 hover:text-stone-300 hover:bg-white/5 transition-all"
+                  className="p-1.5 rounded-lg text-cm-dim hover:text-cm-secondary hover:bg-cm-hover transition-all"
                   title="Clear chat"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-1.5 rounded-lg text-stone-500 hover:text-stone-300 hover:bg-white/5 transition-all"
+                  className="p-1.5 rounded-lg text-cm-dim hover:text-cm-secondary hover:bg-cm-hover transition-all"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-1.5 rounded-lg text-stone-500 hover:text-stone-300 hover:bg-white/5 transition-all"
+                  className="p-1.5 rounded-lg text-cm-dim hover:text-cm-secondary hover:bg-cm-hover transition-all"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -348,7 +347,7 @@ export default function ChatAI() {
                         className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
                           msg.role === 'user'
                             ? 'bg-gradient-to-r from-red-600 to-red-700 text-white rounded-br-md'
-                            : 'bg-white/5 text-stone-200 rounded-bl-md border border-white/5'
+                            : 'bg-cm-hover text-cm-secondary rounded-bl-md border border-cm-border-subtle'
                         }`}
                       >
                         {msg.role === 'assistant' ? parseMarkdown(msg.content) : msg.content}
@@ -364,7 +363,7 @@ export default function ChatAI() {
                               animate={{ opacity: 1, scale: 1 }}
                               transition={{ delay: idx * 0.05 }}
                               onClick={() => handleAction(action.action, action.params)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-stone-300 hover:bg-red-500/10 hover:border-red-500/30 hover:text-white transition-all group"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cm-hover border border-cm-border-hover text-xs text-cm-secondary hover:bg-red-500/10 hover:border-red-500/30 hover:text-white transition-all group"
                             >
                               {getActionIcon(action.action)}
                               {action.label}
@@ -392,7 +391,7 @@ export default function ChatAI() {
                         <Sparkles className="w-3 h-3 text-white" />
                       </motion.div>
                     </div>
-                    <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-white/5 border border-white/5">
+                    <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-cm-hover border border-cm-border-subtle">
                       <div className="flex items-center gap-2.5">
                         <div className="flex items-center gap-1">
                           <motion.span
@@ -411,7 +410,7 @@ export default function ChatAI() {
                             transition={{ duration: 1.2, repeat: Infinity, delay: 0.4 }}
                           />
                         </div>
-                        <span className="text-xs text-stone-500">{t('chat.mapleThinking')}</span>
+                        <span className="text-xs text-cm-dim">{t('chat.mapleThinking')}</span>
                       </div>
                     </div>
                   </motion.div>
@@ -429,7 +428,7 @@ export default function ChatAI() {
                     <button
                       key={prompt.label}
                       onClick={() => sendMessage(prompt.message)}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/5 border border-white/5 text-[11px] text-stone-400 hover:bg-white/10 hover:text-stone-200 transition-all"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-cm-hover border border-cm-border-subtle text-[11px] text-cm-muted hover:bg-cm-hover-strong hover:text-cm-secondary transition-all"
                     >
                       <prompt.icon className="w-3 h-3" />
                       {prompt.label}
@@ -440,7 +439,7 @@ export default function ChatAI() {
             )}
 
             {/* Input */}
-            <form onSubmit={handleSubmit} className="px-4 py-3 border-t border-white/5 bg-[#111]/60 backdrop-blur-sm">
+            <form onSubmit={handleSubmit} className="px-4 py-3 border-t border-cm-border-subtle bg-cm-elevated/60 backdrop-blur-sm">
               <div className="flex items-center gap-2">
                 <Input
                   ref={inputRef}
@@ -448,7 +447,7 @@ export default function ChatAI() {
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={t('chat.placeholder')}
                   disabled={isLoading}
-                  className="flex-1 h-9 bg-white/5 border-white/10 rounded-xl text-sm text-stone-200 placeholder:text-stone-600 focus:border-red-500/30 focus:ring-1 focus:ring-red-500/20"
+                  className="flex-1 h-9 bg-cm-hover border-cm-border-hover rounded-xl text-sm text-cm-secondary placeholder:text-cm-faint focus:border-red-500/30 focus:ring-1 focus:ring-red-500/20"
                 />
                 <Button
                   type="submit"
@@ -459,7 +458,7 @@ export default function ChatAI() {
                   <Send className="w-4 h-4" />
                 </Button>
               </div>
-              <p className="text-[10px] text-stone-600 mt-1.5 text-center">
+              <p className="text-[10px] text-cm-faint mt-1.5 text-center">
                 {t('chat.aiDisclaimer')}
               </p>
             </form>

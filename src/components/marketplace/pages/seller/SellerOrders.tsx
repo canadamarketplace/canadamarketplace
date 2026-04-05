@@ -117,17 +117,17 @@ export default function SellerOrders() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-stone-100">{t('seller.orders')}</h1>
-          <p className="text-sm text-stone-500 mt-1">{orders.length} {t('seller.orders').toLowerCase()}</p>
+          <h1 className="text-2xl font-bold text-cm-primary">{t('seller.orders')}</h1>
+          <p className="text-sm text-cm-dim mt-1">{orders.length} {t('seller.orders').toLowerCase()}</p>
         </div>
         <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v === "all" ? "" : v)}>
-          <SelectTrigger className="w-48 bg-white/5 border-white/10 text-stone-200 h-10 rounded-xl">
+          <SelectTrigger className="w-48 bg-cm-hover border-cm-border-hover text-cm-secondary h-10 rounded-xl">
             <SelectValue placeholder={t('orders.status')} />
           </SelectTrigger>
-          <SelectContent className="bg-neutral-900 border-white/10">
-            <SelectItem value="all" className="text-stone-300">{t('orders.status')}: {t('common.all')}</SelectItem>
+          <SelectContent className="bg-cm-elevated border-cm-border-hover">
+            <SelectItem value="all" className="text-cm-secondary">{t('orders.status')}: {t('common.all')}</SelectItem>
             {Object.entries(ORDER_STATUS_LABELS).map(([key, label]) => (
-              <SelectItem key={key} value={key} className="text-stone-300">{label}</SelectItem>
+              <SelectItem key={key} value={key} className="text-cm-secondary">{label}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -135,65 +135,65 @@ export default function SellerOrders() {
 
       {loading ? (
         <div className="space-y-4 animate-pulse">
-          {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-28 rounded-2xl bg-neutral-800" />)}
+          {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-28 rounded-2xl bg-cm-input" />)}
         </div>
       ) : orders.filter(o => !statusFilter || o.status === statusFilter).length === 0 ? (
-        <div className="text-center py-16 rounded-2xl bg-neutral-900/60 border border-white/5">
-          <Package className="w-16 h-16 text-stone-700 mx-auto mb-4" />
-          <p className="text-stone-500">{t('orders.noOrders')}</p>
+        <div className="text-center py-16 rounded-2xl bg-cm-elevated border border-cm-border-subtle">
+          <Package className="w-16 h-16 text-cm-faint mx-auto mb-4" />
+          <p className="text-cm-dim">{t('orders.noOrders')}</p>
         </div>
       ) : (
         <div className="space-y-4">
           {orders
             .filter(o => !statusFilter || o.status === statusFilter)
             .map((order) => (
-            <div key={order.id} className="rounded-2xl bg-neutral-900/60 border border-white/5 overflow-hidden">
+            <div key={order.id} className="rounded-2xl bg-cm-elevated border border-cm-border-subtle overflow-hidden">
               <button
                 onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
                 className="w-full text-left p-5 flex items-center justify-between"
               >
                 <div>
                   <div className="flex items-center gap-3 mb-1">
-                    <p className="text-sm font-mono text-stone-400">{order.orderNumber}</p>
+                    <p className="text-sm font-mono text-cm-muted">{order.orderNumber}</p>
                     <Badge className={`${ORDER_STATUS_COLORS[order.status as keyof typeof ORDER_STATUS_COLORS] || ''} text-[10px] border`}>
                       {ORDER_STATUS_LABELS[order.status as keyof typeof ORDER_STATUS_LABELS] || order.status}
                     </Badge>
                   </div>
-                  <p className="text-sm text-stone-300">{order.buyer?.name} · {order.shippingCity}, {order.shippingProvince}</p>
-                  <p className="text-xs text-stone-600 mt-0.5">{new Date(order.createdAt).toLocaleDateString()} · {order.items.length} {t('cart.items').toLowerCase()}</p>
+                  <p className="text-sm text-cm-secondary">{order.buyer?.name} · {order.shippingCity}, {order.shippingProvince}</p>
+                  <p className="text-xs text-cm-faint mt-0.5">{new Date(order.createdAt).toLocaleDateString()} · {order.items.length} {t('cart.items').toLowerCase()}</p>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-base font-bold text-stone-200">${order.total.toFixed(2)}</span>
-                  {expandedId === order.id ? <ChevronUp className="w-4 h-4 text-stone-500" /> : <ChevronDown className="w-4 h-4 text-stone-500" />}
+                  <span className="text-base font-bold text-cm-secondary">${order.total.toFixed(2)}</span>
+                  {expandedId === order.id ? <ChevronUp className="w-4 h-4 text-cm-dim" /> : <ChevronDown className="w-4 h-4 text-cm-dim" />}
                 </div>
               </button>
 
               {expandedId === order.id && (
-                <div className="border-t border-white/5 p-5 space-y-4">
+                <div className="border-t border-cm-border-subtle p-5 space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <h4 className="text-xs font-semibold text-stone-500 mb-2">{t('orders.items')}</h4>
+                      <h4 className="text-xs font-semibold text-cm-dim mb-2">{t('orders.items')}</h4>
                       <div className="space-y-2">
                         {order.items.map((item) => (
                           <div key={item.id} className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-neutral-800 overflow-hidden flex-shrink-0">
+                            <div className="w-10 h-10 rounded-lg bg-cm-input overflow-hidden flex-shrink-0">
                               {item.image ? <img src={item.image} alt="" className="w-full h-full object-cover" /> : (
-                                <div className="w-full h-full flex items-center justify-center text-stone-600"><Package className="w-4 h-4" /></div>
+                                <div className="w-full h-full flex items-center justify-center text-cm-faint"><Package className="w-4 h-4" /></div>
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm text-stone-300 truncate">{item.title}</p>
-                              <p className="text-xs text-stone-600">{t('orders.items')}: {item.quantity}</p>
+                              <p className="text-sm text-cm-secondary truncate">{item.title}</p>
+                              <p className="text-xs text-cm-faint">{t('orders.items')}: {item.quantity}</p>
                             </div>
-                            <p className="text-sm font-medium text-stone-200">${item.price.toFixed(2)}</p>
+                            <p className="text-sm font-medium text-cm-secondary">${item.price.toFixed(2)}</p>
                           </div>
                         ))}
                       </div>
                     </div>
                     <div>
-                      <h4 className="text-xs font-semibold text-stone-500 mb-2">{t('checkout.shippingInfo')}</h4>
-                      <p className="text-sm text-stone-400">{order.shippingAddress}</p>
-                      <p className="text-sm text-stone-400">{order.shippingCity}, {order.shippingProvince} {order.shippingPostalCode}</p>
+                      <h4 className="text-xs font-semibold text-cm-dim mb-2">{t('checkout.shippingInfo')}</h4>
+                      <p className="text-sm text-cm-muted">{order.shippingAddress}</p>
+                      <p className="text-sm text-cm-muted">{order.shippingCity}, {order.shippingProvince} {order.shippingPostalCode}</p>
                       {order.trackingNumber && (
                         <p className="text-sm text-purple-300 mt-2 flex items-center gap-1">
                           <Truck className="w-3.5 h-3.5" /> {t('orders.tracking')}: <span className="font-mono">{order.trackingNumber}</span>
@@ -212,14 +212,14 @@ export default function SellerOrders() {
                   )}
 
                   {(order.status === 'PAID') && (
-                    <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                      <h4 className="text-xs font-semibold text-stone-400 mb-2">{t('timeline.markAsShipped')}</h4>
+                    <div className="p-3 rounded-xl bg-cm-hover border border-cm-border-subtle">
+                      <h4 className="text-xs font-semibold text-cm-muted mb-2">{t('timeline.markAsShipped')}</h4>
                       <div className="flex gap-2">
                         <Input
                           value={trackingNum}
                           onChange={(e) => setTrackingNum(e.target.value)}
                           placeholder={t('timeline.trackingPlaceholder')}
-                          className="flex-1 bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 rounded-lg h-9 text-sm"
+                          className="flex-1 bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-lg h-9 text-sm"
                         />
                         <Button
                           onClick={() => handleShip(order.id)}

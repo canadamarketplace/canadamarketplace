@@ -23,11 +23,11 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
 
           {/* Title */}
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-stone-100 flex items-center justify-center gap-2">
+            <h1 className="text-2xl font-bold text-cm-primary flex items-center justify-center gap-2">
               <Lock className="w-5 h-5 text-red-400" />
               Admin Access Required
             </h1>
-            <p className="text-sm text-stone-500 leading-relaxed">
+            <p className="text-sm text-cm-dim leading-relaxed">
               Please sign in with your admin account to access the dashboard.
             </p>
           </div>
@@ -43,9 +43,9 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
 
           {/* Admin Email Hint */}
           <div className="pt-2">
-            <p className="text-xs text-stone-600">
+            <p className="text-xs text-cm-faint">
               Admin account:{' '}
-              <span className="text-stone-500 font-mono">a***@canadamarketplace.ca</span>
+              <span className="text-cm-dim font-mono">a***@canadamarketplace.ca</span>
             </p>
           </div>
         </div>

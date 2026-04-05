@@ -126,29 +126,29 @@ export default function SearchBar() {
   if (!isSearchOpen) return null
 
   return (
-    <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm flex items-start justify-center pt-24" onClick={toggleSearch}>
+    <div className="fixed inset-0 z-[60] bg-cm-overlay backdrop-blur-sm flex items-start justify-center pt-24" onClick={toggleSearch}>
       <div
         ref={dropdownRef}
-        className="w-full max-w-2xl mx-4 bg-neutral-900 border border-white/10 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden"
+        className="w-full max-w-2xl mx-4 bg-cm-elevated border border-cm-border-hover rounded-2xl shadow-2xl shadow-black/50 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-white/5">
-          <Search className="w-5 h-5 text-stone-500" />
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-cm-border-subtle">
+          <Search className="w-5 h-5 text-cm-dim" />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => { setQuery(e.target.value); setHighlightIndex(-1) }}
             onKeyDown={handleKeyDown}
             placeholder={t('search.placeholder')}
-            className="flex-1 bg-transparent text-stone-100 placeholder:text-stone-500 text-base outline-none"
+            className="flex-1 bg-transparent text-cm-primary placeholder:text-cm-dim text-base outline-none"
           />
-          {isLoading && <Loader2 className="w-4 h-4 text-stone-500 animate-spin" />}
+          {isLoading && <Loader2 className="w-4 h-4 text-cm-dim animate-spin" />}
           {query && (
-            <button onClick={() => { setQuery(''); setSuggestions([]); setShowDropdown(false) }} className="text-stone-500 hover:text-stone-300">
+            <button onClick={() => { setQuery(''); setSuggestions([]); setShowDropdown(false) }} className="text-cm-dim hover:text-cm-secondary">
               <X className="w-4 h-4" />
             </button>
           )}
-          <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-[10px] text-stone-500">
+          <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-md bg-cm-hover border border-cm-border-hover text-[10px] text-cm-dim">
             ESC
           </kbd>
         </div>
@@ -165,45 +165,45 @@ export default function SearchBar() {
                       onClick={() => handleSelect(item)}
                       onMouseEnter={() => setHighlightIndex(index)}
                       className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left ${
-                        index === highlightIndex ? 'bg-white/5' : 'hover:bg-white/5'
+                        index === highlightIndex ? 'bg-cm-hover' : 'hover:bg-cm-hover'
                       }`}
                     >
-                      <div className="w-10 h-10 rounded-lg bg-neutral-800 overflow-hidden flex-shrink-0">
+                      <div className="w-10 h-10 rounded-lg bg-cm-input overflow-hidden flex-shrink-0">
                         {item.image ? (
                           <img src={item.image} alt="" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-stone-700">
+                          <div className="w-full h-full flex items-center justify-center text-cm-faint">
                             <Search className="w-4 h-4" />
                           </div>
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-stone-200 truncate">{highlightText(item.title, query)}</p>
-                        <p className="text-xs text-stone-500 mt-0.5">{item.storeName}</p>
+                        <p className="text-sm text-cm-secondary truncate">{highlightText(item.title, query)}</p>
+                        <p className="text-xs text-cm-dim mt-0.5">{item.storeName}</p>
                       </div>
                       <span className="text-sm font-semibold text-red-400 flex-shrink-0">${item.price.toFixed(2)}</span>
                     </button>
                   ))}
                 </div>
-                <div className="border-t border-white/5 p-2">
+                <div className="border-t border-cm-border-subtle p-2">
                   <button
                     onClick={() => handleSearch()}
                     onMouseEnter={() => setHighlightIndex(suggestions.length)}
                     className={`w-full flex items-center justify-between gap-3 p-3 rounded-xl transition-all text-left ${
-                      highlightIndex === suggestions.length ? 'bg-white/5' : 'hover:bg-white/5'
+                      highlightIndex === suggestions.length ? 'bg-cm-hover' : 'hover:bg-cm-hover'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <Search className="w-4 h-4 text-stone-500" />
-                      <span className="text-sm text-stone-300">{t('search.searchFor')} &quot;{query}&quot;</span>
+                      <Search className="w-4 h-4 text-cm-dim" />
+                      <span className="text-sm text-cm-secondary">{t('search.searchFor')} &quot;{query}&quot;</span>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-stone-500" />
+                    <ArrowRight className="w-4 h-4 text-cm-dim" />
                   </button>
                 </div>
               </>
             ) : !isLoading ? (
               <div className="p-6 text-center">
-                <p className="text-sm text-stone-500">{t('search.noResults')}</p>
+                <p className="text-sm text-cm-dim">{t('search.noResults')}</p>
               </div>
             ) : null}
           </div>
@@ -213,15 +213,15 @@ export default function SearchBar() {
         {!showDropdown && (
           <div className="p-4">
             <div className="flex items-center gap-2 mb-3">
-              <TrendingUp className="w-4 h-4 text-stone-500" />
-              <span className="text-xs font-medium text-stone-500 uppercase tracking-wider">{t('search.popularSearches')}</span>
+              <TrendingUp className="w-4 h-4 text-cm-dim" />
+              <span className="text-xs font-medium text-cm-dim uppercase tracking-wider">{t('search.popularSearches')}</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {['Electronics', 'Fashion', 'Home & Garden', 'Sports', 'Vehicles', 'Books'].map((term) => (
                 <button
                   key={term}
                   onClick={() => handleSearch(term)}
-                  className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-sm text-stone-400 hover:text-stone-200 transition-all border border-white/5"
+                  className="px-3 py-1.5 rounded-lg bg-cm-hover hover:bg-cm-hover-strong text-sm text-cm-muted hover:text-cm-secondary transition-all border border-cm-border-subtle"
                 >
                   {term}
                 </button>

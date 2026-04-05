@@ -35,22 +35,22 @@ export default function CartSidebar() {
     <>
       {/* Overlay */}
       {isCartOpen && (
-        <div className="fixed inset-0 z-[55] bg-black/50 backdrop-blur-sm" onClick={toggleCart} />
+        <div className="fixed inset-0 z-[55] bg-cm-overlay backdrop-blur-sm" onClick={toggleCart} />
       )}
 
       {/* Panel */}
-      <div className={`fixed top-0 right-0 z-[56] h-full w-full max-w-md bg-neutral-900 border-l border-white/10 shadow-2xl shadow-black/50 transform transition-transform duration-300 ease-out ${
+      <div className={`fixed top-0 right-0 z-[56] h-full w-full max-w-md bg-cm-elevated border-l border-cm-border-hover shadow-2xl shadow-black/50 transform transition-transform duration-300 ease-out ${
         isCartOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-cm-border-subtle">
             <div className="flex items-center gap-2">
               <ShoppingBag className="w-5 h-5 text-red-500" />
-              <h2 className="text-lg font-bold text-stone-100">{t('cart.title')}</h2>
-              <span className="text-xs text-stone-500 bg-white/5 px-2 py-0.5 rounded-full">{items.length} {items.length === 1 ? t('cart.item') : t('cart.items')}</span>
+              <h2 className="text-lg font-bold text-cm-primary">{t('cart.title')}</h2>
+              <span className="text-xs text-cm-dim bg-cm-hover px-2 py-0.5 rounded-full">{items.length} {items.length === 1 ? t('cart.item') : t('cart.items')}</span>
             </div>
-            <button onClick={toggleCart} className="p-2 text-stone-400 hover:text-stone-100 rounded-lg hover:bg-white/5 transition-all">
+            <button onClick={toggleCart} className="p-2 text-cm-muted hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all">
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -59,15 +59,15 @@ export default function CartSidebar() {
           <ScrollArea className="flex-1 px-6">
             {items.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
-                  <ShoppingBag className="w-8 h-8 text-stone-600" />
+                <div className="w-16 h-16 rounded-2xl bg-cm-hover flex items-center justify-center mb-4">
+                  <ShoppingBag className="w-8 h-8 text-cm-faint" />
                 </div>
-                <p className="text-stone-400 font-medium mb-1">{t('cart.empty')}</p>
-                <p className="text-xs text-stone-600 mb-4">{t('cart.emptyDesc')}</p>
+                <p className="text-cm-muted font-medium mb-1">{t('cart.empty')}</p>
+                <p className="text-xs text-cm-faint mb-4">{t('cart.emptyDesc')}</p>
                 <Button
                   onClick={() => { toggleCart(); navigate('browse') }}
                   variant="outline"
-                  className="border-white/10 text-stone-300 hover:bg-white/5 rounded-xl"
+                  className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl"
                 >
                   {t('cart.browseProducts')}
                 </Button>
@@ -75,31 +75,31 @@ export default function CartSidebar() {
             ) : (
               <div className="py-4 space-y-4">
                 {items.map((item) => (
-                  <div key={item.productId} className="flex gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 group">
-                    <div className="w-16 h-16 rounded-lg overflow-hidden bg-neutral-800 flex-shrink-0">
+                  <div key={item.productId} className="flex gap-3 p-3 rounded-xl bg-cm-hover border border-cm-border-subtle group">
+                    <div className="w-16 h-16 rounded-lg overflow-hidden bg-cm-input flex-shrink-0">
                       {item.image ? (
                         <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-stone-600">
+                        <div className="w-full h-full flex items-center justify-center text-cm-faint">
                           <ShoppingBag className="w-6 h-6" />
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-stone-200 truncate">{item.title}</p>
-                      <p className="text-xs text-stone-500 truncate">{item.storeName}</p>
+                      <p className="text-sm font-medium text-cm-secondary truncate">{item.title}</p>
+                      <p className="text-xs text-cm-dim truncate">{item.storeName}</p>
                       <p className="text-sm font-bold text-red-400 mt-1">${item.price.toFixed(2)} {t('common.currency')}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                          className="w-6 h-6 rounded-md bg-white/5 hover:bg-white/10 flex items-center justify-center text-stone-400"
+                          className="w-6 h-6 rounded-md bg-cm-hover hover:bg-cm-hover-strong flex items-center justify-center text-cm-muted"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
-                        <span className="text-xs text-stone-300 w-6 text-center">{item.quantity}</span>
+                        <span className="text-xs text-cm-secondary w-6 text-center">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                          className="w-6 h-6 rounded-md bg-white/5 hover:bg-white/10 flex items-center justify-center text-stone-400"
+                          className="w-6 h-6 rounded-md bg-cm-hover hover:bg-cm-hover-strong flex items-center justify-center text-cm-muted"
                         >
                           <Plus className="w-3 h-3" />
                         </button>
@@ -107,7 +107,7 @@ export default function CartSidebar() {
                     </div>
                     <button
                       onClick={() => { removeItem(item.productId); toast.success(t('common.itemRemoved')) }}
-                      className="p-1.5 text-stone-600 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all self-start"
+                      className="p-1.5 text-cm-faint hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all self-start"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -119,20 +119,20 @@ export default function CartSidebar() {
 
           {/* Footer */}
           {items.length > 0 && (
-            <div className="border-t border-white/5 px-6 py-4 space-y-3">
+            <div className="border-t border-cm-border-subtle px-6 py-4 space-y-3">
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <span className="text-stone-500">{t('cart.subtotal')}</span>
-                  <span className="text-stone-300">${subtotal.toFixed(2)}</span>
+                  <span className="text-cm-dim">{t('cart.subtotal')}</span>
+                  <span className="text-cm-secondary">${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-stone-500">{t('cart.marketplaceFee')}</span>
-                  <span className="text-stone-300">${fee.toFixed(2)}</span>
+                  <span className="text-cm-dim">{t('cart.marketplaceFee')}</span>
+                  <span className="text-cm-secondary">${fee.toFixed(2)}</span>
                 </div>
-                <Separator className="bg-white/5" />
+                <Separator className="bg-cm-border-subtle" />
                 <div className="flex justify-between">
-                  <span className="text-sm font-semibold text-stone-200">{t('cart.total')}</span>
-                  <span className="text-lg font-bold text-stone-100">${cartTotal.toFixed(2)} <span className="text-xs text-stone-500">{t('common.currency')}</span></span>
+                  <span className="text-sm font-semibold text-cm-secondary">{t('cart.total')}</span>
+                  <span className="text-lg font-bold text-cm-primary">${cartTotal.toFixed(2)} <span className="text-xs text-cm-dim">{t('common.currency')}</span></span>
                 </div>
               </div>
               <Button
@@ -143,7 +143,7 @@ export default function CartSidebar() {
               </Button>
               <button
                 onClick={() => { clearCart(); toast.success(t('common.cartCleared')) }}
-                className="w-full text-xs text-stone-600 hover:text-red-400 py-1 text-center transition-colors"
+                className="w-full text-xs text-cm-faint hover:text-red-400 py-1 text-center transition-colors"
               >
                 {t('cart.clearCart')}
               </button>

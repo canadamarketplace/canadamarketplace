@@ -23,13 +23,13 @@ const PIE_COLORS = ['#dc2626', '#ef4444', '#f87171', '#fca5a5', '#fecaca', '#fee
 
 function getPerformanceBadge(monthlyRevenue: number): { label: string; icon: typeof Medal; color: string; bgColor: string; borderColor: string } {
   if (monthlyRevenue >= 5000) {
-    return { label: 'Platinum', icon: Trophy, color: 'text-stone-200', bgColor: 'bg-stone-400/10', borderColor: 'border-stone-400/20' }
+    return { label: 'Platinum', icon: Trophy, color: 'text-cm-secondary', bgColor: 'bg-stone-400/10', borderColor: 'border-stone-400/20' }
   }
   if (monthlyRevenue >= 2000) {
     return { label: 'Gold', icon: Crown, color: 'text-red-300', bgColor: 'bg-red-500/10', borderColor: 'border-red-500/20' }
   }
   if (monthlyRevenue >= 500) {
-    return { label: 'Silver', icon: Medal, color: 'text-stone-300', bgColor: 'bg-stone-500/10', borderColor: 'border-stone-500/20' }
+    return { label: 'Silver', icon: Medal, color: 'text-cm-secondary', bgColor: 'bg-stone-500/10', borderColor: 'border-stone-500/20' }
   }
   return { label: 'Bronze', icon: Medal, color: 'text-orange-400', bgColor: 'bg-orange-500/10', borderColor: 'border-orange-500/20' }
 }
@@ -44,8 +44,8 @@ function CustomPieLegend({ payload, total }: { payload: Array<{ value: string; c
         return (
           <div key={i} className="flex items-center gap-1.5 text-[11px]">
             <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: entry.color }} />
-            <span className="text-stone-400">{entry.value}</span>
-            <span className="text-stone-600">({pct}%)</span>
+            <span className="text-cm-muted">{entry.value}</span>
+            <span className="text-cm-faint">({pct}%)</span>
           </div>
         )
       })}
@@ -288,13 +288,13 @@ export default function SellerDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-cm-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8 gap-4">
           <div>
             <div className="flex items-center gap-3 mb-1 flex-wrap">
-              <h1 className="text-2xl font-bold text-stone-100">{t('seller.analytics.dashboard')}</h1>
+              <h1 className="text-2xl font-bold text-cm-primary">{t('seller.analytics.dashboard')}</h1>
               <Badge className={`${badge.bgColor} ${badge.color} ${badge.borderColor} border text-xs`}>
                 <badge.icon className="w-3 h-3 mr-1" />
                 {badge.label}
@@ -306,10 +306,10 @@ export default function SellerDashboard() {
                 </Badge>
               )}
             </div>
-            <p className="text-sm text-stone-500">{t('seller.analytics.welcomeBack', { name: user?.name || 'Seller' })}</p>
+            <p className="text-sm text-cm-dim">{t('seller.analytics.welcomeBack', { name: user?.name || 'Seller' })}</p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            <Button onClick={exportAnalyticsCSV} variant="outline" className="border-white/10 text-stone-300 rounded-xl text-sm h-10">
+            <Button onClick={exportAnalyticsCSV} variant="outline" className="border-cm-border-hover text-cm-secondary rounded-xl text-sm h-10">
               <Download className="w-4 h-4 mr-2" />
               {t('seller.analytics.downloadReport')}
             </Button>
@@ -321,27 +321,27 @@ export default function SellerDashboard() {
         </div>
 
         {/* Seller Level Progress */}
-        <Card className="bg-neutral-900/60 border-white/5 rounded-2xl mb-6">
+        <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl mb-6">
           <CardContent className="p-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${sellerLevel === 'Gold' ? 'bg-red-500/10' : sellerLevel === 'Silver' ? 'bg-stone-500/10' : 'bg-orange-500/10'}`}>
-                  <Award className={`w-5 h-5 ${sellerLevel === 'Gold' ? 'text-red-300' : sellerLevel === 'Silver' ? 'text-stone-300' : 'text-orange-400'}`} />
+                  <Award className={`w-5 h-5 ${sellerLevel === 'Gold' ? 'text-red-300' : sellerLevel === 'Silver' ? 'text-cm-secondary' : 'text-orange-400'}`} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-stone-200">
-                    {t('seller.analytics.sellerLevel', { level: sellerLevel })} → <span className="text-stone-400">{sellerLevel === 'Gold' ? t('seller.analytics.toLevel') : sellerLevel === 'Silver' ? 'Gold' : 'Silver'}</span>
+                  <h3 className="text-sm font-semibold text-cm-secondary">
+                    {t('seller.analytics.sellerLevel', { level: sellerLevel })} → <span className="text-cm-muted">{sellerLevel === 'Gold' ? t('seller.analytics.toLevel') : sellerLevel === 'Silver' ? 'Gold' : 'Silver'}</span>
                   </h3>
-                  <p className="text-xs text-stone-500">{t('seller.analytics.completedSales', { count: completedOrders })} · {t('seller.analytics.moreToNext', { count: nextLevelTarget - completedOrders })}</p>
+                  <p className="text-xs text-cm-dim">{t('seller.analytics.completedSales', { count: completedOrders })} · {t('seller.analytics.moreToNext', { count: nextLevelTarget - completedOrders })}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2 text-xs">
-                <span className="text-stone-500">{t('seller.analytics.fee')}: {sellerLevel === 'Gold' ? '5%' : '8%'}</span>
-                <span className="text-stone-600">•</span>
-                <span className="text-stone-500">{t('seller.analytics.sales')}: {completedOrders}</span>
+                <span className="text-cm-dim">{t('seller.analytics.fee')}: {sellerLevel === 'Gold' ? '5%' : '8%'}</span>
+                <span className="text-cm-faint">•</span>
+                <span className="text-cm-dim">{t('seller.analytics.sales')}: {completedOrders}</span>
               </div>
             </div>
-            <Progress value={progressPercent} className="h-2 bg-white/5 [&>div]:bg-gradient-to-r [&>div]:from-red-500 [&>div]:to-red-500 rounded-full" />
+            <Progress value={progressPercent} className="h-2 bg-cm-hover [&>div]:bg-gradient-to-r [&>div]:from-red-500 [&>div]:to-red-500 rounded-full" />
           </CardContent>
         </Card>
 
@@ -353,15 +353,15 @@ export default function SellerDashboard() {
             { label: t('seller.analytics.totalOrders'), value: loading ? '...' : orders.length, icon: ShoppingCart, color: 'from-blue-500/10 to-blue-600/5', textColor: 'text-blue-400' },
             { label: t('seller.analytics.avgOrderValue'), value: loading ? '...' : `$${avgOrderValueComputed.toFixed(0)}`, icon: DollarSign, color: 'from-purple-500/10 to-purple-600/5', textColor: 'text-purple-400' },
           ].map((stat) => (
-            <Card key={stat.label} className="bg-neutral-900/60 border-white/5 rounded-2xl hover:border-white/10 transition-all">
+            <Card key={stat.label} className="bg-cm-elevated border-cm-border-subtle rounded-2xl hover:border-cm-border-hover transition-all">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between mb-3">
                   <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
                     <stat.icon className={`w-5 h-5 ${stat.textColor}`} />
                   </div>
                 </div>
-                <p className="text-2xl font-bold text-stone-100">{stat.value}</p>
-                <p className="text-xs text-stone-500 mt-1">{stat.label}</p>
+                <p className="text-2xl font-bold text-cm-primary">{stat.value}</p>
+                <p className="text-xs text-cm-dim mt-1">{stat.label}</p>
               </CardContent>
             </Card>
           ))}
@@ -382,7 +382,7 @@ export default function SellerDashboard() {
             const isPositive = change >= 0
             const displayValue = item.value !== undefined ? item.value : (growth ? (item.key === 'avgOrderValue' ? `$${(growth.current || 0).toFixed(2)}` : (growth.current || 0)) : 0)
             return (
-              <Card key={item.label} className="bg-neutral-900/60 border-white/5 rounded-2xl">
+              <Card key={item.label} className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-2">
                     <item.icon className={`w-4 h-4 ${item.color}`} />
@@ -393,10 +393,10 @@ export default function SellerDashboard() {
                       </span>
                     )}
                   </div>
-                  <p className="text-lg font-bold text-stone-100">{displayValue}</p>
-                  <p className="text-[10px] text-stone-500 mt-0.5">{item.label}</p>
-                  {!item.noGrowth && <p className="text-[9px] text-stone-600">{t('seller.analytics.vsLastMonth')}</p>}
-                  {item.noGrowth && item.desc && <p className="text-[9px] text-stone-600">{item.desc}</p>}
+                  <p className="text-lg font-bold text-cm-primary">{displayValue}</p>
+                  <p className="text-[10px] text-cm-dim mt-0.5">{item.label}</p>
+                  {!item.noGrowth && <p className="text-[9px] text-cm-faint">{t('seller.analytics.vsLastMonth')}</p>}
+                  {item.noGrowth && item.desc && <p className="text-[9px] text-cm-faint">{item.desc}</p>}
                 </CardContent>
               </Card>
             )
@@ -405,18 +405,18 @@ export default function SellerDashboard() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-neutral-900/60 border border-white/5 rounded-xl p-1 h-10">
-            <TabsTrigger value="overview" className="rounded-lg text-xs data-[state=active]:bg-white/5 data-[state=active]:text-stone-200 text-stone-500 px-4">{t('seller.analytics.overview')}</TabsTrigger>
-            <TabsTrigger value="products" className="rounded-lg text-xs data-[state=active]:bg-white/5 data-[state=active]:text-stone-200 text-stone-500 px-4">{t('seller.analytics.products')}</TabsTrigger>
-            <TabsTrigger value="revenue" className="rounded-lg text-xs data-[state=active]:bg-white/5 data-[state=active]:text-stone-200 text-stone-500 px-4">{t('seller.analytics.revenue')}</TabsTrigger>
+          <TabsList className="bg-cm-elevated border border-cm-border-subtle rounded-xl p-1 h-10">
+            <TabsTrigger value="overview" className="rounded-lg text-xs data-[state=active]:bg-cm-hover data-[state=active]:text-cm-secondary text-cm-dim px-4">{t('seller.analytics.overview')}</TabsTrigger>
+            <TabsTrigger value="products" className="rounded-lg text-xs data-[state=active]:bg-cm-hover data-[state=active]:text-cm-secondary text-cm-dim px-4">{t('seller.analytics.products')}</TabsTrigger>
+            <TabsTrigger value="revenue" className="rounded-lg text-xs data-[state=active]:bg-cm-hover data-[state=active]:text-cm-secondary text-cm-dim px-4">{t('seller.analytics.revenue')}</TabsTrigger>
           </TabsList>
 
           {/* OVERVIEW TAB */}
           <TabsContent value="overview" className="space-y-6">
             {/* Quick Actions */}
-            <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+            <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
               <CardContent className="p-5">
-                <h2 className="text-sm font-semibold text-stone-200 mb-3 flex items-center gap-2">
+                <h2 className="text-sm font-semibold text-cm-secondary mb-3 flex items-center gap-2">
                   <Zap className="w-4 h-4 text-red-300" />
                   {t('seller.analytics.quickActions')}
                 </h2>
@@ -425,13 +425,13 @@ export default function SellerDashboard() {
                     <button
                       key={action.label}
                       onClick={() => navigate(action.page, action.page === 'storefront' && user?.storeId ? { id: user.storeId } : {})}
-                      className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/5 hover:border-white/10 transition-all group"
+                      className="flex flex-col items-center gap-2 p-3 rounded-xl bg-cm-hover border border-cm-border-subtle hover:bg-cm-hover hover:border-cm-border-hover transition-all group"
                     >
-                      <div className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-red-500/10 transition-colors">
-                        <action.icon className="w-4 h-4 text-stone-400 group-hover:text-red-300 transition-colors" />
+                      <div className="w-9 h-9 rounded-lg bg-cm-hover flex items-center justify-center group-hover:bg-red-500/10 transition-colors">
+                        <action.icon className="w-4 h-4 text-cm-muted group-hover:text-red-300 transition-colors" />
                       </div>
-                      <span className="text-xs font-medium text-stone-300">{action.label}</span>
-                      <span className="text-[10px] text-stone-600">{action.desc}</span>
+                      <span className="text-xs font-medium text-cm-secondary">{action.label}</span>
+                      <span className="text-[10px] text-cm-faint">{action.desc}</span>
                     </button>
                   ))}
                 </div>
@@ -441,10 +441,10 @@ export default function SellerDashboard() {
             {/* Revenue by Category (Donut) + Weekly Sales Trend */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Revenue by Category Donut Chart */}
-              <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+              <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-base font-semibold text-stone-200 flex items-center gap-2">
+                    <h2 className="text-base font-semibold text-cm-secondary flex items-center gap-2">
                       <BarChart3 className="w-4 h-4 text-red-400" />
                       {t('seller.analytics.revenueByCategory')}
                     </h2>
@@ -475,17 +475,17 @@ export default function SellerDashboard() {
                         </PieChart>
                       </ResponsiveContainer>
                     ) : (
-                      <div className="h-full flex items-center justify-center text-stone-600 text-sm">{t('seller.analytics.noSalesData')}</div>
+                      <div className="h-full flex items-center justify-center text-cm-faint text-sm">{t('seller.analytics.noSalesData')}</div>
                     )}
                   </div>
                 </CardContent>
               </Card>
 
               {/* Weekly Sales Trend - Dual Axis */}
-              <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+              <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-base font-semibold text-stone-200 flex items-center gap-2">
+                    <h2 className="text-base font-semibold text-cm-secondary flex items-center gap-2">
                       <TrendingUp className="w-4 h-4 text-green-400" />
                       {t('seller.analytics.weeklySalesTrend')}
                     </h2>
@@ -506,10 +506,10 @@ export default function SellerDashboard() {
                             const rev = payload.find((p: any) => p.dataKey === 'revenue')?.value || 0
                             const ords = payload.find((p: any) => p.dataKey === 'orders')?.value || 0
                             return (
-                              <div className="bg-neutral-900 border border-white/10 rounded-xl p-3 shadow-xl">
-                                <p className="text-xs text-stone-400 mb-1">{label}</p>
-                                <p className="text-sm text-stone-200 font-semibold">${rev.toFixed(2)} {t('seller.analytics.revenue')}</p>
-                                <p className="text-xs text-stone-400">{ords} {t('seller.analytics.ordersGrowth').toLowerCase()}</p>
+                              <div className="bg-cm-elevated border border-cm-border-hover rounded-xl p-3 shadow-xl">
+                                <p className="text-xs text-cm-muted mb-1">{label}</p>
+                                <p className="text-sm text-cm-secondary font-semibold">${rev.toFixed(2)} {t('seller.analytics.revenue')}</p>
+                                <p className="text-xs text-cm-muted">{ords} {t('seller.analytics.ordersGrowth').toLowerCase()}</p>
                               </div>
                             )
                           }} />
@@ -518,7 +518,7 @@ export default function SellerDashboard() {
                         </ComposedChart>
                       </ResponsiveContainer>
                     ) : (
-                      <div className="h-full flex items-center justify-center text-stone-600 text-sm">{t('seller.analytics.noSalesData')}</div>
+                      <div className="h-full flex items-center justify-center text-cm-faint text-sm">{t('seller.analytics.noSalesData')}</div>
                     )}
                   </div>
                 </CardContent>
@@ -526,14 +526,14 @@ export default function SellerDashboard() {
             </div>
 
             {/* Revenue Chart 12 Months */}
-            <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+            <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-base font-semibold text-stone-200 flex items-center gap-2">
+                  <h2 className="text-base font-semibold text-cm-secondary flex items-center gap-2">
                     <BarChart3 className="w-4 h-4 text-green-400" />
                     {t('seller.analytics.revenueOverview')}
                   </h2>
-                  <span className="text-xs text-stone-500">{t('seller.analytics.last12Months')}</span>
+                  <span className="text-xs text-cm-dim">{t('seller.analytics.last12Months')}</span>
                 </div>
                 <div className="h-64">
                   {twelveMonthData.length > 0 ? (
@@ -551,7 +551,7 @@ export default function SellerDashboard() {
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="h-full flex items-center justify-center text-stone-600 text-sm">{t('seller.analytics.noSalesData')}</div>
+                    <div className="h-full flex items-center justify-center text-cm-faint text-sm">{t('seller.analytics.noSalesData')}</div>
                   )}
                 </div>
               </CardContent>
@@ -560,10 +560,10 @@ export default function SellerDashboard() {
             {/* Orders Trend + Sales by Province */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Orders Trend */}
-              <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+              <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-base font-semibold text-stone-200 flex items-center gap-2">
+                    <h2 className="text-base font-semibold text-cm-secondary flex items-center gap-2">
                       <Target className="w-4 h-4 text-blue-400" />
                       {t('seller.analytics.ordersTrend')}
                     </h2>
@@ -586,10 +586,10 @@ export default function SellerDashboard() {
               </Card>
 
               {/* Sales by Province */}
-              <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+              <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-base font-semibold text-stone-200 flex items-center gap-2">
+                    <h2 className="text-base font-semibold text-cm-secondary flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-red-400" />
                       {t('seller.analytics.salesByProvince')}
                     </h2>
@@ -611,7 +611,7 @@ export default function SellerDashboard() {
                         </PieChart>
                       </ResponsiveContainer>
                     ) : (
-                      <div className="h-full flex items-center justify-center text-stone-600 text-sm">{t('seller.analytics.noSalesData')}</div>
+                      <div className="h-full flex items-center justify-center text-cm-faint text-sm">{t('seller.analytics.noSalesData')}</div>
                     )}
                   </div>
                 </CardContent>
@@ -619,10 +619,10 @@ export default function SellerDashboard() {
             </div>
 
             {/* Recent Orders */}
-            <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+            <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-base font-semibold text-stone-200 flex items-center gap-2">
+                  <h2 className="text-base font-semibold text-cm-secondary flex items-center gap-2">
                     <ShoppingCart className="w-4 h-4 text-blue-400" />
                     {t('seller.analytics.recentOrders')}
                     {pendingOrders > 0 && (
@@ -631,15 +631,15 @@ export default function SellerDashboard() {
                       </Badge>
                     )}
                   </h2>
-                  <Button variant="ghost" onClick={() => navigate('my-orders')} className="text-xs text-stone-500 hover:text-stone-300">
+                  <Button variant="ghost" onClick={() => navigate('my-orders')} className="text-xs text-cm-dim hover:text-cm-secondary">
                     {t('seller.analytics.viewAll')} →
                   </Button>
                 </div>
                 {recentOrders.length === 0 ? (
                   <div className="text-center py-12">
-                    <Package className="w-10 h-10 text-stone-700 mx-auto mb-3" />
-                    <p className="text-sm text-stone-600">{t('seller.analytics.noOrdersYet')}</p>
-                    <Button onClick={() => navigate('add-product')} variant="outline" className="mt-4 border-white/10 text-stone-300 text-sm rounded-xl">
+                    <Package className="w-10 h-10 text-cm-faint mx-auto mb-3" />
+                    <p className="text-sm text-cm-faint">{t('seller.analytics.noOrdersYet')}</p>
+                    <Button onClick={() => navigate('add-product')} variant="outline" className="mt-4 border-cm-border-hover text-cm-secondary text-sm rounded-xl">
                       <Plus className="w-4 h-4 mr-1" /> {t('seller.analytics.addFirstProduct')}
                     </Button>
                   </div>
@@ -647,24 +647,24 @@ export default function SellerDashboard() {
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr className="border-b border-white/5">
-                          <th className="text-left text-xs font-medium text-stone-500 pb-3 pr-4">{t('seller.analytics.orders')}</th>
-                          <th className="text-left text-xs font-medium text-stone-500 pb-3 pr-4">{t('seller.analytics.revenue')}</th>
-                          <th className="text-left text-xs font-medium text-stone-500 pb-3 pr-4">{t('orders.status')}</th>
-                          <th className="text-right text-xs font-medium text-stone-500 pb-3">{t('orders.date')}</th>
+                        <tr className="border-b border-cm-border-subtle">
+                          <th className="text-left text-xs font-medium text-cm-dim pb-3 pr-4">{t('seller.analytics.orders')}</th>
+                          <th className="text-left text-xs font-medium text-cm-dim pb-3 pr-4">{t('seller.analytics.revenue')}</th>
+                          <th className="text-left text-xs font-medium text-cm-dim pb-3 pr-4">{t('orders.status')}</th>
+                          <th className="text-right text-xs font-medium text-cm-dim pb-3">{t('orders.date')}</th>
                         </tr>
                       </thead>
                       <tbody>
                         {recentOrders.map((order: any) => (
-                          <tr key={order.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02] cursor-pointer" onClick={() => navigate('order-detail', { id: order.id })}>
+                          <tr key={order.id} className="border-b border-cm-border-subtle last:border-0 hover:bg-cm-hover cursor-pointer" onClick={() => navigate('order-detail', { id: order.id })}>
                             <td className="py-3 pr-4">
                               <div>
-                                <p className="text-sm font-medium text-stone-200">{order.orderNumber}</p>
-                                <p className="text-[11px] text-stone-600">{order.buyerName} · {order.itemsCount} item(s)</p>
+                                <p className="text-sm font-medium text-cm-secondary">{order.orderNumber}</p>
+                                <p className="text-[11px] text-cm-faint">{order.buyerName} · {order.itemsCount} item(s)</p>
                               </div>
                             </td>
                             <td className="py-3 pr-4">
-                              <span className="text-sm font-semibold text-stone-100">${(order.total * 0.92).toFixed(2)}</span>
+                              <span className="text-sm font-semibold text-cm-primary">${(order.total * 0.92).toFixed(2)}</span>
                             </td>
                             <td className="py-3 pr-4">
                               <Badge className={`${ORDER_STATUS_COLORS[order.status as keyof typeof ORDER_STATUS_COLORS] || ''} text-[10px] border`}>
@@ -672,7 +672,7 @@ export default function SellerDashboard() {
                               </Badge>
                             </td>
                             <td className="py-3 text-right">
-                              <span className="text-xs text-stone-500">{new Date(order.createdAt).toLocaleDateString('en-CA')}</span>
+                              <span className="text-xs text-cm-dim">{new Date(order.createdAt).toLocaleDateString('en-CA')}</span>
                             </td>
                           </tr>
                         ))}
@@ -687,10 +687,10 @@ export default function SellerDashboard() {
           {/* PRODUCTS TAB */}
           <TabsContent value="products" className="space-y-6">
             {/* Top Products Table */}
-            <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+            <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-base font-semibold text-stone-200 flex items-center gap-2">
+                  <h2 className="text-base font-semibold text-cm-secondary flex items-center gap-2">
                     <Star className="w-4 h-4 text-red-400" />
                     {t('seller.analytics.topProducts')}
                   </h2>
@@ -702,44 +702,44 @@ export default function SellerDashboard() {
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr className="border-b border-white/5">
-                          <th className="text-left text-xs font-medium text-stone-500 pb-3 pr-4">#</th>
-                          <th className="text-left text-xs font-medium text-stone-500 pb-3 pr-4">{t('seller.analytics.product')}</th>
-                          <th className="text-right text-xs font-medium text-stone-500 pb-3 pr-4">{t('seller.analytics.unitsSold')}</th>
-                          <th className="text-right text-xs font-medium text-stone-500 pb-3 pr-4">{t('seller.analytics.revenue')}</th>
-                          <th className="text-right text-xs font-medium text-stone-500 pb-3 pr-4">{t('seller.analytics.views')}</th>
-                          <th className="text-right text-xs font-medium text-stone-500 pb-3">{t('seller.analytics.conversion')}</th>
+                        <tr className="border-b border-cm-border-subtle">
+                          <th className="text-left text-xs font-medium text-cm-dim pb-3 pr-4">#</th>
+                          <th className="text-left text-xs font-medium text-cm-dim pb-3 pr-4">{t('seller.analytics.product')}</th>
+                          <th className="text-right text-xs font-medium text-cm-dim pb-3 pr-4">{t('seller.analytics.unitsSold')}</th>
+                          <th className="text-right text-xs font-medium text-cm-dim pb-3 pr-4">{t('seller.analytics.revenue')}</th>
+                          <th className="text-right text-xs font-medium text-cm-dim pb-3 pr-4">{t('seller.analytics.views')}</th>
+                          <th className="text-right text-xs font-medium text-cm-dim pb-3">{t('seller.analytics.conversion')}</th>
                         </tr>
                       </thead>
                       <tbody>
                         {topProducts.map((product: any, idx: number) => {
                           const conv = product.views > 0 ? ((product.sold / product.views) * 100).toFixed(1) : '0.0'
                           return (
-                            <tr key={idx} className="border-b border-white/5 last:border-0">
+                            <tr key={idx} className="border-b border-cm-border-subtle last:border-0">
                               <td className="py-3 pr-4">
                                 <span className={`inline-flex w-6 h-6 rounded-lg items-center justify-center text-xs font-bold ${
                                   idx === 0 ? 'bg-red-500/10 text-red-300' :
-                                  idx === 1 ? 'bg-stone-500/10 text-stone-300' :
+                                  idx === 1 ? 'bg-stone-500/10 text-cm-secondary' :
                                   idx === 2 ? 'bg-orange-500/10 text-orange-400' :
-                                  'bg-white/5 text-stone-500'
+                                  'bg-cm-hover text-cm-dim'
                                 }`}>
                                   {idx + 1}
                                 </span>
                               </td>
                               <td className="py-3 pr-4">
-                                <span className="text-sm text-stone-200 font-medium">{product.title}</span>
+                                <span className="text-sm text-cm-secondary font-medium">{product.title}</span>
                               </td>
                               <td className="py-3 pr-4 text-right">
-                                <span className="text-sm text-stone-300">{product.sold}</span>
+                                <span className="text-sm text-cm-secondary">{product.sold}</span>
                               </td>
                               <td className="py-3 pr-4 text-right">
-                                <span className="text-sm font-semibold text-stone-100">${product.revenue.toFixed(2)}</span>
+                                <span className="text-sm font-semibold text-cm-primary">${product.revenue.toFixed(2)}</span>
                               </td>
                               <td className="py-3 pr-4 text-right">
-                                <span className="text-sm text-stone-400">{product.views || 0}</span>
+                                <span className="text-sm text-cm-muted">{product.views || 0}</span>
                               </td>
                               <td className="py-3 text-right">
-                                <span className={`text-sm font-medium ${parseFloat(conv) > 5 ? 'text-green-400' : parseFloat(conv) > 2 ? 'text-red-300' : 'text-stone-400'}`}>
+                                <span className={`text-sm font-medium ${parseFloat(conv) > 5 ? 'text-green-400' : parseFloat(conv) > 2 ? 'text-red-300' : 'text-cm-muted'}`}>
                                   {conv}%
                                 </span>
                               </td>
@@ -751,41 +751,41 @@ export default function SellerDashboard() {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <Package className="w-10 h-10 text-stone-700 mx-auto mb-3" />
-                    <p className="text-sm text-stone-600">{t('seller.analytics.noProductData')}</p>
+                    <Package className="w-10 h-10 text-cm-faint mx-auto mb-3" />
+                    <p className="text-sm text-cm-faint">{t('seller.analytics.noProductData')}</p>
                   </div>
                 )}
               </CardContent>
             </Card>
 
             {/* Product Summary */}
-            <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+            <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
               <CardContent className="p-6">
-                <h2 className="text-base font-semibold text-stone-200 flex items-center gap-2 mb-4">
+                <h2 className="text-base font-semibold text-cm-secondary flex items-center gap-2 mb-4">
                   <Package className="w-4 h-4 text-purple-400" />
                   {t('seller.analytics.productSummary')}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                    <p className="text-xs text-stone-500 mb-1">{t('seller.analytics.totalProducts')}</p>
-                    <p className="text-2xl font-bold text-stone-100">{totalProducts}</p>
-                    <p className="text-[10px] text-stone-600 mt-1">{t('seller.analytics.activeListings')}</p>
+                  <div className="p-4 rounded-xl bg-cm-hover border border-cm-border-subtle">
+                    <p className="text-xs text-cm-dim mb-1">{t('seller.analytics.totalProducts')}</p>
+                    <p className="text-2xl font-bold text-cm-primary">{totalProducts}</p>
+                    <p className="text-[10px] text-cm-faint mt-1">{t('seller.analytics.activeListings')}</p>
                   </div>
-                  <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                    <p className="text-xs text-stone-500 mb-1">{t('seller.analytics.uniqueProductsSold')}</p>
-                    <p className="text-2xl font-bold text-stone-100">{topProducts.length}</p>
-                    <p className="text-[10px] text-stone-600 mt-1">{t('seller.analytics.differentProducts')}</p>
+                  <div className="p-4 rounded-xl bg-cm-hover border border-cm-border-subtle">
+                    <p className="text-xs text-cm-dim mb-1">{t('seller.analytics.uniqueProductsSold')}</p>
+                    <p className="text-2xl font-bold text-cm-primary">{topProducts.length}</p>
+                    <p className="text-[10px] text-cm-faint mt-1">{t('seller.analytics.differentProducts')}</p>
                   </div>
-                  <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                    <p className="text-xs text-stone-500 mb-1">{t('seller.analytics.topProductRevenue')}</p>
-                    <p className="text-2xl font-bold text-stone-100">
+                  <div className="p-4 rounded-xl bg-cm-hover border border-cm-border-subtle">
+                    <p className="text-xs text-cm-dim mb-1">{t('seller.analytics.topProductRevenue')}</p>
+                    <p className="text-2xl font-bold text-cm-primary">
                       {topProducts.length > 0 ? `$${topProducts[0].revenue.toFixed(0)}` : '$0'}
                     </p>
-                    <p className="text-[10px] text-stone-600 mt-1">{topProducts[0]?.title || 'N/A'}</p>
+                    <p className="text-[10px] text-cm-faint mt-1">{topProducts[0]?.title || 'N/A'}</p>
                   </div>
                 </div>
                 <div className="mt-4">
-                  <Button onClick={() => navigate('my-products')} variant="outline" className="border-white/10 text-stone-300 text-sm rounded-xl">
+                  <Button onClick={() => navigate('my-products')} variant="outline" className="border-cm-border-hover text-cm-secondary text-sm rounded-xl">
                     {t('seller.analytics.manageProducts')} →
                   </Button>
                 </div>
@@ -797,59 +797,59 @@ export default function SellerDashboard() {
           <TabsContent value="revenue" className="space-y-6">
             {/* Revenue Metrics */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+              <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
                 <CardContent className="p-5">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500/10 to-green-600/5 flex items-center justify-center">
                       <DollarSign className="w-5 h-5 text-green-400" />
                     </div>
                     <div>
-                      <p className="text-xs text-stone-500">{t('seller.analytics.totalRevenueNet')}</p>
-                      <p className="text-xl font-bold text-stone-100">${totalRevenue.toFixed(2)}</p>
+                      <p className="text-xs text-cm-dim">{t('seller.analytics.totalRevenueNet')}</p>
+                      <p className="text-xl font-bold text-cm-primary">${totalRevenue.toFixed(2)}</p>
                     </div>
                   </div>
-                  <p className="text-[10px] text-stone-600">{t('seller.analytics.afterFee')}</p>
+                  <p className="text-[10px] text-cm-faint">{t('seller.analytics.afterFee')}</p>
                 </CardContent>
               </Card>
-              <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+              <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
                 <CardContent className="p-5">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500/10 to-red-600/5 flex items-center justify-center">
                       <TrendingUp className="w-5 h-5 text-red-300" />
                     </div>
                     <div>
-                      <p className="text-xs text-stone-500">{t('seller.analytics.thisMonth')}</p>
-                      <p className="text-xl font-bold text-stone-100">${thisMonthRevenue.toFixed(2)}</p>
+                      <p className="text-xs text-cm-dim">{t('seller.analytics.thisMonth')}</p>
+                      <p className="text-xl font-bold text-cm-primary">${thisMonthRevenue.toFixed(2)}</p>
                     </div>
                   </div>
-                  <p className="text-[10px] text-stone-600">{t('seller.analytics.ordersThisMonth', { count: thisMonth.length })}</p>
+                  <p className="text-[10px] text-cm-faint">{t('seller.analytics.ordersThisMonth', { count: thisMonth.length })}</p>
                 </CardContent>
               </Card>
-              <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+              <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
                 <CardContent className="p-5">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/10 to-purple-600/5 flex items-center justify-center">
                       <DollarSign className="w-5 h-5 text-purple-400" />
                     </div>
                     <div>
-                      <p className="text-xs text-stone-500">{t('seller.analytics.avgOrderValue')}</p>
-                      <p className="text-xl font-bold text-stone-100">${avgOrderValueComputed.toFixed(2)}</p>
+                      <p className="text-xs text-cm-dim">{t('seller.analytics.avgOrderValue')}</p>
+                      <p className="text-xl font-bold text-cm-primary">${avgOrderValueComputed.toFixed(2)}</p>
                     </div>
                   </div>
-                  <p className="text-[10px] text-stone-600">{t('seller.analytics.revenuePerOrder')}</p>
+                  <p className="text-[10px] text-cm-faint">{t('seller.analytics.revenuePerOrder')}</p>
                 </CardContent>
               </Card>
             </div>
 
             {/* Monthly Revenue Bar Chart */}
-            <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+            <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-base font-semibold text-stone-200 flex items-center gap-2">
+                  <h2 className="text-base font-semibold text-cm-secondary flex items-center gap-2">
                     <BarChart3 className="w-4 h-4 text-green-400" />
                     {t('seller.analytics.monthlyRevenue12')}
                   </h2>
-                  <Button onClick={exportOrderCSV} variant="outline" size="sm" className="border-white/10 text-stone-400 text-xs rounded-lg h-8">
+                  <Button onClick={exportOrderCSV} variant="outline" size="sm" className="border-cm-border-hover text-cm-muted text-xs rounded-lg h-8">
                     <Download className="w-3 h-3 mr-1" />
                     CSV
                   </Button>
@@ -874,10 +874,10 @@ export default function SellerDashboard() {
 
             {/* Orders Over Time + Province Breakdown */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+              <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-base font-semibold text-stone-200 flex items-center gap-2">
+                    <h2 className="text-base font-semibold text-cm-secondary flex items-center gap-2">
                       <Target className="w-4 h-4 text-blue-400" />
                       {t('seller.analytics.dailyOrders30')}
                     </h2>
@@ -896,9 +896,9 @@ export default function SellerDashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+              <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
                 <CardContent className="p-6">
-                  <h2 className="text-base font-semibold text-stone-200 flex items-center gap-2 mb-4">
+                  <h2 className="text-base font-semibold text-cm-secondary flex items-center gap-2 mb-4">
                     <MapPin className="w-4 h-4 text-red-400" />
                     {t('seller.analytics.revenueByProvince')}
                   </h2>
@@ -909,26 +909,26 @@ export default function SellerDashboard() {
                         const pct = maxVal > 0 ? (prov.value / maxVal) * 100 : 0
                         return (
                           <div key={prov.name} className="flex items-center gap-3">
-                            <span className="text-xs text-stone-400 w-28 truncate flex-shrink-0">{prov.name}</span>
-                            <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
+                            <span className="text-xs text-cm-muted w-28 truncate flex-shrink-0">{prov.name}</span>
+                            <div className="flex-1 h-2 bg-cm-hover rounded-full overflow-hidden">
                               <div className="h-full rounded-full bg-gradient-to-r from-red-600 to-red-500" style={{ width: `${pct}%` }} />
                             </div>
-                            <span className="text-xs text-stone-300 font-medium w-20 text-right">${prov.value.toFixed(0)}</span>
+                            <span className="text-xs text-cm-secondary font-medium w-20 text-right">${prov.value.toFixed(0)}</span>
                           </div>
                         )
                       })}
                     </div>
                   ) : (
-                    <div className="h-48 flex items-center justify-center text-stone-600 text-sm">{t('seller.analytics.noSalesData')}</div>
+                    <div className="h-48 flex items-center justify-center text-cm-faint text-sm">{t('seller.analytics.noSalesData')}</div>
                   )}
                 </CardContent>
               </Card>
             </div>
 
             {/* Performance Metrics */}
-            <Card className="bg-neutral-900/60 border-white/5 rounded-2xl">
+            <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
               <CardContent className="p-6">
-                <h2 className="text-base font-semibold text-stone-200 flex items-center gap-2 mb-4">
+                <h2 className="text-base font-semibold text-cm-secondary flex items-center gap-2 mb-4">
                   <TrendingUp className="w-4 h-4 text-purple-400" />
                   {t('seller.analytics.performanceMetrics')}
                 </h2>
@@ -939,11 +939,11 @@ export default function SellerDashboard() {
                     { label: t('seller.analytics.sellerRating'), value: '4.8/5', desc: t('seller.analytics.sellerRatingDesc'), bar: 96, barColor: 'bg-red-500' },
                     { label: t('seller.analytics.repeatBuyers'), value: '34%', desc: t('seller.analytics.repeatBuyersDesc'), bar: 34, barColor: 'bg-purple-500' },
                   ].map((metric) => (
-                    <div key={metric.label} className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                      <p className="text-xs text-stone-500 mb-1">{metric.label}</p>
-                      <p className="text-lg font-bold text-stone-100">{metric.value}</p>
-                      <p className="text-[10px] text-stone-600 mb-2">{metric.desc}</p>
-                      <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                    <div key={metric.label} className="p-4 rounded-xl bg-cm-hover border border-cm-border-subtle">
+                      <p className="text-xs text-cm-dim mb-1">{metric.label}</p>
+                      <p className="text-lg font-bold text-cm-primary">{metric.value}</p>
+                      <p className="text-[10px] text-cm-faint mb-2">{metric.desc}</p>
+                      <div className="w-full h-1.5 bg-cm-hover rounded-full overflow-hidden">
                         <div className={`h-full rounded-full ${metric.barColor} transition-all`} style={{ width: `${metric.bar}%` }} />
                       </div>
                     </div>

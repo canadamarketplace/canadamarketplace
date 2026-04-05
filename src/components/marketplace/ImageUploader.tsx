@@ -78,7 +78,7 @@ function SortableImage({ item, onRemove, onSetPrimary, isPrimary, showPrimary, c
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative rounded-xl overflow-hidden bg-neutral-800 border border-white/5 group
+      className={`relative rounded-xl overflow-hidden bg-cm-input border border-cm-border-subtle group
         ${isDragging ? 'opacity-50 scale-95 shadow-2xl shadow-red-500/10' : ''}
         ${compact ? 'aspect-square' : 'aspect-square'}`}
     >
@@ -87,7 +87,7 @@ function SortableImage({ item, onRemove, onSetPrimary, isPrimary, showPrimary, c
         <button
           {...attributes}
           {...listeners}
-          className="absolute top-1 left-1 z-10 w-6 h-6 rounded-md bg-black/70 flex items-center justify-center text-stone-400 hover:text-white hover:bg-white/20 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute top-1 left-1 z-10 w-6 h-6 rounded-md bg-cm-overlay flex items-center justify-center text-cm-muted hover:text-white hover:bg-cm-hover-strong cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
         >
           <GripVertical className="w-3.5 h-3.5" />
         </button>
@@ -103,9 +103,9 @@ function SortableImage({ item, onRemove, onSetPrimary, isPrimary, showPrimary, c
         />
       ) : (
         <div className="w-full h-full flex flex-col items-center justify-center gap-1">
-          <Loader2 className="w-6 h-6 text-stone-500 animate-spin" />
+          <Loader2 className="w-6 h-6 text-cm-dim animate-spin" />
           {!compact && item.fileSize && (
-            <span className="text-[10px] text-stone-600">{item.fileSize}</span>
+            <span className="text-[10px] text-cm-faint">{item.fileSize}</span>
           )}
         </div>
       )}
@@ -114,13 +114,13 @@ function SortableImage({ item, onRemove, onSetPrimary, isPrimary, showPrimary, c
       {item.uploading && (
         <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
           <div className="w-full px-3">
-            <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-cm-hover-strong rounded-full overflow-hidden">
               <div
                 className="h-full bg-red-500 rounded-full transition-all duration-300"
                 style={{ width: `${item.progress || 0}%` }}
               />
             </div>
-            <p className="text-[10px] text-stone-400 text-center mt-1.5">
+            <p className="text-[10px] text-cm-muted text-center mt-1.5">
               {Math.round(item.progress || 0)}%
             </p>
           </div>
@@ -136,7 +136,7 @@ function SortableImage({ item, onRemove, onSetPrimary, isPrimary, showPrimary, c
 
       {/* File size badge */}
       {item.fileSize && item.url && !item.uploading && !compact && (
-        <div className="absolute bottom-1 left-1 z-10 px-1.5 py-0.5 rounded-md bg-black/60 text-[9px] text-stone-400 font-mono">
+        <div className="absolute bottom-1 left-1 z-10 px-1.5 py-0.5 rounded-md bg-black/60 text-[9px] text-cm-muted font-mono">
           {item.fileSize}
         </div>
       )}
@@ -147,7 +147,7 @@ function SortableImage({ item, onRemove, onSetPrimary, isPrimary, showPrimary, c
           {showPrimary && !isPrimary && (
             <button
               onClick={(e) => { e.stopPropagation(); onSetPrimary(item.id) }}
-              className="w-8 h-8 rounded-full bg-black/70 flex items-center justify-center text-white hover:bg-red-600 transition-colors"
+              className="w-8 h-8 rounded-full bg-cm-overlay flex items-center justify-center text-white hover:bg-red-600 transition-colors"
               title="Set as main image"
             >
               <Star className="w-4 h-4" />
@@ -155,7 +155,7 @@ function SortableImage({ item, onRemove, onSetPrimary, isPrimary, showPrimary, c
           )}
           <button
             onClick={(e) => { e.stopPropagation(); onRemove(item.id) }}
-            className="w-8 h-8 rounded-full bg-black/70 flex items-center justify-center text-white hover:bg-red-600 transition-colors"
+            className="w-8 h-8 rounded-full bg-cm-overlay flex items-center justify-center text-white hover:bg-red-600 transition-colors"
             title="Remove image"
           >
             <X className="w-4 h-4" />
@@ -312,8 +312,8 @@ export default function ImageUploader({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-stone-300">{label}</h2>
-        <span className="text-xs text-stone-500">
+        <h2 className="text-sm font-semibold text-cm-secondary">{label}</h2>
+        <span className="text-xs text-cm-dim">
           {images.filter(i => !i.uploading).length}/{maxImages} {label.toLowerCase()}
         </span>
       </div>
@@ -328,7 +328,7 @@ export default function ImageUploader({
           className={`relative cursor-pointer border-2 border-dashed rounded-xl p-6 text-center transition-all ${
             isDragging
               ? 'border-red-500 bg-red-500/5'
-              : 'border-white/10 hover:border-red-500/30 hover:bg-white/[0.02]'
+              : 'border-cm-border-hover hover:border-red-500/30 hover:bg-cm-hover'
           }`}
         >
           <input
@@ -339,11 +339,11 @@ export default function ImageUploader({
             className="hidden"
             onChange={(e) => handleFileSelect(e.target.files)}
           />
-          <ImagePlus className={`w-8 h-8 mx-auto mb-2 ${isDragging ? 'text-red-400' : 'text-stone-600'}`} />
-          <p className="text-sm text-stone-400">
+          <ImagePlus className={`w-8 h-8 mx-auto mb-2 ${isDragging ? 'text-red-400' : 'text-cm-faint'}`} />
+          <p className="text-sm text-cm-muted">
             {isDragging ? 'Drop images here' : 'Drag & drop images here'}
           </p>
-          <p className="text-xs text-stone-600 mt-1">
+          <p className="text-xs text-cm-faint mt-1">
             or click to browse · JPEG, PNG, WebP, GIF · Max 5MB each
           </p>
         </div>
@@ -380,7 +380,7 @@ export default function ImageUploader({
       )}
 
       {showPrimary && images.length > 1 && (
-        <p className="text-xs text-stone-600">
+        <p className="text-xs text-cm-faint">
           First image is the main photo. Drag to reorder or click the <Star className="w-3 h-3 inline -mt-0.5" /> icon to set a new main image.
         </p>
       )}

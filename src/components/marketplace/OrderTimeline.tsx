@@ -30,7 +30,7 @@ const EVENT_CONFIG: Record<string, {
   OUT_FOR_DELIVERY: { icon: Truck, color: 'text-orange-400', dotColor: 'bg-orange-500', bg: 'bg-orange-500/10' },
   DELIVERED: { icon: CheckCircle2, color: 'text-green-400', dotColor: 'bg-green-500', bg: 'bg-green-500/10' },
   CANCELLED: { icon: XCircle, color: 'text-red-400', dotColor: 'bg-red-500', bg: 'bg-red-500/10' },
-  REFUNDED: { icon: AlertTriangle, color: 'text-stone-400', dotColor: 'bg-stone-500', bg: 'bg-stone-500/10' },
+  REFUNDED: { icon: AlertTriangle, color: 'text-cm-muted', dotColor: 'bg-stone-500', bg: 'bg-stone-500/10' },
   DISPUTE_OPENED: { icon: AlertTriangle, color: 'text-orange-400', dotColor: 'bg-orange-500', bg: 'bg-orange-500/10' },
   DISPUTE_RESOLVED: { icon: CheckCircle2, color: 'text-green-400', dotColor: 'bg-green-500', bg: 'bg-green-500/10' },
 }
@@ -85,9 +85,9 @@ export function OrderTimeline({ events, trackingNumber, isBuyer, compact = false
   if (events.length === 0) return null
 
   return (
-    <div className={compact ? '' : 'rounded-2xl bg-neutral-900/60 border border-white/5 p-6'}>
+    <div className={compact ? '' : 'rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6'}>
       {/* Header */}
-      <h2 className={`text-sm font-semibold text-stone-300 mb-5 flex items-center gap-2 ${compact ? 'mb-3' : ''}`}>
+      <h2 className={`text-sm font-semibold text-cm-secondary mb-5 flex items-center gap-2 ${compact ? 'mb-3' : ''}`}>
         <Clock className="w-4 h-4 text-red-400" />
         {compact ? t('timeline.recentActivity') : t('timeline.orderTimeline')}
       </h2>
@@ -97,9 +97,9 @@ export function OrderTimeline({ events, trackingNumber, isBuyer, compact = false
         <motion.div
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-5 p-3 rounded-xl bg-white/[0.02] border border-white/5"
+          className="mb-5 p-3 rounded-xl bg-cm-hover border border-cm-border-subtle"
         >
-          <p className="text-[10px] text-stone-500 uppercase tracking-wider mb-1.5">
+          <p className="text-[10px] text-cm-dim uppercase tracking-wider mb-1.5">
             {t('timeline.trackingNumber')}
           </p>
           <div className="flex items-center justify-between gap-3">
@@ -107,7 +107,7 @@ export function OrderTimeline({ events, trackingNumber, isBuyer, compact = false
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 onClick={handleCopyTracking}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-xs text-stone-300 hover:bg-white/10 transition-all"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-cm-hover border border-cm-border-hover text-xs text-cm-secondary hover:bg-cm-hover-strong transition-all"
               >
                 {copied ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
                 {copied ? t('timeline.copied') : t('timeline.copy')}
@@ -131,7 +131,7 @@ export function OrderTimeline({ events, trackingNumber, isBuyer, compact = false
       {/* Timeline */}
       <div className="relative">
         {/* Vertical line */}
-        <div className="absolute left-[15px] top-2 bottom-2 w-px bg-neutral-800" />
+        <div className="absolute left-[15px] top-2 bottom-2 w-px bg-cm-input" />
 
         <div className="space-y-0">
           {displayEvents.map((event, index) => {
@@ -148,7 +148,7 @@ export function OrderTimeline({ events, trackingNumber, isBuyer, compact = false
                 transition={{ delay: index * 0.08, duration: 0.3 }}
               >
                 {/* Dot */}
-                <div className={`relative z-10 w-[30px] h-[30px] rounded-full ${config.bg} flex items-center justify-center flex-shrink-0 border border-white/5`}>
+                <div className={`relative z-10 w-[30px] h-[30px] rounded-full ${config.bg} flex items-center justify-center flex-shrink-0 border border-cm-border-subtle`}>
                   <Icon className={`w-3.5 h-3.5 ${config.color}`} />
                   {isFirst && (
                     <motion.div
@@ -163,11 +163,11 @@ export function OrderTimeline({ events, trackingNumber, isBuyer, compact = false
                 <div className="flex-1 min-w-0 pt-0.5">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <p className={`text-sm font-medium ${isFirst ? 'text-stone-100' : 'text-stone-300'}`}>
+                      <p className={`text-sm font-medium ${isFirst ? 'text-cm-primary' : 'text-cm-secondary'}`}>
                         {event.title}
                       </p>
                       {event.description && (
-                        <p className="text-xs text-stone-500 mt-0.5 leading-relaxed">
+                        <p className="text-xs text-cm-dim mt-0.5 leading-relaxed">
                           {event.description}
                         </p>
                       )}
@@ -188,10 +188,10 @@ export function OrderTimeline({ events, trackingNumber, isBuyer, compact = false
                       })()}
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className={`text-[10px] ${isFirst ? 'text-stone-400' : 'text-stone-600'}`}>
+                      <p className={`text-[10px] ${isFirst ? 'text-cm-muted' : 'text-cm-faint'}`}>
                         {formatRelativeTime(event.createdAt)}
                       </p>
-                      <p className="text-[10px] text-stone-700">
+                      <p className="text-[10px] text-cm-faint">
                         {formatFullTime(event.createdAt)}
                       </p>
                     </div>
@@ -210,10 +210,10 @@ export function OrderTimeline({ events, trackingNumber, isBuyer, compact = false
             transition={{ delay: 0.3 }}
             className="relative flex items-center gap-4 pl-0 pt-1"
           >
-            <div className="relative z-10 w-[30px] h-[30px] rounded-full bg-neutral-800 border border-white/10 flex items-center justify-center flex-shrink-0">
-              <span className="text-[10px] font-medium text-stone-500">+{events.length - 3}</span>
+            <div className="relative z-10 w-[30px] h-[30px] rounded-full bg-cm-input border border-cm-border-hover flex items-center justify-center flex-shrink-0">
+              <span className="text-[10px] font-medium text-cm-dim">+{events.length - 3}</span>
             </div>
-            <span className="text-xs text-stone-500 pt-1">
+            <span className="text-xs text-cm-dim pt-1">
               {events.length - 3} more {events.length - 3 === 1 ? 'event' : 'events'}
             </span>
           </motion.div>

@@ -49,9 +49,9 @@ export default function StorefrontPage() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-pulse">
-        <div className="h-48 bg-neutral-800 rounded-2xl mb-6" />
-        <div className="h-8 bg-neutral-800 rounded w-1/3 mb-4" />
-        <div className="h-4 bg-neutral-800 rounded w-2/3" />
+        <div className="h-48 bg-cm-input rounded-2xl mb-6" />
+        <div className="h-8 bg-cm-input rounded w-1/3 mb-4" />
+        <div className="h-4 bg-cm-input rounded w-2/3" />
       </div>
     )
   }
@@ -65,18 +65,18 @@ export default function StorefrontPage() {
         {store.banner && (
           <img src={store.banner} alt="" className="w-full h-full object-cover opacity-50" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-cm-bg to-transparent" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10">
-        <button onClick={() => navigate('browse')} className="flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 mb-6 group">
+        <button onClick={() => navigate('browse')} className="flex items-center gap-2 text-sm text-cm-dim hover:text-cm-secondary mb-6 group">
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Back to Browse
         </button>
 
         {/* Store Info */}
         <div className="flex items-start gap-5 mb-8">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-neutral-800 border-4 border-[#0a0a0a] overflow-hidden flex-shrink-0">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-cm-input border-4 border-cm-bg overflow-hidden flex-shrink-0">
             {store.logo ? (
               <img src={store.logo} alt={store.name} className="w-full h-full object-cover" />
             ) : (
@@ -87,40 +87,40 @@ export default function StorefrontPage() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl sm:text-3xl font-bold text-stone-100">{store.name}</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-cm-primary">{store.name}</h1>
               {store.seller.isVerified && (
                 <CheckCircle2 className="w-5 h-5 text-blue-400" />
               )}
             </div>
-            <p className="text-sm text-stone-500 mt-1">by {store.seller.name}</p>
+            <p className="text-sm text-cm-dim mt-1">by {store.seller.name}</p>
             <div className="flex items-center gap-4 mt-2 flex-wrap">
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 text-red-300 fill-red-300" />
-                <span className="text-sm text-stone-300">{store.rating.toFixed(1)}</span>
+                <span className="text-sm text-cm-secondary">{store.rating.toFixed(1)}</span>
               </div>
-              <span className="text-xs text-stone-600">|</span>
-              <span className="text-sm text-stone-400">{store.totalSales} sales</span>
-              <span className="text-xs text-stone-600">|</span>
-              <span className="text-sm text-stone-400">{store._count.products} products</span>
-              <span className="text-xs text-stone-600">|</span>
-              <div className="flex items-center gap-1 text-sm text-stone-400">
+              <span className="text-xs text-cm-faint">|</span>
+              <span className="text-sm text-cm-muted">{store.totalSales} sales</span>
+              <span className="text-xs text-cm-faint">|</span>
+              <span className="text-sm text-cm-muted">{store._count.products} products</span>
+              <span className="text-xs text-cm-faint">|</span>
+              <div className="flex items-center gap-1 text-sm text-cm-muted">
                 <MapPin className="w-4 h-4" />
                 {store.seller.city}, {store.seller.province}
               </div>
             </div>
             {store.description && (
-              <p className="text-sm text-stone-500 mt-3 max-w-xl leading-relaxed">{store.description}</p>
+              <p className="text-sm text-cm-dim mt-3 max-w-xl leading-relaxed">{store.description}</p>
             )}
           </div>
         </div>
 
         {/* Products */}
-        <h2 className="text-lg font-semibold text-stone-200 mb-4">All Products ({store._count.products})</h2>
+        <h2 className="text-lg font-semibold text-cm-secondary mb-4">All Products ({store._count.products})</h2>
 
         {store.products.length === 0 ? (
-          <div className="text-center py-16 rounded-2xl bg-neutral-900/60 border border-white/5">
-            <Package className="w-16 h-16 text-stone-700 mx-auto mb-4" />
-            <p className="text-stone-500">No products yet</p>
+          <div className="text-center py-16 rounded-2xl bg-cm-elevated border border-cm-border-subtle">
+            <Package className="w-16 h-16 text-cm-faint mx-auto mb-4" />
+            <p className="text-cm-dim">No products yet</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-12">
@@ -130,23 +130,23 @@ export default function StorefrontPage() {
                 <button
                   key={product.id}
                   onClick={() => navigate('product-detail', { id: product.id })}
-                  className="rounded-2xl bg-neutral-900/60 border border-white/5 hover:border-white/10 overflow-hidden transition-all text-left group"
+                  className="rounded-2xl bg-cm-elevated border border-cm-border-subtle hover:border-cm-border-hover overflow-hidden transition-all text-left group"
                 >
-                  <div className="aspect-square bg-neutral-800 relative overflow-hidden">
+                  <div className="aspect-square bg-cm-input relative overflow-hidden">
                     {images.length > 0 ? (
                       <img src={images[0]} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-stone-700"><Package className="w-12 h-12" /></div>
+                      <div className="w-full h-full flex items-center justify-center text-cm-faint"><Package className="w-12 h-12" /></div>
                     )}
-                    <Badge className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-stone-300 text-[10px] px-2 py-0.5 rounded-lg border-0">
+                    <Badge className="absolute top-3 right-3 bg-cm-overlay backdrop-blur-sm text-cm-secondary text-[10px] px-2 py-0.5 rounded-lg border-0">
                       {product.condition}
                     </Badge>
                   </div>
                   <div className="p-4">
-                    <h3 className="text-sm font-medium text-stone-200 truncate">{product.title}</h3>
+                    <h3 className="text-sm font-medium text-cm-secondary truncate">{product.title}</h3>
                     <div className="flex items-center gap-1 mt-1">
                       <Star className="w-3 h-3 text-red-300 fill-red-300" />
-                      <span className="text-[10px] text-stone-500">({product._count.reviews} reviews)</span>
+                      <span className="text-[10px] text-cm-dim">({product._count.reviews} reviews)</span>
                     </div>
                     <p className="text-base font-bold text-red-400 mt-2">${product.price.toFixed(2)}</p>
                   </div>

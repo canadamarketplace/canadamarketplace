@@ -21,7 +21,7 @@ export default function AdminSettings() {
     setLoading(false)
   }
 
-  const inputClass = "bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
+  const inputClass = "bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
 
   const settings = [
     { label: 'Marketplace Fee (%)', desc: 'Standard fee charged on each transaction', value: marketplaceFee, onChange: setMarketplaceFee, icon: '💰' },
@@ -33,21 +33,21 @@ export default function AdminSettings() {
   return (
     <AdminAuthGuard>
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-stone-100 mb-2">System Settings</h1>
-      <p className="text-sm text-stone-500 mb-8">Configure marketplace-wide settings</p>
+      <h1 className="text-2xl font-bold text-cm-primary mb-2">System Settings</h1>
+      <p className="text-sm text-cm-dim mb-8">Configure marketplace-wide settings</p>
 
       <div className="space-y-4">
         {settings.map((setting) => (
-          <div key={setting.label} className="rounded-2xl bg-neutral-900/60 border border-white/5 p-5">
+          <div key={setting.label} className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-5">
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-lg flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-cm-hover flex items-center justify-center text-lg flex-shrink-0">
                 {setting.icon}
               </div>
               <div className="flex-1">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
-                    <h3 className="text-sm font-semibold text-stone-200">{setting.label}</h3>
-                    <p className="text-xs text-stone-600 mt-0.5">{setting.desc}</p>
+                    <h3 className="text-sm font-semibold text-cm-secondary">{setting.label}</h3>
+                    <p className="text-xs text-cm-faint mt-0.5">{setting.desc}</p>
                   </div>
                   <div className="w-24">
                     <Input

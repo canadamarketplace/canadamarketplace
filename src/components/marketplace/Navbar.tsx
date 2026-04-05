@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import NotificationBell from './NotificationBell'
 import LanguageSwitcher from './LanguageSwitcher'
+import ThemeToggle from './ThemeToggle'
 import { PROVINCES } from '@/lib/types'
 
 export default function Navbar() {
@@ -92,7 +93,7 @@ export default function Navbar() {
     <>
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-black/20'
+          ? 'bg-cm-nav backdrop-blur-xl border-b border-cm-border-subtle shadow-lg shadow-black/20'
           : 'bg-transparent'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -112,7 +113,7 @@ export default function Navbar() {
                 <button
                   key={link.label}
                   onClick={link.onClick}
-                  className="px-3 py-2 text-sm text-stone-400 hover:text-stone-100 rounded-lg hover:bg-white/5 transition-all"
+                  className="px-3 py-2 text-sm text-cm-muted hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all"
                 >
                   {link.label}
                 </button>
@@ -125,18 +126,19 @@ export default function Navbar() {
                 variant="ghost"
                 size="icon"
                 onClick={toggleSearch}
-                className="text-stone-400 hover:text-stone-100 hover:bg-white/5"
+                className="text-cm-muted hover:text-cm-primary hover:bg-cm-hover"
               >
                 <Search className="w-5 h-5" />
               </Button>
 
               <LanguageSwitcher />
+              <ThemeToggle />
 
               {user && <NotificationBell />}
 
               <button
                 onClick={toggleCart}
-                className="relative p-2 text-stone-400 hover:text-stone-100 rounded-lg hover:bg-white/5 transition-all"
+                className="relative p-2 text-cm-muted hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all"
               >
                 <ShoppingCart className="w-5 h-5" />
                 {count > 0 && (
@@ -149,7 +151,7 @@ export default function Navbar() {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="hidden sm:flex items-center gap-2 text-stone-300 hover:bg-white/5">
+                    <Button variant="ghost" className="hidden sm:flex items-center gap-2 text-cm-secondary hover:bg-cm-hover">
                       <div className="w-7 h-7 rounded-full bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center text-xs font-bold text-white">
                         {user.name.charAt(0).toUpperCase()}
                       </div>
@@ -157,22 +159,22 @@ export default function Navbar() {
                       <ChevronDown className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 bg-neutral-900 border-white/10">
-                    <div className="px-3 py-2 border-b border-white/10">
-                      <p className="text-sm font-medium text-stone-100">{user.name}</p>
-                      <p className="text-xs text-stone-500">{user.email}</p>
+                  <DropdownMenuContent align="end" className="w-56 bg-cm-elevated border-cm-border-hover">
+                    <div className="px-3 py-2 border-b border-cm-border-hover">
+                      <p className="text-sm font-medium text-cm-primary">{user.name}</p>
+                      <p className="text-xs text-cm-dim">{user.email}</p>
                       <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-500/10 text-red-300 border border-red-500/20">
                         {user.role === 'ADMIN' && <Shield className="w-3 h-3" />}
                         {user.role}
                       </span>
                     </div>
                     {roleLinks.map((link) => (
-                      <DropdownMenuItem key={link.label} onClick={link.onClick} className="text-stone-300 hover:bg-white/5 cursor-pointer">
+                      <DropdownMenuItem key={link.label} onClick={link.onClick} className="text-cm-secondary hover:bg-cm-hover cursor-pointer">
                         <link.icon className="w-4 h-4 mr-2" />
                         {link.label}
                       </DropdownMenuItem>
                     ))}
-                    <DropdownMenuSeparator className="bg-white/10" />
+                    <DropdownMenuSeparator className="bg-cm-border-hover" />
                     <DropdownMenuItem onClick={handleLogout} className="text-red-400 hover:bg-red-500/10 cursor-pointer">
                       <LogOut className="w-4 h-4 mr-2" />
                       {t('nav.signOut')}
@@ -184,7 +186,7 @@ export default function Navbar() {
                   <Button
                     variant="ghost"
                     onClick={() => openAuthModal('login')}
-                    className="text-stone-300 hover:bg-white/5 hover:text-stone-100"
+                    className="text-cm-secondary hover:bg-cm-hover hover:text-cm-primary"
                   >
                     {t('nav.signIn')}
                   </Button>
@@ -201,7 +203,7 @@ export default function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden text-stone-400 hover:text-stone-100"
+                className="lg:hidden text-cm-muted hover:text-cm-primary"
                 onClick={toggleMobileMenu}
               >
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -212,25 +214,25 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-white/5">
+          <div className="lg:hidden bg-cm-nav backdrop-blur-xl border-t border-cm-border-subtle">
             <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
               {navLinks.map((link) => (
                 <button
                   key={link.label}
                   onClick={link.onClick}
-                  className="w-full text-left px-4 py-3 text-sm text-stone-400 hover:text-stone-100 rounded-lg hover:bg-white/5 transition-all"
+                  className="w-full text-left px-4 py-3 text-sm text-cm-muted hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all"
                 >
                   {link.label}
                 </button>
               ))}
-              <div className="border-t border-white/5 my-2" />
+              <div className="border-t border-cm-border-subtle my-2" />
               {user ? (
                 <>
                   {roleLinks.map((link) => (
                     <button
                       key={link.label}
                       onClick={() => { link.onClick(); toggleMobileMenu() }}
-                      className="w-full text-left px-4 py-3 text-sm text-stone-400 hover:text-stone-100 rounded-lg hover:bg-white/5 flex items-center gap-3"
+                      className="w-full text-left px-4 py-3 text-sm text-cm-muted hover:text-cm-primary rounded-lg hover:bg-cm-hover flex items-center gap-3"
                     >
                       <link.icon className="w-4 h-4" />
                       {link.label}
@@ -248,7 +250,7 @@ export default function Navbar() {
                 <div className="flex gap-2 px-4 py-2">
                   <Button
                     variant="outline"
-                    className="flex-1 border-white/10 text-stone-300"
+                    className="flex-1 border-cm-border-hover text-cm-secondary"
                     onClick={() => { openAuthModal('login'); toggleMobileMenu() }}
                   >
                     {t('nav.signIn')}
@@ -261,24 +263,24 @@ export default function Navbar() {
                   </Button>
                 </div>
               )}
-              <div className="border-t border-white/5 my-2" />
-              <p className="px-4 py-2 text-[10px] text-stone-600 uppercase tracking-wider font-medium">{t('nav.company')}</p>
+              <div className="border-t border-cm-border-subtle my-2" />
+              <p className="px-4 py-2 text-[10px] text-cm-faint uppercase tracking-wider font-medium">{t('nav.company')}</p>
               {infoLinks.map((link) => (
                 <button
                   key={link.label}
                   onClick={() => navigate(link.page)}
-                  className="w-full text-left px-4 py-2 text-xs text-stone-500 hover:text-stone-300 rounded-lg hover:bg-white/5"
+                  className="w-full text-left px-4 py-2 text-xs text-cm-dim hover:text-cm-secondary rounded-lg hover:bg-cm-hover"
                 >
                   {link.label}
                 </button>
               ))}
-              <div className="border-t border-white/5 my-2" />
-              <p className="px-4 py-2 text-[10px] text-stone-600 uppercase tracking-wider font-medium">{t('nav.legal')}</p>
+              <div className="border-t border-cm-border-subtle my-2" />
+              <p className="px-4 py-2 text-[10px] text-cm-faint uppercase tracking-wider font-medium">{t('nav.legal')}</p>
               {legalLinks.map((link) => (
                 <button
                   key={link.label}
                   onClick={() => navigate(link.page)}
-                  className="w-full text-left px-4 py-2 text-xs text-stone-500 hover:text-stone-300 rounded-lg hover:bg-white/5"
+                  className="w-full text-left px-4 py-2 text-xs text-cm-dim hover:text-cm-secondary rounded-lg hover:bg-cm-hover"
                 >
                   {link.label}
                 </button>

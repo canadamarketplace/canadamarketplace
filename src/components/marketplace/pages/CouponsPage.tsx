@@ -288,9 +288,9 @@ export default function CouponsPage() {
     return (
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
-          <Tag className="w-16 h-16 text-stone-700 mb-4" />
-          <h2 className="text-xl font-semibold text-stone-300 mb-2">Sign in to manage coupons</h2>
-          <p className="text-stone-500 mb-6">You need a seller account to create and manage coupons.</p>
+          <Tag className="w-16 h-16 text-cm-faint mb-4" />
+          <h2 className="text-xl font-semibold text-cm-secondary mb-2">Sign in to manage coupons</h2>
+          <p className="text-cm-dim mb-6">You need a seller account to create and manage coupons.</p>
           <Button onClick={() => useNavigation.getState().openAuthModal('login')} className="bg-red-600 hover:bg-red-700 text-white rounded-xl">
             Sign In
           </Button>
@@ -299,18 +299,18 @@ export default function CouponsPage() {
     )
   }
 
-  const inputClass = "bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
+  const inputClass = "bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-stone-100 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-cm-primary flex items-center gap-2">
             <Tag className="w-6 h-6 text-red-400" />
             Coupon Management
           </h1>
-          <p className="text-sm text-stone-500 mt-1">Create and manage discount coupons for your customers</p>
+          <p className="text-sm text-cm-dim mt-1">Create and manage discount coupons for your customers</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) { setForm(emptyForm); setEditingId(null) } }}>
           <DialogTrigger asChild>
@@ -319,16 +319,16 @@ export default function CouponsPage() {
               Create Coupon
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-neutral-900 border-white/10 text-stone-100 max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogContent className="bg-cm-elevated border-cm-border-hover text-cm-primary max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-stone-100">
+              <DialogTitle className="text-cm-primary">
                 {editingId ? 'Edit Coupon' : 'Create New Coupon'}
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-2">
               {/* Code */}
               <div>
-                <Label className="text-stone-300 text-xs mb-1.5 block">Coupon Code</Label>
+                <Label className="text-cm-secondary text-xs mb-1.5 block">Coupon Code</Label>
                 <div className="flex gap-2">
                   <Input
                     value={form.code}
@@ -340,7 +340,7 @@ export default function CouponsPage() {
                     variant="outline"
                     size="sm"
                     onClick={() => setForm({ ...form, code: generateCode() })}
-                    className="border-white/10 text-stone-400 hover:bg-white/5 hover:text-stone-200 rounded-xl shrink-0"
+                    className="border-cm-border-hover text-cm-muted hover:bg-cm-hover hover:text-cm-secondary rounded-xl shrink-0"
                   >
                     <Sparkles className="w-4 h-4 mr-1" />
                     Auto
@@ -350,14 +350,14 @@ export default function CouponsPage() {
 
               {/* Type */}
               <div>
-                <Label className="text-stone-300 text-xs mb-1.5 block">Discount Type</Label>
+                <Label className="text-cm-secondary text-xs mb-1.5 block">Discount Type</Label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setForm({ ...form, type: 'PERCENTAGE' })}
                     className={`flex items-center gap-2 p-3 rounded-xl border transition-all ${
                       form.type === 'PERCENTAGE'
                         ? 'border-red-500/50 bg-red-500/10 text-white'
-                        : 'border-white/10 bg-white/5 text-stone-400 hover:border-white/20'
+                        : 'border-cm-border-hover bg-cm-hover text-cm-muted hover:border-cm-border-hover'
                     }`}
                   >
                     <Percent className="w-4 h-4" />
@@ -368,7 +368,7 @@ export default function CouponsPage() {
                     className={`flex items-center gap-2 p-3 rounded-xl border transition-all ${
                       form.type === 'FIXED'
                         ? 'border-red-500/50 bg-red-500/10 text-white'
-                        : 'border-white/10 bg-white/5 text-stone-400 hover:border-white/20'
+                        : 'border-cm-border-hover bg-cm-hover text-cm-muted hover:border-cm-border-hover'
                     }`}
                   >
                     <DollarSign className="w-4 h-4" />
@@ -379,11 +379,11 @@ export default function CouponsPage() {
 
               {/* Value */}
               <div>
-                <Label className="text-stone-300 text-xs mb-1.5 block">
+                <Label className="text-cm-secondary text-xs mb-1.5 block">
                   Discount Value {form.type === 'PERCENTAGE' ? '(%)' : '(CAD)'}
                 </Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-cm-dim text-sm">
                     {form.type === 'PERCENTAGE' ? '%' : '$'}
                   </span>
                   <Input
@@ -403,9 +403,9 @@ export default function CouponsPage() {
 
               {/* Min Order */}
               <div>
-                <Label className="text-stone-300 text-xs mb-1.5 block">Min Order Amount (CAD) — Optional</Label>
+                <Label className="text-cm-secondary text-xs mb-1.5 block">Min Order Amount (CAD) — Optional</Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm">$</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-cm-dim text-sm">$</span>
                   <Input
                     type="number"
                     value={form.minOrderAmount}
@@ -420,7 +420,7 @@ export default function CouponsPage() {
 
               {/* Max Uses */}
               <div>
-                <Label className="text-stone-300 text-xs mb-1.5 block">Max Uses — Optional</Label>
+                <Label className="text-cm-secondary text-xs mb-1.5 block">Max Uses — Optional</Label>
                 <Input
                   type="number"
                   value={form.maxUses}
@@ -434,7 +434,7 @@ export default function CouponsPage() {
               {/* Dates */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Start Date</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">Start Date</Label>
                   <Input
                     type="date"
                     value={form.startsAt}
@@ -443,7 +443,7 @@ export default function CouponsPage() {
                   />
                 </div>
                 <div>
-                  <Label className="text-stone-300 text-xs mb-1.5 block">Expiry Date</Label>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">Expiry Date</Label>
                   <Input
                     type="date"
                     value={form.expiresAt}
@@ -454,10 +454,10 @@ export default function CouponsPage() {
               </div>
 
               {/* Active Toggle */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-cm-hover border border-cm-border-hover">
                 <div>
-                  <p className="text-sm font-medium text-stone-200">Active</p>
-                  <p className="text-xs text-stone-500">Customers can use this coupon</p>
+                  <p className="text-sm font-medium text-cm-secondary">Active</p>
+                  <p className="text-xs text-cm-dim">Customers can use this coupon</p>
                 </div>
                 <Switch
                   checked={form.isActive}
@@ -470,7 +470,7 @@ export default function CouponsPage() {
                 <Button
                   variant="outline"
                   onClick={() => setDialogOpen(false)}
-                  className="flex-1 border-white/10 text-stone-400 hover:bg-white/5 rounded-xl"
+                  className="flex-1 border-cm-border-hover text-cm-muted hover:bg-cm-hover rounded-xl"
                 >
                   Cancel
                 </Button>
@@ -490,41 +490,41 @@ export default function CouponsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
-        <div className="rounded-xl bg-neutral-900/60 border border-white/5 p-4">
+        <div className="rounded-xl bg-cm-elevated border border-cm-border-subtle p-4">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
               <Tag className="w-4 h-4 text-blue-400" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-stone-100">{stats.total}</p>
-          <p className="text-xs text-stone-500">Total Coupons</p>
+          <p className="text-2xl font-bold text-cm-primary">{stats.total}</p>
+          <p className="text-xs text-cm-dim">Total Coupons</p>
         </div>
-        <div className="rounded-xl bg-neutral-900/60 border border-white/5 p-4">
+        <div className="rounded-xl bg-cm-elevated border border-cm-border-subtle p-4">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center">
               <Zap className="w-4 h-4 text-green-400" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-stone-100">{stats.active}</p>
-          <p className="text-xs text-stone-500">Active</p>
+          <p className="text-2xl font-bold text-cm-primary">{stats.active}</p>
+          <p className="text-xs text-cm-dim">Active</p>
         </div>
-        <div className="rounded-xl bg-neutral-900/60 border border-white/5 p-4">
+        <div className="rounded-xl bg-cm-elevated border border-cm-border-subtle p-4">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
               <Clock className="w-4 h-4 text-red-400" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-stone-100">{stats.expired}</p>
-          <p className="text-xs text-stone-500">Expired</p>
+          <p className="text-2xl font-bold text-cm-primary">{stats.expired}</p>
+          <p className="text-xs text-cm-dim">Expired</p>
         </div>
-        <div className="rounded-xl bg-neutral-900/60 border border-white/5 p-4">
+        <div className="rounded-xl bg-cm-elevated border border-cm-border-subtle p-4">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
               <TrendingDown className="w-4 h-4 text-red-300" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-stone-100">${stats.totalDiscount.toFixed(2)}</p>
-          <p className="text-xs text-stone-500">Total Discounts</p>
+          <p className="text-2xl font-bold text-cm-primary">${stats.totalDiscount.toFixed(2)}</p>
+          <p className="text-xs text-cm-dim">Total Discounts</p>
         </div>
       </div>
 
@@ -537,7 +537,7 @@ export default function CouponsPage() {
             className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
               filter === f
                 ? 'bg-red-500/10 text-red-400 border border-red-500/20'
-                : 'text-stone-500 hover:text-stone-300 hover:bg-white/5 border border-transparent'
+                : 'text-cm-dim hover:text-cm-secondary hover:bg-cm-hover border border-transparent'
             }`}
           >
             {f === 'all' ? `All (${coupons.length})` : f === 'active' ? `Active (${stats.active})` : `Expired (${stats.expired})`}
@@ -549,18 +549,18 @@ export default function CouponsPage() {
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20">
           <div className="w-8 h-8 border-2 border-red-500/30 border-t-red-500 rounded-full animate-spin" />
-          <p className="text-sm text-stone-500 mt-3">Loading coupons...</p>
+          <p className="text-sm text-cm-dim mt-3">Loading coupons...</p>
         </div>
       ) : filteredCoupons.length === 0 ? (
         /* Empty State */
-        <div className="flex flex-col items-center justify-center py-20 rounded-2xl bg-neutral-900/40 border border-white/5">
-          <div className="w-20 h-20 rounded-2xl bg-neutral-800/60 border border-white/5 flex items-center justify-center mb-5">
-            <Tag className="w-10 h-10 text-stone-600" />
+        <div className="flex flex-col items-center justify-center py-20 rounded-2xl bg-cm-elevated border border-cm-border-subtle">
+          <div className="w-20 h-20 rounded-2xl bg-cm-input border border-cm-border-subtle flex items-center justify-center mb-5">
+            <Tag className="w-10 h-10 text-cm-faint" />
           </div>
-          <h3 className="text-lg font-semibold text-stone-300 mb-2">
+          <h3 className="text-lg font-semibold text-cm-secondary mb-2">
             {filter === 'all' ? 'No coupons yet' : filter === 'active' ? 'No active coupons' : 'No expired coupons'}
           </h3>
-          <p className="text-sm text-stone-500 text-center max-w-sm mb-6">
+          <p className="text-sm text-cm-dim text-center max-w-sm mb-6">
             {filter === 'all'
               ? 'Create your first coupon to attract customers and boost sales with exclusive discounts.'
               : filter === 'active'
@@ -574,27 +574,27 @@ export default function CouponsPage() {
             </Button>
           )}
           {filter !== 'all' && (
-            <Button onClick={() => setFilter('all')} variant="outline" className="border-white/10 text-stone-400 hover:bg-white/5 rounded-xl">
+            <Button onClick={() => setFilter('all')} variant="outline" className="border-cm-border-hover text-cm-muted hover:bg-cm-hover rounded-xl">
               View All Coupons
             </Button>
           )}
         </div>
       ) : (
         /* Coupons Table */
-        <div className="rounded-2xl bg-neutral-900/60 border border-white/5 overflow-hidden">
+        <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle overflow-hidden">
           {/* Desktop Table */}
           <div className="hidden md:block overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="border-white/5 hover:bg-transparent">
-                  <TableHead className="text-stone-500 text-xs">Code</TableHead>
-                  <TableHead className="text-stone-500 text-xs">Type</TableHead>
-                  <TableHead className="text-stone-500 text-xs">Value</TableHead>
-                  <TableHead className="text-stone-500 text-xs">Min Order</TableHead>
-                  <TableHead className="text-stone-500 text-xs">Uses</TableHead>
-                  <TableHead className="text-stone-500 text-xs">Status</TableHead>
-                  <TableHead className="text-stone-500 text-xs">Dates</TableHead>
-                  <TableHead className="text-stone-500 text-xs text-right">Actions</TableHead>
+                <TableRow className="border-cm-border-subtle hover:bg-transparent">
+                  <TableHead className="text-cm-dim text-xs">Code</TableHead>
+                  <TableHead className="text-cm-dim text-xs">Type</TableHead>
+                  <TableHead className="text-cm-dim text-xs">Value</TableHead>
+                  <TableHead className="text-cm-dim text-xs">Min Order</TableHead>
+                  <TableHead className="text-cm-dim text-xs">Uses</TableHead>
+                  <TableHead className="text-cm-dim text-xs">Status</TableHead>
+                  <TableHead className="text-cm-dim text-xs">Dates</TableHead>
+                  <TableHead className="text-cm-dim text-xs text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -602,7 +602,7 @@ export default function CouponsPage() {
                   const expired = isExpired(coupon.expiresAt)
                   const active = isActivePeriod(coupon.startsAt, coupon.expiresAt, coupon.isActive)
                   return (
-                    <TableRow key={coupon.id} className="border-white/5 hover:bg-white/[0.02]">
+                    <TableRow key={coupon.id} className="border-cm-border-subtle hover:bg-cm-hover">
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <code className="bg-red-500/10 text-red-300 px-2 py-0.5 rounded-md text-sm font-mono font-bold">
@@ -610,7 +610,7 @@ export default function CouponsPage() {
                           </code>
                           <button
                             onClick={() => handleCopyCode(coupon.code)}
-                            className="text-stone-600 hover:text-stone-300 transition-colors"
+                            className="text-cm-faint hover:text-cm-secondary transition-colors"
                             title="Copy code"
                           >
                             <Copy className="w-3.5 h-3.5" />
@@ -622,34 +622,34 @@ export default function CouponsPage() {
                           {coupon.type === 'PERCENTAGE' ? 'Percentage' : 'Fixed'}
                         </Badge>
                       </TableCell>
-                      <TableCell className="font-semibold text-stone-200">
+                      <TableCell className="font-semibold text-cm-secondary">
                         {coupon.type === 'PERCENTAGE' ? `${coupon.value}%` : `$${coupon.value.toFixed(2)}`}
                       </TableCell>
-                      <TableCell className="text-stone-400 text-sm">
+                      <TableCell className="text-cm-muted text-sm">
                         {coupon.minOrderAmount ? `$${coupon.minOrderAmount.toFixed(2)}` : '—'}
                       </TableCell>
                       <TableCell className="text-sm">
-                        <span className={coupon.maxUses && coupon.usedCount >= coupon.maxUses ? 'text-red-400' : 'text-stone-400'}>
+                        <span className={coupon.maxUses && coupon.usedCount >= coupon.maxUses ? 'text-red-400' : 'text-cm-muted'}>
                           {coupon.usedCount}
                         </span>
-                        {coupon.maxUses ? <span className="text-stone-600">/{coupon.maxUses}</span> : <span className="text-stone-600">/∞</span>}
+                        {coupon.maxUses ? <span className="text-cm-faint">/{coupon.maxUses}</span> : <span className="text-cm-faint">/∞</span>}
                       </TableCell>
                       <TableCell>
                         <Badge className={`text-[10px] border px-1.5 py-0 ${
                           active
                             ? 'bg-green-500/10 text-green-400 border-green-500/20'
                             : expired
-                            ? 'bg-stone-500/10 text-stone-500 border-stone-500/20'
+                            ? 'bg-stone-500/10 text-cm-dim border-stone-500/20'
                             : 'bg-red-500/10 text-red-400 border-red-500/20'
                         }`}>
                           {active ? 'Active' : expired ? 'Expired' : 'Inactive'}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-stone-500 text-xs">
+                      <TableCell className="text-cm-dim text-xs">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           <span>{formatDate(coupon.startsAt)}</span>
-                          {coupon.startsAt && <span className="text-stone-600">→</span>}
+                          {coupon.startsAt && <span className="text-cm-faint">→</span>}
                           <span>{formatDate(coupon.expiresAt)}</span>
                         </div>
                       </TableCell>
@@ -657,14 +657,14 @@ export default function CouponsPage() {
                         <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => openEdit(coupon)}
-                            className="p-1.5 rounded-lg text-stone-500 hover:text-stone-200 hover:bg-white/5 transition-all"
+                            className="p-1.5 rounded-lg text-cm-dim hover:text-cm-secondary hover:bg-cm-hover transition-all"
                             title="Edit"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleToggleActive(coupon)}
-                            className="p-1.5 rounded-lg text-stone-500 hover:text-stone-200 hover:bg-white/5 transition-all"
+                            className="p-1.5 rounded-lg text-cm-dim hover:text-cm-secondary hover:bg-cm-hover transition-all"
                             title={coupon.isActive ? 'Deactivate' : 'Activate'}
                           >
                             {coupon.isActive ? (
@@ -696,7 +696,7 @@ export default function CouponsPage() {
                       </code>
                       <button
                         onClick={() => handleCopyCode(coupon.code)}
-                        className="text-stone-600 hover:text-stone-300 transition-colors"
+                        className="text-cm-faint hover:text-cm-secondary transition-colors"
                       >
                         <Copy className="w-3.5 h-3.5" />
                       </button>
@@ -705,46 +705,46 @@ export default function CouponsPage() {
                       active
                         ? 'bg-green-500/10 text-green-400 border-green-500/20'
                         : expired
-                        ? 'bg-stone-500/10 text-stone-500 border-stone-500/20'
+                        ? 'bg-stone-500/10 text-cm-dim border-stone-500/20'
                         : 'bg-red-500/10 text-red-400 border-red-500/20'
                     }`}>
                       {active ? 'Active' : expired ? 'Expired' : 'Inactive'}
                     </Badge>
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-center mb-3">
-                    <div className="bg-white/5 rounded-lg p-2">
-                      <p className="text-xs text-stone-500">Value</p>
-                      <p className="text-sm font-semibold text-stone-200">
+                    <div className="bg-cm-hover rounded-lg p-2">
+                      <p className="text-xs text-cm-dim">Value</p>
+                      <p className="text-sm font-semibold text-cm-secondary">
                         {coupon.type === 'PERCENTAGE' ? `${coupon.value}%` : `$${coupon.value.toFixed(2)}`}
                       </p>
                     </div>
-                    <div className="bg-white/5 rounded-lg p-2">
-                      <p className="text-xs text-stone-500">Uses</p>
-                      <p className="text-sm font-semibold text-stone-200">
+                    <div className="bg-cm-hover rounded-lg p-2">
+                      <p className="text-xs text-cm-dim">Uses</p>
+                      <p className="text-sm font-semibold text-cm-secondary">
                         {coupon.usedCount}{coupon.maxUses ? `/${coupon.maxUses}` : '/∞'}
                       </p>
                     </div>
-                    <div className="bg-white/5 rounded-lg p-2">
-                      <p className="text-xs text-stone-500">Min Order</p>
-                      <p className="text-sm font-semibold text-stone-200">
+                    <div className="bg-cm-hover rounded-lg p-2">
+                      <p className="text-xs text-cm-dim">Min Order</p>
+                      <p className="text-sm font-semibold text-cm-secondary">
                         {coupon.minOrderAmount ? `$${coupon.minOrderAmount.toFixed(2)}` : '—'}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="text-xs text-stone-600">
+                    <p className="text-xs text-cm-faint">
                       {formatDate(coupon.startsAt)} {coupon.startsAt && '→'} {formatDate(coupon.expiresAt)}
                     </p>
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => openEdit(coupon)}
-                        className="p-1.5 rounded-lg text-stone-500 hover:text-stone-200 hover:bg-white/5"
+                        className="p-1.5 rounded-lg text-cm-dim hover:text-cm-secondary hover:bg-cm-hover"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleToggleActive(coupon)}
-                        className="p-1.5 rounded-lg text-stone-500 hover:text-stone-200 hover:bg-white/5"
+                        className="p-1.5 rounded-lg text-cm-dim hover:text-cm-secondary hover:bg-cm-hover"
                       >
                         {coupon.isActive ? (
                           <Trash2 className="w-3.5 h-3.5" />

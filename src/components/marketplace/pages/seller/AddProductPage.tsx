@@ -150,97 +150,97 @@ export default function AddProductPage() {
     setLoading(false)
   }
 
-  const inputClass = "bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
+  const inputClass = "bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
   const isUploading = images.some(img => img.uploading)
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <button onClick={() => navigate('my-products')} className="flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 mb-6 group">
+      <button onClick={() => navigate('my-products')} className="flex items-center gap-2 text-sm text-cm-dim hover:text-cm-secondary mb-6 group">
         <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
         Back to Products
       </button>
 
-      <h1 className="text-2xl font-bold text-stone-100 mb-8">{isEditing ? 'Edit Product' : 'Add New Product'}</h1>
+      <h1 className="text-2xl font-bold text-cm-primary mb-8">{isEditing ? 'Edit Product' : 'Add New Product'}</h1>
 
       <div className="space-y-6">
         {/* Basic Info */}
-        <div className="rounded-2xl bg-neutral-900/60 border border-white/5 p-6 space-y-4">
-          <h2 className="text-sm font-semibold text-stone-300">Basic Information</h2>
+        <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6 space-y-4">
+          <h2 className="text-sm font-semibold text-cm-secondary">Basic Information</h2>
           <div>
-            <Label className="text-stone-300 text-xs mb-1.5 block">Title *</Label>
+            <Label className="text-cm-secondary text-xs mb-1.5 block">Title *</Label>
             <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Product title" className={inputClass} />
           </div>
           <div>
-            <Label className="text-stone-300 text-xs mb-1.5 block">Description *</Label>
-            <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe your product in detail..." className="bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 rounded-xl min-h-[120px]" />
+            <Label className="text-cm-secondary text-xs mb-1.5 block">Description *</Label>
+            <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe your product in detail..." className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl min-h-[120px]" />
           </div>
         </div>
 
         {/* Pricing & Details */}
-        <div className="rounded-2xl bg-neutral-900/60 border border-white/5 p-6 space-y-4">
-          <h2 className="text-sm font-semibold text-stone-300">Pricing & Details</h2>
+        <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6 space-y-4">
+          <h2 className="text-sm font-semibold text-cm-secondary">Pricing & Details</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="text-stone-300 text-xs mb-1.5 block">Price (CAD) *</Label>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Price (CAD) *</Label>
               <Input type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="0.00" className={inputClass} />
             </div>
             <div>
-              <Label className="text-stone-300 text-xs mb-1.5 block">Compare Price</Label>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Compare Price</Label>
               <Input type="number" step="0.01" value={comparePrice} onChange={(e) => setComparePrice(e.target.value)} placeholder="0.00" className={inputClass} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="text-stone-300 text-xs mb-1.5 block">Condition</Label>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Condition</Label>
               <Select value={condition} onValueChange={setCondition}>
                 <SelectTrigger className={`${inputClass} h-11`}><SelectValue /></SelectTrigger>
-                <SelectContent className="bg-neutral-900 border-white/10">
-                  <SelectItem value="NEW" className="text-stone-300">New</SelectItem>
-                  <SelectItem value="LIKE_NEW" className="text-stone-300">Like New</SelectItem>
-                  <SelectItem value="GOOD" className="text-stone-300">Good</SelectItem>
-                  <SelectItem value="FAIR" className="text-stone-300">Fair</SelectItem>
-                  <SelectItem value="USED" className="text-stone-300">Used</SelectItem>
+                <SelectContent className="bg-cm-elevated border-cm-border-hover">
+                  <SelectItem value="NEW" className="text-cm-secondary">New</SelectItem>
+                  <SelectItem value="LIKE_NEW" className="text-cm-secondary">Like New</SelectItem>
+                  <SelectItem value="GOOD" className="text-cm-secondary">Good</SelectItem>
+                  <SelectItem value="FAIR" className="text-cm-secondary">Fair</SelectItem>
+                  <SelectItem value="USED" className="text-cm-secondary">Used</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label className="text-stone-300 text-xs mb-1.5 block">Stock</Label>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Stock</Label>
               <Input type="number" value={stock} onChange={(e) => setStock(e.target.value)} className={inputClass} />
             </div>
           </div>
           <div>
-            <Label className="text-stone-300 text-xs mb-1.5 block">Category *</Label>
+            <Label className="text-cm-secondary text-xs mb-1.5 block">Category *</Label>
             <Select value={category} onValueChange={setCategory}>
               <SelectTrigger className={`${inputClass} h-11`}><SelectValue placeholder="Select category" /></SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-white/10">
-                {CATEGORIES.map((c) => <SelectItem key={c.slug} value={c.slug} className="text-stone-300">{c.name}</SelectItem>)}
+              <SelectContent className="bg-cm-elevated border-cm-border-hover">
+                {CATEGORIES.map((c) => <SelectItem key={c.slug} value={c.slug} className="text-cm-secondary">{c.name}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
         </div>
 
         {/* Location */}
-        <div className="rounded-2xl bg-neutral-900/60 border border-white/5 p-6 space-y-4">
-          <h2 className="text-sm font-semibold text-stone-300">Location</h2>
+        <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6 space-y-4">
+          <h2 className="text-sm font-semibold text-cm-secondary">Location</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="text-stone-300 text-xs mb-1.5 block">Province</Label>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Province</Label>
               <Select value={province} onValueChange={setProvince}>
                 <SelectTrigger className={`${inputClass} h-11`}><SelectValue placeholder="Select" /></SelectTrigger>
-                <SelectContent className="bg-neutral-900 border-white/10">
-                  {PROVINCES.map((p) => <SelectItem key={p.slug} value={p.slug} className="text-stone-300">{p.name}</SelectItem>)}
+                <SelectContent className="bg-cm-elevated border-cm-border-hover">
+                  {PROVINCES.map((p) => <SelectItem key={p.slug} value={p.slug} className="text-cm-secondary">{p.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label className="text-stone-300 text-xs mb-1.5 block">City</Label>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">City</Label>
               <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" className={inputClass} />
             </div>
           </div>
         </div>
 
         {/* Images */}
-        <div className="rounded-2xl bg-neutral-900/60 border border-white/5 p-6 space-y-4">
+        <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6 space-y-4">
           <ImageUploader
             images={images}
             onChange={setImages}
@@ -262,7 +262,7 @@ export default function AddProductPage() {
               onClick={addImageUrl}
               variant="outline"
               disabled={!newImage.trim() || images.length >= 5}
-              className="border-white/10 text-stone-300 h-11 rounded-xl hover:bg-white/5"
+              className="border-cm-border-hover text-cm-secondary h-11 rounded-xl hover:bg-cm-hover"
             >
               Add URL
             </Button>
@@ -271,14 +271,14 @@ export default function AddProductPage() {
 
         {/* Actions */}
         <div className="flex gap-3 pb-8">
-          <Button variant="outline" onClick={() => navigate('my-products')} className="border-white/10 text-stone-300 rounded-xl h-11 px-6">
+          <Button variant="outline" onClick={() => navigate('my-products')} className="border-cm-border-hover text-cm-secondary rounded-xl h-11 px-6">
             Cancel
           </Button>
           <Button
             variant="outline"
             onClick={() => handleSubmit('DRAFT')}
             disabled={loading || isUploading}
-            className="border-white/10 text-stone-300 rounded-xl h-11 px-6"
+            className="border-cm-border-hover text-cm-secondary rounded-xl h-11 px-6"
           >
             {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
             Save as Draft

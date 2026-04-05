@@ -114,26 +114,26 @@ function SingleImageUpload({
 
   return (
     <div>
-      <Label className="text-stone-300 text-xs mb-1.5 block">{label}</Label>
+      <Label className="text-cm-secondary text-xs mb-1.5 block">{label}</Label>
 
       {/* Image preview or upload zone */}
       {value ? (
         <div className="relative group">
-          <div className={`${isSquare ? 'w-28 h-28' : 'h-36 w-full'} rounded-xl bg-neutral-800 border border-white/5 overflow-hidden`}>
+          <div className={`${isSquare ? 'w-28 h-28' : 'h-36 w-full'} rounded-xl bg-cm-input border border-cm-border-subtle overflow-hidden`}>
             <img src={value} alt={label} className="w-full h-full object-cover" />
           </div>
           {/* Remove & replace buttons */}
           <div className="absolute inset-0 rounded-xl bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
             <button
               onClick={() => onChange('')}
-              className="w-9 h-9 rounded-full bg-black/70 hover:bg-red-600 flex items-center justify-center text-white transition-colors"
+              className="w-9 h-9 rounded-full bg-cm-overlay hover:bg-red-600 flex items-center justify-center text-white transition-colors"
               title="Remove image"
             >
               <X className="w-4 h-4" />
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="w-9 h-9 rounded-full bg-black/70 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+              className="w-9 h-9 rounded-full bg-cm-overlay hover:bg-cm-hover-strong flex items-center justify-center text-white transition-colors"
               title="Replace image"
             >
               <Upload className="w-4 h-4" />
@@ -148,7 +148,7 @@ function SingleImageUpload({
           onClick={() => fileInputRef.current?.click()}
           className={`relative cursor-pointer border-2 border-dashed rounded-xl text-center transition-all flex flex-col items-center justify-center ${
             isSquare ? 'w-28 h-28' : 'h-36 w-full'
-          } ${isDragging ? 'border-red-500 bg-red-500/5' : 'border-white/10 hover:border-red-500/30 hover:bg-white/[0.02]'}`}
+          } ${isDragging ? 'border-red-500 bg-red-500/5' : 'border-cm-border-hover hover:border-red-500/30 hover:bg-cm-hover'}`}
         >
           <input
             ref={fileInputRef}
@@ -159,24 +159,24 @@ function SingleImageUpload({
           />
           {uploading ? (
             <div className="w-full px-3">
-              <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+              <div className="w-full h-1.5 bg-cm-hover-strong rounded-full overflow-hidden">
                 <div
                   className="h-full bg-red-500 rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <p className="text-[10px] text-stone-400 mt-1">{Math.round(progress)}%</p>
+              <p className="text-[10px] text-cm-muted mt-1">{Math.round(progress)}%</p>
             </div>
           ) : (
             <>
-              <ImagePlus className={`w-6 h-6 ${isDragging ? 'text-red-400' : 'text-stone-600'} mb-1`} />
-              <p className="text-[11px] text-stone-500">{placeholder}</p>
+              <ImagePlus className={`w-6 h-6 ${isDragging ? 'text-red-400' : 'text-cm-faint'} mb-1`} />
+              <p className="text-[11px] text-cm-dim">{placeholder}</p>
             </>
           )}
         </div>
       )}
 
-      <p className="text-[10px] text-stone-600 mt-1">{hint}</p>
+      <p className="text-[10px] text-cm-faint mt-1">{hint}</p>
     </div>
   )
 }
@@ -219,9 +219,9 @@ export default function SellerStorePage() {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-neutral-800 rounded w-48" />
-          <div className="h-40 bg-neutral-800 rounded-2xl" />
-          <div className="h-60 bg-neutral-800 rounded-2xl" />
+          <div className="h-8 bg-cm-input rounded w-48" />
+          <div className="h-40 bg-cm-input rounded-2xl" />
+          <div className="h-60 bg-cm-input rounded-2xl" />
         </div>
       </div>
     )
@@ -262,14 +262,14 @@ export default function SellerStorePage() {
     setLoading(false)
   }
 
-  const inputClass = "bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
+  const inputClass = "bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-stone-100">Store Settings</h1>
+        <h1 className="text-2xl font-bold text-cm-primary">Store Settings</h1>
         {user?.storeId && (
-          <Button variant="outline" onClick={() => navigate('storefront', { slug: (user.storeId || '').toLowerCase().replace(/\s+/g, '-') })} className="border-white/10 text-stone-300 rounded-xl text-sm">
+          <Button variant="outline" onClick={() => navigate('storefront', { slug: (user.storeId || '').toLowerCase().replace(/\s+/g, '-') })} className="border-cm-border-hover text-cm-secondary rounded-xl text-sm">
             <Eye className="w-4 h-4 mr-1.5" /> View Store
           </Button>
         )}
@@ -277,23 +277,23 @@ export default function SellerStorePage() {
 
       <div className="space-y-6">
         {/* Basic Info */}
-        <div className="rounded-2xl bg-neutral-900/60 border border-white/5 p-6 space-y-4">
-          <h2 className="text-sm font-semibold text-stone-300 flex items-center gap-2">
+        <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6 space-y-4">
+          <h2 className="text-sm font-semibold text-cm-secondary flex items-center gap-2">
             <Store className="w-4 h-4" /> Store Information
           </h2>
           <div>
-            <Label className="text-stone-300 text-xs mb-1.5 block">Store Name *</Label>
+            <Label className="text-cm-secondary text-xs mb-1.5 block">Store Name *</Label>
             <Input value={storeName} onChange={(e) => setStoreName(e.target.value)} className={inputClass} />
           </div>
           <div>
-            <Label className="text-stone-300 text-xs mb-1.5 block">Description</Label>
-            <Textarea value={storeDesc} onChange={(e) => setStoreDesc(e.target.value)} placeholder="Tell customers about your store..." className="bg-white/5 border-white/10 text-stone-200 placeholder:text-stone-600 rounded-xl min-h-[100px]" />
+            <Label className="text-cm-secondary text-xs mb-1.5 block">Description</Label>
+            <Textarea value={storeDesc} onChange={(e) => setStoreDesc(e.target.value)} placeholder="Tell customers about your store..." className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl min-h-[100px]" />
           </div>
         </div>
 
         {/* Branding */}
-        <div className="rounded-2xl bg-neutral-900/60 border border-white/5 p-6 space-y-6">
-          <h2 className="text-sm font-semibold text-stone-300">Branding</h2>
+        <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6 space-y-6">
+          <h2 className="text-sm font-semibold text-cm-secondary">Branding</h2>
 
           <div className="grid sm:grid-cols-2 gap-6">
             {/* Logo upload */}
@@ -308,7 +308,7 @@ export default function SellerStorePage() {
 
             {/* Logo URL fallback */}
             <div className="space-y-2">
-              <Label className="text-stone-300 text-xs mb-1.5 block">Or paste Logo URL</Label>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Or paste Logo URL</Label>
               <Input
                 value={logoUrl.startsWith('/uploads/') ? '' : logoUrl}
                 onChange={(e) => setLogoUrl(e.target.value)}
@@ -331,7 +331,7 @@ export default function SellerStorePage() {
 
             {/* Banner URL fallback */}
             <div className="space-y-2">
-              <Label className="text-stone-300 text-xs mb-1.5 block">Or paste Banner URL</Label>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Or paste Banner URL</Label>
               <Input
                 value={bannerUrl.startsWith('/uploads/') ? '' : bannerUrl}
                 onChange={(e) => setBannerUrl(e.target.value)}
@@ -343,25 +343,25 @@ export default function SellerStorePage() {
 
           {/* Live preview */}
           {(logoUrl || bannerUrl) && (
-            <div className="rounded-xl border border-white/5 overflow-hidden">
+            <div className="rounded-xl border border-cm-border-subtle overflow-hidden">
               {bannerUrl && (
-                <div className="h-32 bg-neutral-800">
+                <div className="h-32 bg-cm-input">
                   <img src={bannerUrl} alt="Banner preview" className="w-full h-full object-cover" />
                 </div>
               )}
-              <div className="bg-neutral-900/80 p-4 flex items-center gap-3">
+              <div className="bg-cm-elevated/80 p-4 flex items-center gap-3">
                 {logoUrl ? (
-                  <div className="w-12 h-12 rounded-xl bg-neutral-800 border border-white/5 overflow-hidden flex-shrink-0">
+                  <div className="w-12 h-12 rounded-xl bg-cm-input border border-cm-border-subtle overflow-hidden flex-shrink-0">
                     <img src={logoUrl} alt="Logo preview" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <div className="w-12 h-12 rounded-xl bg-neutral-800 border border-white/5 flex items-center justify-center flex-shrink-0">
-                    <Store className="w-6 h-6 text-stone-600" />
+                  <div className="w-12 h-12 rounded-xl bg-cm-input border border-cm-border-subtle flex items-center justify-center flex-shrink-0">
+                    <Store className="w-6 h-6 text-cm-faint" />
                   </div>
                 )}
                 <div>
-                  <p className="text-sm font-medium text-stone-200">{storeName || 'Your Store'}</p>
-                  <p className="text-xs text-stone-500">Store preview</p>
+                  <p className="text-sm font-medium text-cm-secondary">{storeName || 'Your Store'}</p>
+                  <p className="text-xs text-cm-dim">Store preview</p>
                 </div>
               </div>
             </div>
