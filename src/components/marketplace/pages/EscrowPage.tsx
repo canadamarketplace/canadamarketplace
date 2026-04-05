@@ -247,7 +247,7 @@ export default function EscrowPage() {
               <Button
                 variant="outline"
                 onClick={() => navigate('become-seller')}
-                className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl px-8"
+                className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-xl px-8"
               >
                 {t('escrow.ctaSell')}
               </Button>

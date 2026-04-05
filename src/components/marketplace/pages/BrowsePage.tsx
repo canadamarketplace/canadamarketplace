@@ -320,7 +320,7 @@ export default function BrowsePage() {
             <Button
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover lg:hidden"
+              className="border-cm-border-hover text-cm-primary hover:bg-cm-hover lg:hidden"
             >
               <SlidersHorizontal className="w-4 h-4 mr-2" />
               {t('browse.filters')}
@@ -449,7 +449,7 @@ export default function BrowsePage() {
                 <Package className="w-16 h-16 text-cm-faint mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-cm-muted mb-2">{t('browse.noResults')}</h3>
                 <p className="text-sm text-cm-faint mb-4">{t('filters.noResultsDesc')}</p>
-                <Button variant="outline" onClick={clearFilters} className="border-cm-border-hover text-cm-secondary">
+                <Button variant="outline" onClick={clearFilters} className="border-cm-border-hover text-cm-primary">
                   {t('filters.clearAll')}
                 </Button>
               </div>
@@ -540,7 +540,7 @@ export default function BrowsePage() {
                       variant="outline"
                       onClick={() => setPage(p => Math.max(1, p - 1))}
                       disabled={page === 1}
-                      className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover disabled:opacity-30 rounded-xl"
+                      className="border-cm-border-hover text-cm-primary hover:bg-cm-hover disabled:opacity-30 rounded-xl"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </Button>
@@ -573,7 +573,7 @@ export default function BrowsePage() {
                       variant="outline"
                       onClick={() => setPage(p => Math.min(pages, p + 1))}
                       disabled={page === pages}
-                      className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover disabled:opacity-30 rounded-xl"
+                      className="border-cm-border-hover text-cm-primary hover:bg-cm-hover disabled:opacity-30 rounded-xl"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </Button>

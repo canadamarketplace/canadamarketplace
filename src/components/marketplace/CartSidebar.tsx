@@ -67,7 +67,7 @@ export default function CartSidebar() {
                 <Button
                   onClick={() => { toggleCart(); navigate('browse') }}
                   variant="outline"
-                  className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl"
+                  className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-xl"
                 >
                   {t('cart.browseProducts')}
                 </Button>

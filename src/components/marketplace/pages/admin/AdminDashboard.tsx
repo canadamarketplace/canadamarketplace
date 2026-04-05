@@ -63,7 +63,7 @@ export default function AdminDashboard() {
             { label: 'Disputes', page: 'admin-disputes' as const },
             { label: 'Settings', page: 'admin-settings' as const },
           ].map((item) => (
-            <Button key={item.label} variant="outline" onClick={() => navigate(item.page)} className="border-cm-border-hover text-cm-secondary hover:text-cm-primary hover:bg-cm-hover rounded-xl text-xs h-8">
+            <Button key={item.label} variant="outline" onClick={() => navigate(item.page)} className="border-cm-border-hover text-cm-primary hover:text-cm-primary hover:bg-cm-hover rounded-xl text-xs h-8">
               {item.label}
             </Button>
           ))}

@@ -271,14 +271,14 @@ export default function AddProductPage() {
 
         {/* Actions */}
         <div className="flex gap-3 pb-8">
-          <Button variant="outline" onClick={() => navigate('my-products')} className="border-cm-border-hover text-cm-secondary rounded-xl h-11 px-6">
+          <Button variant="outline" onClick={() => navigate('my-products')} className="border-cm-border-hover text-cm-primary rounded-xl h-11 px-6">
             Cancel
           </Button>
           <Button
             variant="outline"
             onClick={() => handleSubmit('DRAFT')}
             disabled={loading || isUploading}
-            className="border-cm-border-hover text-cm-secondary rounded-xl h-11 px-6"
+            className="border-cm-border-hover text-cm-primary rounded-xl h-11 px-6"
           >
             {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
             Save as Draft

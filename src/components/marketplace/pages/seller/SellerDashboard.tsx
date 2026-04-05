@@ -309,7 +309,7 @@ export default function SellerDashboard() {
             <p className="text-sm text-cm-dim">{t('seller.analytics.welcomeBack', { name: user?.name || 'Seller' })}</p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            <Button onClick={exportAnalyticsCSV} variant="outline" className="border-cm-border-hover text-cm-secondary rounded-xl text-sm h-10">
+            <Button onClick={exportAnalyticsCSV} variant="outline" className="border-cm-border-hover text-cm-primary rounded-xl text-sm h-10">
               <Download className="w-4 h-4 mr-2" />
               {t('seller.analytics.downloadReport')}
             </Button>
@@ -639,7 +639,7 @@ export default function SellerDashboard() {
                   <div className="text-center py-12">
                     <Package className="w-10 h-10 text-cm-faint mx-auto mb-3" />
                     <p className="text-sm text-cm-faint">{t('seller.analytics.noOrdersYet')}</p>
-                    <Button onClick={() => navigate('add-product')} variant="outline" className="mt-4 border-cm-border-hover text-cm-secondary text-sm rounded-xl">
+                    <Button onClick={() => navigate('add-product')} variant="outline" className="mt-4 border-cm-border-hover text-cm-primary text-sm rounded-xl">
                       <Plus className="w-4 h-4 mr-1" /> {t('seller.analytics.addFirstProduct')}
                     </Button>
                   </div>
@@ -785,7 +785,7 @@ export default function SellerDashboard() {
                   </div>
                 </div>
                 <div className="mt-4">
-                  <Button onClick={() => navigate('my-products')} variant="outline" className="border-cm-border-hover text-cm-secondary text-sm rounded-xl">
+                  <Button onClick={() => navigate('my-products')} variant="outline" className="border-cm-border-hover text-cm-primary text-sm rounded-xl">
                     {t('seller.analytics.manageProducts')} →
                   </Button>
                 </div>
@@ -849,7 +849,7 @@ export default function SellerDashboard() {
                     <BarChart3 className="w-4 h-4 text-green-400" />
                     {t('seller.analytics.monthlyRevenue12')}
                   </h2>
-                  <Button onClick={exportOrderCSV} variant="outline" size="sm" className="border-cm-border-hover text-cm-secondary text-xs rounded-lg h-8">
+                  <Button onClick={exportOrderCSV} variant="outline" size="sm" className="border-cm-border-hover text-cm-primary text-xs rounded-lg h-8">
                     <Download className="w-3 h-3 mr-1" />
                     CSV
                   </Button>

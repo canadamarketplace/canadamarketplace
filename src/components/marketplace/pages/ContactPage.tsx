@@ -149,7 +149,7 @@ export default function ContactPage() {
                 <Button
                   onClick={() => { setSubmitted(false); setFormData({ name: '', email: '', phone: '', subject: 'general', message: '' }) }}
                   variant="outline"
-                  className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover"
+                  className="border-cm-border-hover text-cm-primary hover:bg-cm-hover"
                 >
                   Send Another Message
                 </Button>

@@ -114,7 +114,7 @@ export default function BecomeSellerPage() {
             <Button
               variant="outline"
               onClick={() => navigate('seller-terms')}
-              className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-2xl px-8"
+              className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-2xl px-8"
             >
               Read Seller Agreement
             </Button>
@@ -218,15 +218,15 @@ export default function BecomeSellerPage() {
               ))}
             </div>
             <div className="flex flex-wrap items-center justify-center gap-4">
-              <Button variant="outline" onClick={() => navigate('seller-terms')} className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl">
+              <Button variant="outline" onClick={() => navigate('seller-terms')} className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-xl">
                 <FileCheck className="w-4 h-4 mr-2" />
                 Seller Agreement
               </Button>
-              <Button variant="outline" onClick={() => navigate('privacy')} className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl">
+              <Button variant="outline" onClick={() => navigate('privacy')} className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-xl">
                 <Lock className="w-4 h-4 mr-2" />
                 Privacy & PIPEDA
               </Button>
-              <Button variant="outline" onClick={() => navigate('dispute-policy')} className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl">
+              <Button variant="outline" onClick={() => navigate('dispute-policy')} className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-xl">
                 <Shield className="w-4 h-4 mr-2" />
                 Dispute Policy
               </Button>

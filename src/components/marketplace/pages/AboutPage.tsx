@@ -254,7 +254,7 @@ export default function AboutPage() {
               <Button
                 onClick={() => navigate('sellers')}
                 variant="outline"
-                className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl px-8"
+                className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-xl px-8"
               >
                 Become a Seller
               </Button>

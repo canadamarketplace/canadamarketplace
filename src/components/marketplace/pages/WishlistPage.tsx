@@ -93,7 +93,7 @@ export default function WishlistPage() {
           <Button
             onClick={handleMoveAllToCart}
             variant="outline"
-            className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover hidden sm:flex"
+            className="border-cm-border-hover text-cm-primary hover:bg-cm-hover hidden sm:flex"
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
             {t('wishlist.moveAllToCart')}

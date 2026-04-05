@@ -163,7 +163,7 @@ export default function FileDisputePage() {
           </div>
 
           <div className="flex gap-3">
-            <Button type="button" variant="outline" onClick={() => navigate('order-detail', { id: pageParams.id })} className="border-cm-border-hover text-cm-secondary rounded-xl flex-1">
+            <Button type="button" variant="outline" onClick={() => navigate('order-detail', { id: pageParams.id })} className="border-cm-border-hover text-cm-primary rounded-xl flex-1">
               Cancel
             </Button>
             <Button type="submit" disabled={loading} className="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl h-11">

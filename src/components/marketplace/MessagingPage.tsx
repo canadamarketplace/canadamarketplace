@@ -652,7 +652,7 @@ export default function MessagingPage() {
               <Button
                 variant="outline"
                 onClick={() => navigate('browse')}
-                className="mt-5 border-cm-border-hover text-cm-secondary hover:bg-cm-hover hover:text-cm-primary rounded-xl"
+                className="mt-5 border-cm-border-hover text-cm-primary hover:bg-cm-hover hover:text-cm-primary rounded-xl"
               >
                 {t('browse.title')}
               </Button>

@@ -426,7 +426,7 @@ export default function ProductDetailPage() {
                 onClick={handleMessageSeller}
                 variant="outline"
                 size="lg"
-                className="flex-1 border-cm-border-hover text-cm-secondary hover:bg-cm-hover hover:text-red-400 rounded-xl h-12"
+                className="flex-1 border-cm-border-hover text-cm-primary hover:bg-cm-hover hover:text-red-400 rounded-xl h-12"
               >
                 <MessageCircle className="w-5 h-5 mr-2" />
                 {user && user.id === product.store.seller.id ? 'Your Listing' : 'Message Seller'}
@@ -435,11 +435,11 @@ export default function ProductDetailPage() {
                 onClick={handleToggleWishlist}
                 variant="outline"
                 size="lg"
-                className={`border-cm-border-hover rounded-xl h-12 ${wished ? 'text-red-500 hover:text-red-400 border-red-500/30 hover:bg-red-500/10' : 'text-cm-secondary hover:bg-cm-hover'}`}
+                className={`border-cm-border-hover rounded-xl h-12 ${wished ? 'text-red-500 hover:text-red-400 border-red-500/30 hover:bg-red-500/10' : 'text-cm-primary hover:bg-cm-hover'}`}
               >
                 <Heart className={`w-5 h-5 ${wished ? 'fill-red-500' : ''}`} />
               </Button>
-              <Button variant="outline" size="lg" className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl h-12">
+              <Button variant="outline" size="lg" className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-xl h-12">
                 <Share2 className="w-5 h-5" />
               </Button>
             </div>

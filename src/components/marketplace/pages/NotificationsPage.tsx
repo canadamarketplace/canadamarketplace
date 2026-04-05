@@ -248,7 +248,7 @@ export default function NotificationsPage() {
           <Button
             onClick={() => navigate('home')}
             variant="outline"
-            className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover"
+            className="border-cm-border-hover text-cm-primary hover:bg-cm-hover"
           >
             Go Home
           </Button>
@@ -285,7 +285,7 @@ export default function NotificationsPage() {
               disabled={markingAll}
               variant="outline"
               size="sm"
-              className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover hover:text-cm-primary"
+              className="border-cm-border-hover text-cm-primary hover:bg-cm-hover hover:text-cm-primary"
             >
               {markingAll ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -457,7 +457,7 @@ export default function NotificationsPage() {
                 <Button
                   onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
                   variant="outline"
-                  className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover hover:text-cm-primary"
+                  className="border-cm-border-hover text-cm-primary hover:bg-cm-hover hover:text-cm-primary"
                 >
                   Load More ({filteredNotifications.length - visibleCount} remaining)
                 </Button>

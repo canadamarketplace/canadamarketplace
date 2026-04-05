@@ -269,7 +269,7 @@ export default function SellerStorePage() {
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold text-cm-primary">Store Settings</h1>
         {user?.storeId && (
-          <Button variant="outline" onClick={() => navigate('storefront', { slug: (user.storeId || '').toLowerCase().replace(/\s+/g, '-') })} className="border-cm-border-hover text-cm-secondary rounded-xl text-sm">
+          <Button variant="outline" onClick={() => navigate('storefront', { slug: (user.storeId || '').toLowerCase().replace(/\s+/g, '-') })} className="border-cm-border-hover text-cm-primary rounded-xl text-sm">
             <Eye className="w-4 h-4 mr-1.5" /> View Store
           </Button>
         )}

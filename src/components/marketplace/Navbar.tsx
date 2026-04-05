@@ -151,7 +151,7 @@ export default function Navbar() {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="hidden sm:flex items-center gap-2 text-cm-primary hover:bg-cm-hover hover:text-cm-primary data-[state=open]:text-cm-primary">
+                    <Button variant="ghost" className="hidden sm:flex items-center gap-2 text-cm-primary hover:bg-cm-hover hover:text-cm-primary data-[state=open]:text-cm-primary data-[state=open]:bg-cm-hover">
                       <div className="w-7 h-7 rounded-full bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center text-xs font-bold text-white">
                         {user.name.charAt(0).toUpperCase()}
                       </div>
@@ -250,7 +250,7 @@ export default function Navbar() {
                 <div className="flex gap-2 px-4 py-2">
                   <Button
                     variant="outline"
-                    className="flex-1 border-cm-border-hover text-cm-secondary"
+                    className="flex-1 border-cm-border-hover text-cm-primary"
                     onClick={() => { openAuthModal('login'); toggleMobileMenu() }}
                   >
                     {t('nav.signIn')}

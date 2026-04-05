@@ -164,7 +164,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                 onClick={() => openAuthModal('register-seller')}
                 variant="outline"
                 size="lg"
-                className="border-cm-border-hover hover:bg-cm-hover text-cm-secondary rounded-2xl px-8 h-12 text-base"
+                className="border-cm-border-hover hover:bg-cm-hover text-cm-primary rounded-2xl px-8 h-12 text-base"
               >
                 <Store className="w-5 h-5 mr-2" />
                 {t('home.startSelling')}
@@ -276,7 +276,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
             <Button
               variant="outline"
               onClick={() => navigate('browse')}
-              className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover hover:text-cm-primary rounded-xl hidden sm:flex"
+              className="border-cm-border-hover text-cm-primary hover:bg-cm-hover hover:text-cm-primary rounded-xl hidden sm:flex"
             >
               {t('home.viewAll')} <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
@@ -352,7 +352,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
           )}
 
           <div className="mt-6 text-center sm:hidden">
-            <Button variant="outline" onClick={() => navigate('browse')} className="border-cm-border-hover text-cm-secondary rounded-xl">
+            <Button variant="outline" onClick={() => navigate('browse')} className="border-cm-border-hover text-cm-primary rounded-xl">
               {t('home.viewAllProducts')}
             </Button>
           </div>
@@ -416,7 +416,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
                   <Button
                     variant="outline"
                     onClick={() => navigate('browse')}
-                    className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-2xl px-6"
+                    className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-2xl px-6"
                   >
                     {t('home.viewAllProducts')}
                   </Button>

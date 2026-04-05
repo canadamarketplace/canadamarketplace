@@ -156,9 +156,9 @@
   --cm-border-hover: oklch(1 0 0 / 10%);
   --cm-text-primary: oklch(0.98 0 0);
   --cm-text-secondary: oklch(0.93 0 0);
-  --cm-text-muted: oklch(0.82 0 0);
-  --cm-text-dim: oklch(0.68 0 0);
-  --cm-text-faint: oklch(0.55 0 0);
+  --cm-text-muted: oklch(0.88 0 0);
+  --cm-text-dim: oklch(0.78 0 0);
+  --cm-text-faint: oklch(0.68 0 0);
   --cm-nav-bg: oklch(0.08 0 0 / 80%);
   --cm-scrollbar: oklch(1 0 0 / 10%);
   --cm-scrollbar-hover: oklch(1 0 0 / 20%);

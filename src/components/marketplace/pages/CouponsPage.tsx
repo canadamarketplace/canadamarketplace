@@ -340,7 +340,7 @@ export default function CouponsPage() {
                     variant="outline"
                     size="sm"
                     onClick={() => setForm({ ...form, code: generateCode() })}
-                    className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover hover:text-cm-primary rounded-xl shrink-0"
+                    className="border-cm-border-hover text-cm-primary hover:bg-cm-hover hover:text-cm-primary rounded-xl shrink-0"
                   >
                     <Sparkles className="w-4 h-4 mr-1" />
                     Auto
@@ -470,7 +470,7 @@ export default function CouponsPage() {
                 <Button
                   variant="outline"
                   onClick={() => setDialogOpen(false)}
-                  className="flex-1 border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl"
+                  className="flex-1 border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-xl"
                 >
                   Cancel
                 </Button>
@@ -574,7 +574,7 @@ export default function CouponsPage() {
             </Button>
           )}
           {filter !== 'all' && (
-            <Button onClick={() => setFilter('all')} variant="outline" className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl">
+            <Button onClick={() => setFilter('all')} variant="outline" className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-xl">
               View All Coupons
             </Button>
           )}

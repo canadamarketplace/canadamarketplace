@@ -197,7 +197,7 @@ export default function CheckoutPage() {
           <Button onClick={() => navigate('order-detail', { id: orderId })} className="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl">
             View Order
           </Button>
-          <Button variant="outline" onClick={() => navigate('orders')} className="border-cm-border-hover text-cm-secondary rounded-xl">
+          <Button variant="outline" onClick={() => navigate('orders')} className="border-cm-border-hover text-cm-primary rounded-xl">
             My Orders
           </Button>
         </div>
