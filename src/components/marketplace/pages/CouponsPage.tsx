@@ -340,7 +340,7 @@ export default function CouponsPage() {
                     variant="outline"
                     size="sm"
                     onClick={() => setForm({ ...form, code: generateCode() })}
-                    className="border-cm-border-hover text-cm-muted hover:bg-cm-hover hover:text-cm-secondary rounded-xl shrink-0"
+                    className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover hover:text-cm-primary rounded-xl shrink-0"
                   >
                     <Sparkles className="w-4 h-4 mr-1" />
                     Auto
@@ -357,7 +357,7 @@ export default function CouponsPage() {
                     className={`flex items-center gap-2 p-3 rounded-xl border transition-all ${
                       form.type === 'PERCENTAGE'
                         ? 'border-red-500/50 bg-red-500/10 text-white'
-                        : 'border-cm-border-hover bg-cm-hover text-cm-muted hover:border-cm-border-hover'
+                        : 'border-cm-border-hover bg-cm-hover text-cm-secondary hover:border-cm-border-hover'
                     }`}
                   >
                     <Percent className="w-4 h-4" />
@@ -368,7 +368,7 @@ export default function CouponsPage() {
                     className={`flex items-center gap-2 p-3 rounded-xl border transition-all ${
                       form.type === 'FIXED'
                         ? 'border-red-500/50 bg-red-500/10 text-white'
-                        : 'border-cm-border-hover bg-cm-hover text-cm-muted hover:border-cm-border-hover'
+                        : 'border-cm-border-hover bg-cm-hover text-cm-secondary hover:border-cm-border-hover'
                     }`}
                   >
                     <DollarSign className="w-4 h-4" />
@@ -470,7 +470,7 @@ export default function CouponsPage() {
                 <Button
                   variant="outline"
                   onClick={() => setDialogOpen(false)}
-                  className="flex-1 border-cm-border-hover text-cm-muted hover:bg-cm-hover rounded-xl"
+                  className="flex-1 border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl"
                 >
                   Cancel
                 </Button>
@@ -574,7 +574,7 @@ export default function CouponsPage() {
             </Button>
           )}
           {filter !== 'all' && (
-            <Button onClick={() => setFilter('all')} variant="outline" className="border-cm-border-hover text-cm-muted hover:bg-cm-hover rounded-xl">
+            <Button onClick={() => setFilter('all')} variant="outline" className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl">
               View All Coupons
             </Button>
           )}

@@ -157,7 +157,7 @@ export default function PWAInstallPrompt() {
               onClick={handleDismiss}
               variant="ghost"
               size="sm"
-              className="text-cm-muted hover:text-cm-secondary hover:bg-cm-hover text-xs h-9 rounded-xl"
+              className="text-cm-secondary hover:text-cm-primary hover:bg-cm-hover text-xs h-9 rounded-xl"
             >
               Dismiss
             </Button>

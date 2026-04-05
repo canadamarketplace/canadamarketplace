@@ -286,7 +286,7 @@ export default function ContactPage() {
                   <button
                     key={item.label}
                     onClick={() => navigate(item.page)}
-                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm text-cm-muted hover:text-cm-secondary hover:bg-cm-hover transition-all"
+                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm text-cm-secondary hover:text-cm-primary hover:bg-cm-hover transition-all"
                   >
                     {item.label}
                     <span className="text-cm-faint">→</span>

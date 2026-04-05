@@ -50,7 +50,7 @@ export default function CartSidebar() {
               <h2 className="text-lg font-bold text-cm-primary">{t('cart.title')}</h2>
               <span className="text-xs text-cm-dim bg-cm-hover px-2 py-0.5 rounded-full">{items.length} {items.length === 1 ? t('cart.item') : t('cart.items')}</span>
             </div>
-            <button onClick={toggleCart} className="p-2 text-cm-muted hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all">
+            <button onClick={toggleCart} className="p-2 text-cm-secondary hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all">
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -92,14 +92,14 @@ export default function CartSidebar() {
                       <div className="flex items-center gap-2 mt-2">
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                          className="w-6 h-6 rounded-md bg-cm-hover hover:bg-cm-hover-strong flex items-center justify-center text-cm-muted"
+                          className="w-6 h-6 rounded-md bg-cm-hover hover:bg-cm-hover-strong flex items-center justify-center text-cm-secondary"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
                         <span className="text-xs text-cm-secondary w-6 text-center">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                          className="w-6 h-6 rounded-md bg-cm-hover hover:bg-cm-hover-strong flex items-center justify-center text-cm-muted"
+                          className="w-6 h-6 rounded-md bg-cm-hover hover:bg-cm-hover-strong flex items-center justify-center text-cm-secondary"
                         >
                           <Plus className="w-3 h-3" />
                         </button>

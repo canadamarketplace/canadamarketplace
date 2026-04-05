@@ -28,7 +28,7 @@ export default function LanguageSwitcher() {
       variant="ghost"
       size="sm"
       onClick={switchLocale}
-      className="h-8 px-2 text-cm-muted hover:text-cm-primary hover:bg-cm-hover gap-1.5 text-xs font-medium"
+      className="h-8 px-2 text-cm-secondary hover:text-cm-primary hover:bg-cm-hover gap-1.5 text-xs font-medium"
     >
       <Globe className="w-3.5 h-3.5" />
       <span className="hidden sm:inline">

@@ -540,7 +540,7 @@ export default function BrowsePage() {
                       variant="outline"
                       onClick={() => setPage(p => Math.max(1, p - 1))}
                       disabled={page === 1}
-                      className="border-cm-border-hover text-cm-muted hover:bg-cm-hover disabled:opacity-30 rounded-xl"
+                      className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover disabled:opacity-30 rounded-xl"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </Button>
@@ -562,7 +562,7 @@ export default function BrowsePage() {
                           onClick={() => setPage(pageNum)}
                           className={pageNum === page
                             ? 'bg-red-600 text-white hover:bg-red-500 rounded-xl min-w-[40px]'
-                            : 'border-cm-border-hover text-cm-muted hover:bg-cm-hover rounded-xl min-w-[40px]'
+                            : 'border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl min-w-[40px]'
                           }
                         >
                           {pageNum}
@@ -573,7 +573,7 @@ export default function BrowsePage() {
                       variant="outline"
                       onClick={() => setPage(p => Math.min(pages, p + 1))}
                       disabled={page === pages}
-                      className="border-cm-border-hover text-cm-muted hover:bg-cm-hover disabled:opacity-30 rounded-xl"
+                      className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover disabled:opacity-30 rounded-xl"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </Button>

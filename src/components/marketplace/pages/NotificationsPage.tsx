@@ -457,7 +457,7 @@ export default function NotificationsPage() {
                 <Button
                   onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
                   variant="outline"
-                  className="border-cm-border-hover text-cm-muted hover:bg-cm-hover hover:text-cm-secondary"
+                  className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover hover:text-cm-primary"
                 >
                   Load More ({filteredNotifications.length - visibleCount} remaining)
                 </Button>

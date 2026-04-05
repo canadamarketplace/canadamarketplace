@@ -196,7 +196,7 @@ export default function NotificationBell() {
       <button
         ref={bellRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-cm-muted hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all"
+        className="relative p-2 text-cm-secondary hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all"
         aria-label={t('notifications.title')}
       >
         <Bell className="w-5 h-5" />

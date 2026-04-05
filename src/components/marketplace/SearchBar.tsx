@@ -221,7 +221,7 @@ export default function SearchBar() {
                 <button
                   key={term}
                   onClick={() => handleSearch(term)}
-                  className="px-3 py-1.5 rounded-lg bg-cm-hover hover:bg-cm-hover-strong text-sm text-cm-muted hover:text-cm-secondary transition-all border border-cm-border-subtle"
+                  className="px-3 py-1.5 rounded-lg bg-cm-hover hover:bg-cm-hover-strong text-sm text-cm-secondary hover:text-cm-primary transition-all border border-cm-border-subtle"
                 >
                   {term}
                 </button>

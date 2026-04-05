@@ -428,7 +428,7 @@ export default function ChatAI() {
                     <button
                       key={prompt.label}
                       onClick={() => sendMessage(prompt.message)}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-cm-hover border border-cm-border-subtle text-[11px] text-cm-muted hover:bg-cm-hover-strong hover:text-cm-secondary transition-all"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-cm-hover border border-cm-border-subtle text-[11px] text-cm-secondary hover:bg-cm-hover-strong hover:text-cm-primary transition-all"
                     >
                       <prompt.icon className="w-3 h-3" />
                       {prompt.label}

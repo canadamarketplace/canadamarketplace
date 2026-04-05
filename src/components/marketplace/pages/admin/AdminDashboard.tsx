@@ -63,7 +63,7 @@ export default function AdminDashboard() {
             { label: 'Disputes', page: 'admin-disputes' as const },
             { label: 'Settings', page: 'admin-settings' as const },
           ].map((item) => (
-            <Button key={item.label} variant="outline" onClick={() => navigate(item.page)} className="border-cm-border-hover text-cm-muted hover:text-cm-secondary hover:bg-cm-hover rounded-xl text-xs h-8">
+            <Button key={item.label} variant="outline" onClick={() => navigate(item.page)} className="border-cm-border-hover text-cm-secondary hover:text-cm-primary hover:bg-cm-hover rounded-xl text-xs h-8">
               {item.label}
             </Button>
           ))}
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-base font-semibold text-cm-secondary">Recent Orders</h2>
-            <Button variant="ghost" onClick={() => navigate('admin-orders')} className="text-xs text-cm-dim hover:text-cm-secondary">View All →</Button>
+            <Button variant="ghost" onClick={() => navigate('admin-orders')} className="text-xs text-cm-secondary hover:text-cm-primary">View All →</Button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">

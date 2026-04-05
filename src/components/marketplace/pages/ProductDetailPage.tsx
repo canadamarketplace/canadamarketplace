@@ -391,7 +391,7 @@ export default function ProductDetailPage() {
                             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border ${
                               isSelected
                                 ? 'bg-red-500/10 text-red-300 border-red-500/40'
-                                : 'bg-cm-hover text-cm-muted border-cm-border-hover hover:border-cm-border-hover hover:text-cm-secondary'
+                                : 'bg-cm-hover text-cm-secondary border-cm-border-hover hover:border-cm-border-hover hover:text-cm-primary'
                             }`}
                           >
                             {variant.value}
@@ -435,11 +435,11 @@ export default function ProductDetailPage() {
                 onClick={handleToggleWishlist}
                 variant="outline"
                 size="lg"
-                className={`border-cm-border-hover rounded-xl h-12 ${wished ? 'text-red-500 hover:text-red-400 border-red-500/30 hover:bg-red-500/10' : 'text-cm-muted hover:bg-cm-hover'}`}
+                className={`border-cm-border-hover rounded-xl h-12 ${wished ? 'text-red-500 hover:text-red-400 border-red-500/30 hover:bg-red-500/10' : 'text-cm-secondary hover:bg-cm-hover'}`}
               >
                 <Heart className={`w-5 h-5 ${wished ? 'fill-red-500' : ''}`} />
               </Button>
-              <Button variant="outline" size="lg" className="border-cm-border-hover text-cm-muted hover:bg-cm-hover rounded-xl h-12">
+              <Button variant="outline" size="lg" className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover rounded-xl h-12">
                 <Share2 className="w-5 h-5" />
               </Button>
             </div>

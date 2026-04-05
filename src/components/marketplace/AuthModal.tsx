@@ -248,7 +248,7 @@ export default function AuthModal() {
                       type="button"
                       key={demo.label}
                       onClick={() => { setLoginEmail(demo.email); setLoginPassword('') }}
-                      className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-cm-hover hover:bg-cm-hover-strong text-xs text-cm-muted transition-colors"
+                      className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-cm-hover hover:bg-cm-hover-strong text-xs text-cm-secondary transition-colors"
                     >
                       <span>{demo.label}: {demo.email}</span>
                       <span className="text-cm-faint text-[10px]">{t('auth.useDemo')}</span>

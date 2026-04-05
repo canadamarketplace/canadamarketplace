@@ -276,7 +276,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
             <Button
               variant="outline"
               onClick={() => navigate('browse')}
-              className="border-cm-border-hover text-cm-muted hover:bg-cm-hover hover:text-cm-secondary rounded-xl hidden sm:flex"
+              className="border-cm-border-hover text-cm-secondary hover:bg-cm-hover hover:text-cm-primary rounded-xl hidden sm:flex"
             >
               {t('home.viewAll')} <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
@@ -352,7 +352,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
           )}
 
           <div className="mt-6 text-center sm:hidden">
-            <Button variant="outline" onClick={() => navigate('browse')} className="border-cm-border-hover text-cm-muted rounded-xl">
+            <Button variant="outline" onClick={() => navigate('browse')} className="border-cm-border-hover text-cm-secondary rounded-xl">
               {t('home.viewAllProducts')}
             </Button>
           </div>
@@ -376,7 +376,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
               <button
                 key={province.slug}
                 onClick={() => navigate('browse', { province: province.slug })}
-                className="px-4 py-2.5 rounded-xl bg-cm-elevated border border-cm-border-subtle hover:border-red-500/30 hover:bg-red-500/5 text-sm text-cm-muted hover:text-red-300 transition-all"
+                className="px-4 py-2.5 rounded-xl bg-cm-elevated border border-cm-border-subtle hover:border-red-500/30 hover:bg-red-500/5 text-sm text-cm-secondary hover:text-red-300 transition-all"
               >
                 <MapPin className="w-3.5 h-3.5 inline mr-1.5 -mt-0.5" />
                 {province.name}

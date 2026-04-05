@@ -113,7 +113,7 @@ export default function Navbar() {
                 <button
                   key={link.label}
                   onClick={link.onClick}
-                  className="px-3 py-2 text-sm text-cm-muted hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all"
+                  className="px-3 py-2 text-sm text-cm-secondary hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all"
                 >
                   {link.label}
                 </button>
@@ -126,7 +126,7 @@ export default function Navbar() {
                 variant="ghost"
                 size="icon"
                 onClick={toggleSearch}
-                className="text-cm-muted hover:text-cm-primary hover:bg-cm-hover"
+                className="text-cm-primary hover:text-cm-primary hover:bg-cm-hover"
               >
                 <Search className="w-5 h-5" />
               </Button>
@@ -138,7 +138,7 @@ export default function Navbar() {
 
               <button
                 onClick={toggleCart}
-                className="relative p-2 text-cm-muted hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all"
+                className="relative p-2 text-cm-primary hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all"
               >
                 <ShoppingCart className="w-5 h-5" />
                 {count > 0 && (
@@ -151,11 +151,11 @@ export default function Navbar() {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="hidden sm:flex items-center gap-2 text-cm-secondary hover:bg-cm-hover">
+                    <Button variant="ghost" className="hidden sm:flex items-center gap-2 text-cm-primary hover:bg-cm-hover hover:text-cm-primary data-[state=open]:text-cm-primary">
                       <div className="w-7 h-7 rounded-full bg-gradient-to-br from-red-500 to-red-500 flex items-center justify-center text-xs font-bold text-white">
                         {user.name.charAt(0).toUpperCase()}
                       </div>
-                      <span className="text-sm max-w-[100px] truncate">{user.name}</span>
+                      <span className="text-sm max-w-[100px] truncate font-medium">{user.name}</span>
                       <ChevronDown className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -186,7 +186,7 @@ export default function Navbar() {
                   <Button
                     variant="ghost"
                     onClick={() => openAuthModal('login')}
-                    className="text-cm-secondary hover:bg-cm-hover hover:text-cm-primary"
+                    className="text-cm-primary hover:bg-cm-hover hover:text-cm-primary"
                   >
                     {t('nav.signIn')}
                   </Button>
@@ -203,7 +203,7 @@ export default function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden text-cm-muted hover:text-cm-primary"
+                className="lg:hidden text-cm-primary hover:text-cm-primary"
                 onClick={toggleMobileMenu}
               >
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -220,7 +220,7 @@ export default function Navbar() {
                 <button
                   key={link.label}
                   onClick={link.onClick}
-                  className="w-full text-left px-4 py-3 text-sm text-cm-muted hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all"
+                  className="w-full text-left px-4 py-3 text-sm text-cm-secondary hover:text-cm-primary rounded-lg hover:bg-cm-hover transition-all"
                 >
                   {link.label}
                 </button>
@@ -232,7 +232,7 @@ export default function Navbar() {
                     <button
                       key={link.label}
                       onClick={() => { link.onClick(); toggleMobileMenu() }}
-                      className="w-full text-left px-4 py-3 text-sm text-cm-muted hover:text-cm-primary rounded-lg hover:bg-cm-hover flex items-center gap-3"
+                      className="w-full text-left px-4 py-3 text-sm text-cm-secondary hover:text-cm-primary rounded-lg hover:bg-cm-hover flex items-center gap-3"
                     >
                       <link.icon className="w-4 h-4" />
                       {link.label}

@@ -123,7 +123,7 @@ export default function FaqPage() {
                 className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
                   activeCategory === cat.key
                     ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-                    : 'bg-cm-hover text-cm-muted border border-cm-border-subtle hover:bg-cm-hover hover:text-cm-secondary'
+                    : 'bg-cm-hover text-cm-secondary border border-cm-border-subtle hover:bg-cm-hover hover:text-cm-primary'
                 }`}
               >
                 {cat.label}

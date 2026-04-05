@@ -87,7 +87,7 @@ function SortableImage({ item, onRemove, onSetPrimary, isPrimary, showPrimary, c
         <button
           {...attributes}
           {...listeners}
-          className="absolute top-1 left-1 z-10 w-6 h-6 rounded-md bg-cm-overlay flex items-center justify-center text-cm-muted hover:text-white hover:bg-cm-hover-strong cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute top-1 left-1 z-10 w-6 h-6 rounded-md bg-cm-overlay flex items-center justify-center text-cm-secondary hover:text-white hover:bg-cm-hover-strong cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
         >
           <GripVertical className="w-3.5 h-3.5" />
         </button>

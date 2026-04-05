@@ -69,13 +69,13 @@ export default function Footer() {
               {t('footer.tagline')}
             </p>
             <div className="flex gap-3">
-              <button className="w-8 h-8 rounded-lg bg-cm-hover hover:bg-cm-hover-strong flex items-center justify-center text-cm-muted hover:text-cm-secondary transition-colors">
+              <button className="w-8 h-8 rounded-lg bg-cm-hover hover:bg-cm-hover-strong flex items-center justify-center text-cm-secondary hover:text-cm-primary transition-colors">
                 <Twitter className="w-4 h-4" />
               </button>
-              <button className="w-8 h-8 rounded-lg bg-cm-hover hover:bg-cm-hover-strong flex items-center justify-center text-cm-muted hover:text-cm-secondary transition-colors">
+              <button className="w-8 h-8 rounded-lg bg-cm-hover hover:bg-cm-hover-strong flex items-center justify-center text-cm-secondary hover:text-cm-primary transition-colors">
                 <Github className="w-4 h-4" />
               </button>
-              <button className="w-8 h-8 rounded-lg bg-cm-hover hover:bg-cm-hover-strong flex items-center justify-center text-cm-muted hover:text-cm-secondary transition-colors">
+              <button className="w-8 h-8 rounded-lg bg-cm-hover hover:bg-cm-hover-strong flex items-center justify-center text-cm-secondary hover:text-cm-primary transition-colors">
                 <Mail className="w-4 h-4" />
               </button>
             </div>

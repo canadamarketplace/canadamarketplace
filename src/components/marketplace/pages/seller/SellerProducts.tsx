@@ -115,7 +115,7 @@ export default function SellerProducts() {
                       variant="outline"
                       size="sm"
                       onClick={() => navigate('product-detail', { id: product.id })}
-                      className="flex-1 border-cm-border-hover text-cm-muted text-xs h-8 rounded-lg"
+                      className="flex-1 border-cm-border-hover text-cm-secondary text-xs h-8 rounded-lg"
                     >
                       <Eye className="w-3 h-3 mr-1" /> View
                     </Button>
@@ -123,7 +123,7 @@ export default function SellerProducts() {
                       variant="outline"
                       size="sm"
                       onClick={() => navigate('edit-product', { id: product.id })}
-                      className="flex-1 border-cm-border-hover text-cm-muted text-xs h-8 rounded-lg"
+                      className="flex-1 border-cm-border-hover text-cm-secondary text-xs h-8 rounded-lg"
                     >
                       <Edit className="w-3 h-3 mr-1" /> Edit
                     </Button>

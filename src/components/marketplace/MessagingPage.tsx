@@ -495,7 +495,7 @@ export default function MessagingPage() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="md:hidden text-cm-muted hover:text-cm-secondary hover:bg-cm-hover h-9 w-9"
+                  className="md:hidden text-cm-secondary hover:text-cm-primary hover:bg-cm-hover h-9 w-9"
                   onClick={handleBackToList}
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -652,7 +652,7 @@ export default function MessagingPage() {
               <Button
                 variant="outline"
                 onClick={() => navigate('browse')}
-                className="mt-5 border-cm-border-hover text-cm-muted hover:bg-cm-hover hover:text-cm-secondary rounded-xl"
+                className="mt-5 border-cm-border-hover text-cm-secondary hover:bg-cm-hover hover:text-cm-primary rounded-xl"
               >
                 {t('browse.title')}
               </Button>

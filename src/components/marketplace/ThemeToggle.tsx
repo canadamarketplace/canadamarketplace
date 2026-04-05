@@ -22,7 +22,7 @@ export default function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={cycleTheme}
-      className="text-cm-muted hover:text-cm-primary hover:bg-cm-hover transition-all"
+      className="text-cm-secondary hover:text-cm-primary hover:bg-cm-hover transition-all"
       title={`Current: ${theme}`}
     >
       {theme === 'dark' && <Moon className="w-4 h-4" />}

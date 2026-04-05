@@ -631,7 +631,7 @@ export default function SellerDashboard() {
                       </Badge>
                     )}
                   </h2>
-                  <Button variant="ghost" onClick={() => navigate('my-orders')} className="text-xs text-cm-dim hover:text-cm-secondary">
+                  <Button variant="ghost" onClick={() => navigate('my-orders')} className="text-xs text-cm-secondary hover:text-cm-primary">
                     {t('seller.analytics.viewAll')} →
                   </Button>
                 </div>
@@ -849,7 +849,7 @@ export default function SellerDashboard() {
                     <BarChart3 className="w-4 h-4 text-green-400" />
                     {t('seller.analytics.monthlyRevenue12')}
                   </h2>
-                  <Button onClick={exportOrderCSV} variant="outline" size="sm" className="border-cm-border-hover text-cm-muted text-xs rounded-lg h-8">
+                  <Button onClick={exportOrderCSV} variant="outline" size="sm" className="border-cm-border-hover text-cm-secondary text-xs rounded-lg h-8">
                     <Download className="w-3 h-3 mr-1" />
                     CSV
                   </Button>

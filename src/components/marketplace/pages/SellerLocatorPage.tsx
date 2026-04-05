@@ -376,7 +376,7 @@ export default function SellerLocatorPage() {
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className="mt-2 flex items-center gap-2 w-full px-3 py-2 rounded-xl bg-cm-hover border border-cm-border-hover text-sm text-cm-muted hover:bg-cm-hover-strong hover:text-cm-secondary transition-all"
+                  className="mt-2 flex items-center gap-2 w-full px-3 py-2 rounded-xl bg-cm-hover border border-cm-border-hover text-sm text-cm-secondary hover:bg-cm-hover-strong hover:text-cm-primary transition-all"
                 >
                   <Filter className="w-4 h-4" />
                   {showFilters ? 'Hide Filters' : 'Filter by Province'}
@@ -393,7 +393,7 @@ export default function SellerLocatorPage() {
                 <div className="px-4 py-3 border-b border-cm-border-subtle space-y-1 max-h-52 overflow-y-auto">
                   <button
                     onClick={() => setSelectedProvince(null)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${!selectedProvince ? 'bg-red-500/10 text-white' : 'text-cm-muted hover:bg-cm-hover'}`}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${!selectedProvince ? 'bg-red-500/10 text-white' : 'text-cm-secondary hover:bg-cm-hover'}`}
                   >
                     All Provinces ({allSellers.length})
                   </button>
@@ -401,7 +401,7 @@ export default function SellerLocatorPage() {
                     <button
                       key={prov}
                       onClick={() => setSelectedProvince(selectedProvince === prov ? null : prov)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${selectedProvince === prov ? 'bg-red-500/10 text-white' : 'text-cm-muted hover:bg-cm-hover'}`}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${selectedProvince === prov ? 'bg-red-500/10 text-white' : 'text-cm-secondary hover:bg-cm-hover'}`}
                     >
                       <span className="flex items-center gap-2">
                         <MapPin className="w-3 h-3 text-cm-faint" />
@@ -589,7 +589,7 @@ export default function SellerLocatorPage() {
                             setTimeout(() => setFlyToTarget(null), 1500)
                           }
                         }}
-                        className="px-2 py-1 rounded-lg text-[10px] text-cm-muted hover:bg-cm-hover-strong hover:text-cm-secondary transition-all text-left truncate"
+                        className="px-2 py-1 rounded-lg text-[10px] text-cm-secondary hover:bg-cm-hover-strong hover:text-cm-primary transition-all text-left truncate"
                       >
                         {prov.length > 14 ? prov.slice(0, 12) + '...' : prov}
                       </button>
