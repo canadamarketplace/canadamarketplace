@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
 
 const fromEmail = process.env.FROM_EMAIL || 'noreply@canadamarketplace.ca'
 const fromName = process.env.FROM_NAME || 'Canada Marketplace'
-const siteUrl = process.env.SITE_URL || 'http://localhost:3000'
+const siteUrl = process.env.SITE_URL || 'https://www.canadamarketplace.ca'
 
 type SendEmailParams = {
   to: string

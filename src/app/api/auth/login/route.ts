@@ -47,11 +47,19 @@ function createAuthResponse(userData: Record<string, unknown>) {
 }
 
 // Auto-seed demo accounts if they don't exist in the database
+// This handles Vercel cold starts where SQLite may be empty
+let seedAttempted = false
 async function ensureDemoAccounts() {
-  const userCount = await db.user.count()
-  if (userCount === 0) {
-    console.log("\uD83D\uDC33 Auto-seeding demo accounts...")
-    for (const demo of DEMO_ACCOUNTS) {
+  if (seedAttempted) return
+  seedAttempted = true
+  try {
+    const existing = await db.user.findMany({ select: { email: true } })
+    const existingEmails = new Set(existing.map((u: { email: string }) => u.email.toLowerCase()))
+    const missing = DEMO_ACCOUNTS.filter((d) => !existingEmails.has(d.email.toLowerCase()))
+    if (missing.length === 0) return
+
+    console.log(`\uD83D\uDC33 Auto-seeding ${missing.length} missing demo accounts...`)
+    for (const demo of missing) {
       const hashedPassword = await bcrypt.hash(demo.password, 12)
       const storeData = demo.storeName ? {
         store: {
@@ -75,9 +83,11 @@ async function ensureDemoAccounts() {
           city: demo.city,
           ...storeData,
         },
-      })
+      }).catch(() => {/* ignore duplicate */})
     }
-    console.log(`\u2705 ${DEMO_ACCOUNTS.length} demo accounts created`)
+    console.log(`\u2705 Demo accounts ensured`)
+  } catch (err) {
+    console.error("Demo account seed error:", err)
   }
 }
 

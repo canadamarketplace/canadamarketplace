@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import { db } from '@/lib/db'
 import { sendPasswordResetEmail } from '@/lib/email'
 
-const SITE_URL = process.env.SITE_URL || 'http://localhost:3000'
+const SITE_URL = process.env.SITE_URL || 'https://www.canadamarketplace.ca'
 
 export async function POST(req: NextRequest) {
   try {
