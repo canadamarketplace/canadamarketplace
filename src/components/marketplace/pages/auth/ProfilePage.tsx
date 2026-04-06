@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select'
 import { PROVINCES } from '@/lib/types'
-import { User, Mail, Phone, MapPin, Loader2, Save } from 'lucide-react'
+import { User, Mail, Phone, MapPin, Loader2, Save, Store, TrendingUp, Shield, ArrowRight } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function ProfilePage() {
@@ -130,6 +130,53 @@ export default function ProfilePage() {
           Save Changes
         </Button>
       </div>
+
+      {/* Become a Seller - only for BUYER users */}
+      {user.role === 'BUYER' && (
+        <div className="mt-6 rounded-2xl border-2 border-dashed border-red-500/30 bg-gradient-to-br from-red-500/5 via-transparent to-red-500/5 p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-red-500/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center shadow-lg shadow-red-500/20">
+                <Store className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-cm-primary">Become a Seller</h2>
+                <p className="text-xs text-cm-dim">Start your business on Canada Marketplace</p>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-4 mb-5">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-cm-elevated/60 border border-cm-border-subtle">
+                <TrendingUp className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-cm-secondary">Grow Revenue</p>
+                  <p className="text-[11px] text-cm-dim mt-0.5">Reach millions of Canadian buyers nationwide</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-cm-elevated/60 border border-cm-border-subtle">
+                <Shield className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-cm-secondary">Secure Payments</p>
+                  <p className="text-[11px] text-cm-dim mt-0.5">Escrow protection on every transaction</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-cm-elevated/60 border border-cm-border-subtle">
+                <Store className="w-5 h-5 text-red-300 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-cm-secondary">Custom Storefront</p>
+                  <p className="text-[11px] text-cm-dim mt-0.5">Build your brand with a personalized store page</p>
+                </div>
+              </div>
+            </div>
+            <Button
+              onClick={() => navigate('become-seller')}
+              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl h-11 px-6 shadow-lg shadow-red-500/20 w-full sm:w-auto"
+            >
+              Get Started <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

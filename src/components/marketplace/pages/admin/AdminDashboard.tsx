@@ -10,6 +10,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie
 } from 'recharts'
 import AdminAuthGuard from './AdminAuthGuard'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 
 interface DashboardData {
   totalUsers: number; totalSellers: number; totalProducts: number; totalOrders: number
@@ -49,24 +50,12 @@ export default function AdminDashboard() {
 
   return (
     <AdminAuthGuard>
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <DashboardSidebar role="admin" activeItem="admin-dashboard" onNavigate={(page) => navigate(page)}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-cm-primary">Admin Dashboard</h1>
           <p className="text-sm text-cm-dim mt-1">System overview and management</p>
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          {[
-            { label: 'Users', page: 'admin-users' as const },
-            { label: 'Products', page: 'admin-products' as const },
-            { label: 'Orders', page: 'admin-orders' as const },
-            { label: 'Disputes', page: 'admin-disputes' as const },
-            { label: 'Settings', page: 'admin-settings' as const },
-          ].map((item) => (
-            <Button key={item.label} variant="outline" onClick={() => navigate(item.page)} className="border-cm-border-hover text-cm-primary hover:text-cm-primary hover:bg-cm-hover rounded-xl text-xs h-8">
-              {item.label}
-            </Button>
-          ))}
         </div>
       </div>
 
@@ -170,7 +159,8 @@ export default function AdminDashboard() {
           </div>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </DashboardSidebar>
     </AdminAuthGuard>
   )
 }

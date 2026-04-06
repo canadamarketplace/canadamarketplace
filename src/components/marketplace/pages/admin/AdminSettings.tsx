@@ -1,6 +1,8 @@
 'use client'
 import { useState } from 'react'
+import { useNavigation } from '@/lib/store'
 import AdminAuthGuard from './AdminAuthGuard'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -8,6 +10,7 @@ import { Settings, Loader2, Save } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function AdminSettings() {
+  const { navigate } = useNavigation()
   const [loading, setLoading] = useState(false)
   const [marketplaceFee, setMarketplaceFee] = useState('8')
   const [goldSellerFee, setGoldSellerFee] = useState('5')
@@ -32,6 +35,7 @@ export default function AdminSettings() {
 
   return (
     <AdminAuthGuard>
+    <DashboardSidebar role="admin" activeItem="admin-settings" onNavigate={(page) => navigate(page)}>
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-2xl font-bold text-cm-primary mb-2">System Settings</h1>
       <p className="text-sm text-cm-dim mb-8">Configure marketplace-wide settings</p>
@@ -73,6 +77,7 @@ export default function AdminSettings() {
         Save Settings
       </Button>
     </div>
+    </DashboardSidebar>
     </AdminAuthGuard>
   )
 }

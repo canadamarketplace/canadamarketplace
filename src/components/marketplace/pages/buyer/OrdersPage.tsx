@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/select'
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/types'
 import {
-  Package, ChevronRight, Clock, MapPin, ShoppingBag, Eye
+  Package, ChevronRight, Clock, MapPin, ShoppingBag, Eye, Store, ArrowRight
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -76,6 +76,27 @@ export default function OrdersPage() {
           </SelectContent>
         </Select>
       </div>
+
+      {/* Become a Seller banner - only for BUYER users */}
+      {user.role === 'BUYER' && (
+        <div className="mb-6 rounded-2xl border border-red-500/20 bg-gradient-to-r from-red-500/10 via-red-500/5 to-transparent p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center flex-shrink-0 shadow-lg shadow-red-500/20">
+              <Store className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-cm-secondary">Start selling on Canada Marketplace</h3>
+              <p className="text-xs text-cm-dim">Turn your products into profit with secure payments and nationwide reach.</p>
+            </div>
+          </div>
+          <Button
+            onClick={() => navigate('become-seller')}
+            className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl text-sm h-9 px-5 shadow-lg shadow-red-500/20 whitespace-nowrap flex-shrink-0"
+          >
+            Become a Seller <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+          </Button>
+        </div>
+      )}
 
       {loading ? (
         <div className="space-y-4 animate-pulse">

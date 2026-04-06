@@ -1,6 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useNavigation } from '@/lib/store'
 import AdminAuthGuard from './AdminAuthGuard'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge';
@@ -28,6 +30,7 @@ export default function AdminUsers() {
   const [page, setPage] = useState(1)
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [updating, setUpdating] = useState(false)
+  const { navigate } = useNavigation()
 
   const fetchUsers = async () => {
     setLoading(true)
@@ -72,6 +75,7 @@ export default function AdminUsers() {
 
   return (
     <AdminAuthGuard>
+    <DashboardSidebar role="admin" activeItem="admin-users" onNavigate={(page) => navigate(page)}>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-2xl font-bold text-cm-primary mb-2">User Management</h1>
       <p className="text-sm text-cm-dim mb-6">{total} total users</p>
@@ -203,6 +207,7 @@ export default function AdminUsers() {
         </div>
       </div>
     </div>
+    </DashboardSidebar>
     </AdminAuthGuard>
   )
 }

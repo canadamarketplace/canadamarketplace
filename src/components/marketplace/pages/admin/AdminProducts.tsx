@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigation } from '@/lib/store'
 import AdminAuthGuard from './AdminAuthGuard'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Package, Eye, Trash2, Star, Loader2 } from 'lucide-react'
@@ -53,6 +54,7 @@ export default function AdminProducts() {
 
   return (
     <AdminAuthGuard>
+    <DashboardSidebar role="admin" activeItem="admin-products" onNavigate={(page) => navigate(page)}>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-2xl font-bold text-cm-primary mb-2">Product Management</h1>
       <p className="text-sm text-cm-dim mb-6">{products.length} total products</p>
@@ -125,6 +127,7 @@ export default function AdminProducts() {
         </div>
       </div>
     </div>
+    </DashboardSidebar>
     </AdminAuthGuard>
   )
 }

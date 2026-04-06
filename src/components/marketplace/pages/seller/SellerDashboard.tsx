@@ -14,6 +14,7 @@ import {
   ChevronRight, Zap, Target, Download, Medal, Crown, Trophy, MapPin, EyeIcon
 } from 'lucide-react'
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS, PROVINCES } from '@/lib/types'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LineChart, Line,
   PieChart, Pie, Legend, ComposedChart
@@ -288,7 +289,7 @@ export default function SellerDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-cm-bg">
+    <DashboardSidebar role="seller" activeItem="dashboard" onNavigate={navigate}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8 gap-4">
@@ -954,6 +955,6 @@ export default function SellerDashboard() {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </DashboardSidebar>
   )
 }

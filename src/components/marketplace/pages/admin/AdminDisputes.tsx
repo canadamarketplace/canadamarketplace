@@ -1,6 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useNavigation } from '@/lib/store'
 import AdminAuthGuard from './AdminAuthGuard'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -21,6 +23,7 @@ interface Dispute {
 }
 
 export default function AdminDisputes() {
+  const { navigate } = useNavigation()
   const [disputes, setDisputes] = useState<Dispute[]>([])
   const [loading, setLoading] = useState(true)
   const [typeFilter, setTypeFilter] = useState('all')
@@ -71,6 +74,7 @@ export default function AdminDisputes() {
 
   return (
     <AdminAuthGuard>
+    <DashboardSidebar role="admin" activeItem="admin-disputes" onNavigate={(page) => navigate(page)}>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -189,6 +193,7 @@ export default function AdminDisputes() {
         )}
       </div>
     </div>
+    </DashboardSidebar>
     </AdminAuthGuard>
   )
 }
