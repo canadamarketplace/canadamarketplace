@@ -24,6 +24,7 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
       await db.message.deleteMany()
       await db.conversation.deleteMany()
       await db.cartItem.deleteMany()
+      await db.report.deleteMany()
       await db.dispute.deleteMany()
       await db.review.deleteMany()
       await db.orderItem.deleteMany()
@@ -45,10 +46,18 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
 
     // Create Categories
     const categories = await Promise.all([
-      db.category.create({ data: { name: "T-Shirts", slug: "tshirts", icon: "tshirt-crew", productCount: 8 } }),
-      db.category.create({ data: { name: "Mugs", slug: "mugs", icon: "cup", productCount: 5 } }),
-      db.category.create({ data: { name: "Caps", slug: "caps", icon: "hat-fedora", productCount: 5 } }),
-      db.category.create({ data: { name: "Music & Culture", slug: "music-culture", icon: "music-note", productCount: 3 } }),
+      db.category.create({ data: { name: "Apparel", slug: "apparel", icon: "shirt", productCount: 8 } }),
+      db.category.create({ data: { name: "Drinkware", slug: "drinkware", icon: "cup-soda", productCount: 5 } }),
+      db.category.create({ data: { name: "Headwear", slug: "headwear", icon: "crown", productCount: 5 } }),
+      db.category.create({ data: { name: "Music & Audio", slug: "music-audio", icon: "music", productCount: 0 } }),
+      db.category.create({ data: { name: "Home & Garden", slug: "home-garden", icon: "home", productCount: 0 } }),
+      db.category.create({ data: { name: "Sports & Outdoors", slug: "sports-outdoors", icon: "trophy", productCount: 0 } }),
+      db.category.create({ data: { name: "Electronics", slug: "electronics", icon: "monitor", productCount: 0 } }),
+      db.category.create({ data: { name: "Beauty & Health", slug: "beauty-health", icon: "sparkles", productCount: 0 } }),
+      db.category.create({ data: { name: "Books & Media", slug: "books-media", icon: "book-open", productCount: 0 } }),
+      db.category.create({ data: { name: "Toys & Games", slug: "toys-games", icon: "gamepad-2", productCount: 0 } }),
+      db.category.create({ data: { name: "Automotive", slug: "automotive", icon: "car", productCount: 0 } }),
+      db.category.create({ data: { name: "Pet Supplies", slug: "pet-supplies", icon: "paw-print", productCount: 0 } }),
     ])
 
     // Create Provinces
@@ -153,27 +162,27 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
 
     // Create Products
     const productTemplates = [
-      // T-Shirts (by tunogkalye.net - Seller 0)
-      { title: 'Tunog Kalye Classic Logo Tee — Black', cat: "tshirts", seller: 0, price: 32.99, condition: "NEW", desc: "The iconic Tunog Kalye logo on premium 100% cotton. Classic black tee for street music lovers. Comfortable fit, durable print.", images: ["/products/tshirt-classic-black.png", "/products/tshirt-neon-soundwave.png"], isFeatured: true },
-      { title: 'Tunog Kalye Classic Logo Tee — White', cat: "tshirts", seller: 0, price: 32.99, condition: "NEW", desc: "The iconic Tunog Kalye logo on crisp white cotton. A clean look for any occasion. Comfortable fit, durable print.", images: ["/products/tshirt-classic-white.png", "/products/tshirt-street-vibes.png"], isFeatured: false },
-      { title: 'Tunog Kalye "Street Vibes" Graphic Tee', cat: "tshirts", seller: 0, price: 34.99, condition: "NEW", desc: "Bold graphic design inspired by urban sound culture. Premium cotton blend with vibrant colours that last. Street vibes guaranteed.", images: ["/products/tshirt-street-vibes.png", "/products/tshirt-classic-black.png"], isFeatured: true },
-      { title: 'Tunog Kalye "Bass Drop" Music Tee', cat: "tshirts", seller: 0, price: 34.99, condition: "NEW", desc: "Feel the bass drop with this eye-catching music tee. Features a stylised bass waveform graphic. Premium quality print.", images: ["/products/tshirt-bass-drop.png", "/products/tshirt-neon-soundwave.png"], isFeatured: false },
-      { title: 'Tunog Kalye "Pinoy Pride" Heritage Tee', cat: "tshirts", seller: 0, price: 36.99, condition: "NEW", desc: "Celebrate Filipino heritage with Tunog Kalye. This heritage tee combines cultural pride with street sound energy. Premium cotton.", images: ["/products/tshirt-pinoy-pride.png", "/products/tshirt-retro-wave.png"], isFeatured: false },
-      { title: 'Tunog Kalye Retro Wave Tee', cat: "tshirts", seller: 0, price: 34.99, condition: "NEW", desc: "Retro-inspired design meets street culture. The Tunog Kalye Retro Wave tee takes you back to the golden era of sound. Vibrant colours.", images: ["/products/tshirt-retro-wave.png", "/products/tshirt-bass-drop.png"], isFeatured: false },
-      { title: 'Tunog Kalye Neon Soundwave Tee', cat: "tshirts", seller: 0, price: 34.99, condition: "NEW", desc: "Light up the streets with this neon soundwave design. Glowing colours on dark fabric. Premium quality, made to stand out.", images: ["/products/tshirt-neon-soundwave.png", "/products/tshirt-kalye-life.png"], isFeatured: false },
-      { title: 'Tunog Kalye "Kalye Life" Urban Tee', cat: "tshirts", seller: 0, price: 32.99, condition: "NEW", desc: "Live the Kalye life! This urban tee celebrates the everyday rhythm of the streets. Comfortable and stylish, perfect for any day.", images: ["/products/tshirt-kalye-life.png", "/products/tshirt-pinoy-pride.png"], isFeatured: false },
-      // Mugs (by Tunog Kalye West - Seller 1)
-      { title: 'Tunog Kalye Soundwave Ceramic Mug', cat: "mugs", seller: 1, price: 17.99, condition: "NEW", desc: "Start your morning with the sound of Tunog Kalye. Premium ceramic mug with a sleek soundwave design. Microwave and dishwasher safe.", images: ["/products/mug-soundwave.png", "/products/mug-music-lover.png"], isFeatured: true },
-      { title: 'Tunog Kalye Logo Travel Tumbler', cat: "mugs", seller: 1, price: 22.99, condition: "NEW", desc: "Take Tunog Kalye on the go. Insulated stainless steel tumbler with the official logo. Keeps drinks hot or cold for hours.", images: ["/products/mug-travel-tumbler.png", "/products/mug-soundwave.png"], isFeatured: false },
-      { title: 'Tunog Kalye "Morning Beats" Coffee Mug', cat: "mugs", seller: 1, price: 16.99, condition: "NEW", desc: "Every morning needs beats and coffee. This fun ceramic mug features the Morning Beats design. Great gift for music lovers.", images: ["/products/mug-morning-beats.png", "/products/mug-beats-coffee.png"], isFeatured: false },
-      { title: 'Tunog Kalye "Music Lover" Ceramic Mug', cat: "mugs", seller: 1, price: 17.99, condition: "NEW", desc: "Show your love for music with this beautifully designed ceramic mug. Features Tunog Kalye's Music Lover graphic. 11oz capacity.", images: ["/products/mug-music-lover.png", "/products/mug-morning-beats.png"], isFeatured: false },
-      { title: 'Tunog Kalye "Beats & Coffee" Mug', cat: "mugs", seller: 1, price: 19.99, condition: "NEW", desc: "The perfect duo: beats and coffee. This premium ceramic mug features a stylish Beats & Coffee design. A must-have for your desk.", images: ["/products/mug-beats-coffee.png", "/products/mug-travel-tumbler.png"], isFeatured: false },
-      // Caps (by Tunog Kalye Québec - Seller 2)
-      { title: 'Tunog Kalye Classic Snapback — Black', cat: "caps", seller: 2, price: 29.99, condition: "NEW", desc: "The classic Tunog Kalye snapback in black. Embroidered logo, adjustable snap closure. One size fits all. Premium quality.", images: ["/products/cap-snapback-black.png", "/products/cap-trucker.png"], isFeatured: true },
-      { title: 'Tunog Kalye Classic Snapback — Red', cat: "caps", seller: 2, price: 29.99, condition: "NEW", desc: "Stand out with the Tunog Kalye snapback in bold red. Embroidered logo, adjustable snap closure. One size fits all.", images: ["/products/cap-snapback-red.png", "/products/cap-snapback-black.png"], isFeatured: false },
-      { title: 'Tunog Kalye Trucker Hat', cat: "caps", seller: 2, price: 27.99, condition: "NEW", desc: "Classic trucker style with Tunog Kalye flair. Mesh back for breathability, embroidered front logo. Perfect for summer.", images: ["/products/cap-trucker.png", "/products/cap-dad-hat.png"], isFeatured: false },
-      { title: 'Tunog Kalye Dad Hat — Khaki', cat: "caps", seller: 2, price: 26.99, condition: "NEW", desc: "Relaxed dad hat style with Tunog Kalye branding. Soft washed cotton, adjustable brass buckle. Effortlessly cool.", images: ["/products/cap-dad-hat.png", "/products/cap-trucker.png"], isFeatured: false },
-      { title: 'Tunog Kalye "Bass" Embroidered Cap', cat: "caps", seller: 2, price: 31.99, condition: "NEW", desc: "Premium embroidered cap featuring the Tunog Kalye Bass design. Structured crown, curved brim. A statement piece for bass lovers.", images: ["/products/cap-bass-embroidered.png", "/products/cap-snapback-black.png"], isFeatured: false },
+      // T-Shirts (by tunogkalye.net - Seller 0) → Apparel
+      { title: 'Tunog Kalye Classic Logo Tee — Black', cat: "apparel", seller: 0, price: 32.99, condition: "NEW", desc: "The iconic Tunog Kalye logo on premium 100% cotton. Classic black tee for street music lovers. Comfortable fit, durable print.", images: ["/products/tshirt-classic-black.png", "/products/tshirt-neon-soundwave.png"], isFeatured: true },
+      { title: 'Tunog Kalye Classic Logo Tee — White', cat: "apparel", seller: 0, price: 32.99, condition: "NEW", desc: "The iconic Tunog Kalye logo on crisp white cotton. A clean look for any occasion. Comfortable fit, durable print.", images: ["/products/tshirt-classic-white.png", "/products/tshirt-street-vibes.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Street Vibes" Graphic Tee', cat: "apparel", seller: 0, price: 34.99, condition: "NEW", desc: "Bold graphic design inspired by urban sound culture. Premium cotton blend with vibrant colours that last. Street vibes guaranteed.", images: ["/products/tshirt-street-vibes.png", "/products/tshirt-classic-black.png"], isFeatured: true },
+      { title: 'Tunog Kalye "Bass Drop" Music Tee', cat: "apparel", seller: 0, price: 34.99, condition: "NEW", desc: "Feel the bass drop with this eye-catching music tee. Features a stylised bass waveform graphic. Premium quality print.", images: ["/products/tshirt-bass-drop.png", "/products/tshirt-neon-soundwave.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Pinoy Pride" Heritage Tee', cat: "apparel", seller: 0, price: 36.99, condition: "NEW", desc: "Celebrate Filipino heritage with Tunog Kalye. This heritage tee combines cultural pride with street sound energy. Premium cotton.", images: ["/products/tshirt-pinoy-pride.png", "/products/tshirt-retro-wave.png"], isFeatured: false },
+      { title: 'Tunog Kalye Retro Wave Tee', cat: "apparel", seller: 0, price: 34.99, condition: "NEW", desc: "Retro-inspired design meets street culture. The Tunog Kalye Retro Wave tee takes you back to the golden era of sound. Vibrant colours.", images: ["/products/tshirt-retro-wave.png", "/products/tshirt-bass-drop.png"], isFeatured: false },
+      { title: 'Tunog Kalye Neon Soundwave Tee', cat: "apparel", seller: 0, price: 34.99, condition: "NEW", desc: "Light up the streets with this neon soundwave design. Glowing colours on dark fabric. Premium quality, made to stand out.", images: ["/products/tshirt-neon-soundwave.png", "/products/tshirt-kalye-life.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Kalye Life" Urban Tee', cat: "apparel", seller: 0, price: 32.99, condition: "NEW", desc: "Live the Kalye life! This urban tee celebrates the everyday rhythm of the streets. Comfortable and stylish, perfect for any day.", images: ["/products/tshirt-kalye-life.png", "/products/tshirt-pinoy-pride.png"], isFeatured: false },
+      // Mugs (by Tunog Kalye West - Seller 1) → Drinkware
+      { title: 'Tunog Kalye Soundwave Ceramic Mug', cat: "drinkware", seller: 1, price: 17.99, condition: "NEW", desc: "Start your morning with the sound of Tunog Kalye. Premium ceramic mug with a sleek soundwave design. Microwave and dishwasher safe.", images: ["/products/mug-soundwave.png", "/products/mug-music-lover.png"], isFeatured: true },
+      { title: 'Tunog Kalye Logo Travel Tumbler', cat: "drinkware", seller: 1, price: 22.99, condition: "NEW", desc: "Take Tunog Kalye on the go. Insulated stainless steel tumbler with the official logo. Keeps drinks hot or cold for hours.", images: ["/products/mug-travel-tumbler.png", "/products/mug-soundwave.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Morning Beats" Coffee Mug', cat: "drinkware", seller: 1, price: 16.99, condition: "NEW", desc: "Every morning needs beats and coffee. This fun ceramic mug features the Morning Beats design. Great gift for music lovers.", images: ["/products/mug-morning-beats.png", "/products/mug-beats-coffee.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Music Lover" Ceramic Mug', cat: "drinkware", seller: 1, price: 17.99, condition: "NEW", desc: "Show your love for music with this beautifully designed ceramic mug. Features Tunog Kalye's Music Lover graphic. 11oz capacity.", images: ["/products/mug-music-lover.png", "/products/mug-morning-beats.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Beats & Coffee" Mug', cat: "drinkware", seller: 1, price: 19.99, condition: "NEW", desc: "The perfect duo: beats and coffee. This premium ceramic mug features a stylish Beats & Coffee design. A must-have for your desk.", images: ["/products/mug-beats-coffee.png", "/products/mug-travel-tumbler.png"], isFeatured: false },
+      // Caps (by Tunog Kalye Québec - Seller 2) → Headwear
+      { title: 'Tunog Kalye Classic Snapback — Black', cat: "headwear", seller: 2, price: 29.99, condition: "NEW", desc: "The classic Tunog Kalye snapback in black. Embroidered logo, adjustable snap closure. One size fits all. Premium quality.", images: ["/products/cap-snapback-black.png", "/products/cap-trucker.png"], isFeatured: true },
+      { title: 'Tunog Kalye Classic Snapback — Red', cat: "headwear", seller: 2, price: 29.99, condition: "NEW", desc: "Stand out with the Tunog Kalye snapback in bold red. Embroidered logo, adjustable snap closure. One size fits all.", images: ["/products/cap-snapback-red.png", "/products/cap-snapback-black.png"], isFeatured: false },
+      { title: 'Tunog Kalye Trucker Hat', cat: "headwear", seller: 2, price: 27.99, condition: "NEW", desc: "Classic trucker style with Tunog Kalye flair. Mesh back for breathability, embroidered front logo. Perfect for summer.", images: ["/products/cap-trucker.png", "/products/cap-dad-hat.png"], isFeatured: false },
+      { title: 'Tunog Kalye Dad Hat — Khaki', cat: "headwear", seller: 2, price: 26.99, condition: "NEW", desc: "Relaxed dad hat style with Tunog Kalye branding. Soft washed cotton, adjustable brass buckle. Effortlessly cool.", images: ["/products/cap-dad-hat.png", "/products/cap-trucker.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Bass" Embroidered Cap', cat: "headwear", seller: 2, price: 31.99, condition: "NEW", desc: "Premium embroidered cap featuring the Tunog Kalye Bass design. Structured crown, curved brim. A statement piece for bass lovers.", images: ["/products/cap-bass-embroidered.png", "/products/cap-snapback-black.png"], isFeatured: false },
     ]
 
     const catMap: Record<string, number> = {}
@@ -414,6 +423,7 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
       { key: "payout_speed_days", value: "2" },
       { key: "max_listing_images", value: "10" },
       { key: "currency", value: "CAD" },
+      { key: "low_stock_threshold", value: "5" },
     ]
     await Promise.all(settings.map((s) => db.siteSetting.create({ data: s })))
 

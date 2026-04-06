@@ -1,377 +1,264 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigation } from '@/lib/store'
 import AdminAuthGuard from './AdminAuthGuard'
 import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
-import { BarChart3, Download, TrendingUp, Users, DollarSign, Package, Eye, ShoppingBag, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
-  LineChart, Line, Area, AreaChart, PieChart, Pie
-} from 'recharts'
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+} from '@/components/ui/select'
+import { Flag, Loader2, Save, Eye, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react'
 import { toast } from 'sonner'
 
-const revenueByProvince = [
-  { province: 'ON', revenue: 284500, orders: 3420 },
-  { province: 'QC', revenue: 198700, orders: 2450 },
-  { province: 'BC', revenue: 176300, orders: 2100 },
-  { province: 'AB', revenue: 134200, orders: 1680 },
-  { province: 'MB', revenue: 56700, orders: 710 },
-  { province: 'SK', revenue: 43200, orders: 540 },
-  { province: 'NS', revenue: 38900, orders: 480 },
-  { province: 'NB', revenue: 22100, orders: 290 },
-  { province: 'SK', revenue: 18500, orders: 230 },
-  { province: 'NL', revenue: 15800, orders: 195 },
-  { province: 'PE', revenue: 12400, orders: 150 },
-]
-
-const orderTrends = [
-  { month: 'Jan', orders: 620, revenue: 48500 },
-  { month: 'Feb', orders: 580, revenue: 43200 },
-  { month: 'Mar', orders: 710, revenue: 56700 },
-  { month: 'Apr', orders: 780, revenue: 62300 },
-  { month: 'May', orders: 850, revenue: 68900 },
-  { month: 'Jun', orders: 920, revenue: 74200 },
-  { month: 'Jul', orders: 890, revenue: 71500 },
-  { month: 'Aug', orders: 960, revenue: 78100 },
-  { month: 'Sep', orders: 1040, revenue: 84500 },
-  { month: 'Oct', orders: 1120, revenue: 92300 },
-  { month: 'Nov', orders: 1350, revenue: 112800 },
-  { month: 'Dec', orders: 1580, revenue: 134200 },
-]
-
-const customerGrowth = [
-  { month: 'Jan', total: 1240, new: 180 },
-  { month: 'Feb', total: 1380, new: 210 },
-  { month: 'Mar', total: 1560, new: 260 },
-  { month: 'Apr', total: 1720, new: 230 },
-  { month: 'May', total: 1910, new: 290 },
-  { month: 'Jun', total: 2080, new: 250 },
-  { month: 'Jul', total: 2260, new: 270 },
-  { month: 'Aug', total: 2450, new: 310 },
-  { month: 'Sep', total: 2680, new: 330 },
-  { month: 'Oct', total: 2890, new: 290 },
-  { month: 'Nov', total: 3140, new: 350 },
-  { month: 'Dec', total: 3420, new: 380 },
-]
-
-const bestsellers = [
-  { rank: 1, name: 'Handcrafted Maple Syrup Set', store: 'Maple Lane Goods', sold: 842, revenue: 41958 },
-  { rank: 2, name: 'Winter Parka - Made in Canada', store: 'Northward Apparel', sold: 634, revenue: 183666 },
-  { rank: 3, name: 'Indigenous Art Print Collection', store: 'Northern Canvas', sold: 521, revenue: 67719 },
-  { rank: 4, name: 'Organic BC Honey Variety', store: 'Bee Wild Farms', sold: 489, revenue: 17111 },
-  { rank: 5, name: 'Wild Salmon Gift Box', store: 'Pacific Catch Co', sold: 456, revenue: 36474 },
-  { rank: 6, name: 'Québec Ice Cider', store: 'Domaine Neige', sold: 398, revenue: 12338 },
-  { rank: 7, name: 'Handknit Wool Blanket', store: 'Prairie Home Co', sold: 367, revenue: 34865 },
-  { rank: 8, name: ' artisan Soap Gift Set', store: 'Wildcraft Studio', sold: 334, revenue: 6680 },
-]
-
-const topViewed = [
-  { rank: 1, name: 'Winter Parka - Made in Canada', store: 'Northward Apparel', views: 12450 },
-  { rank: 2, name: 'Handcrafted Maple Syrup Set', store: 'Maple Lane Goods', views: 9870 },
-  { rank: 3, name: 'Indigenous Art Print Collection', store: 'Northern Canvas', views: 8230 },
-  { rank: 4, name: 'Pacific Northwest Jewelry Set', store: 'Tide & Stone', views: 7650 },
-  { rank: 5, name: 'Wild Salmon Gift Box', store: 'Pacific Catch Co', views: 6540 },
-]
-
-const categoryDistribution = [
-  { name: 'Food & Beverages', value: 32, color: '#dc2626' },
-  { name: 'Clothing', value: 24, color: '#a855f7' },
-  { name: 'Home & Garden', value: 18, color: '#3b82f6' },
-  { name: 'Art & Crafts', value: 14, color: '#22c55e' },
-  { name: 'Electronics', value: 8, color: '#f97316' },
-  { name: 'Other', value: 4, color: '#78716c' },
-]
+interface ReportRecord {
+  id: string
+  targetType: string
+  targetId: string
+  reason: string
+  description: string
+  status: string
+  adminNotes?: string
+  createdAt: string
+  updatedAt: string
+  reporter: { id: string; name: string; email: string }
+}
 
 export default function AdminReports() {
   const { navigate } = useNavigation()
+  const [reports, setReports] = useState<ReportRecord[]>([])
+  const [loading, setLoading] = useState(true)
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [targetTypeFilter, setTargetTypeFilter] = useState('all')
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [updating, setUpdating] = useState(false)
+  const [adminNotes, setAdminNotes] = useState('')
 
-  const handleExport = (type: string) => {
-    toast.success(`Exporting ${type} report as CSV...`)
+  const fetchReports = useCallback(async () => {
+    setLoading(true)
+    try {
+      const params = new URLSearchParams()
+      if (statusFilter && statusFilter !== 'all') params.set('status', statusFilter)
+      if (targetTypeFilter && targetTypeFilter !== 'all') params.set('targetType', targetTypeFilter)
+      const query = params.toString()
+      const res = await fetch(`/api/reports${query ? '?' + query : ''}`)
+      if (res.ok) {
+        const data = await res.json()
+        setReports(data.reports || [])
+      }
+    } catch {}
+    setLoading(false)
+  }, [statusFilter, targetTypeFilter])
+
+  useEffect(() => { fetchReports() }, [statusFilter, targetTypeFilter, fetchReports])
+
+  const handleUpdate = async (reportId: string, status: string) => {
+    if (!status) { toast.error('Please select an action'); return }
+    setUpdating(true)
+    try {
+      const res = await fetch('/api/reports', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportId, status, adminNotes: adminNotes || undefined }),
+      })
+      if (res.ok) {
+        toast.success('Report updated')
+        setExpandedId(null)
+        setAdminNotes('')
+        fetchReports()
+      } else {
+        toast.error('Failed to update report')
+      }
+    } catch {
+      toast.error('Failed to update report')
+    }
+    setUpdating(false)
   }
 
-  const provinceColors = ['#dc2626', '#3b82f6', '#a855f7', '#22c55e', '#f97316', '#eab308', '#06b6d4', '#ec4899', '#8b5cf6', '#14b8a6', '#f43f5e']
+  const statusColors: Record<string, string> = {
+    OPEN: 'bg-red-500/10 text-red-400 border-red-500/20',
+    REVIEWING: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+    RESOLVED: 'bg-green-500/10 text-green-400 border-green-500/20',
+    DISMISSED: 'bg-stone-500/10 text-cm-muted border-stone-500/20',
+  }
+
+  const statusLabels: Record<string, string> = {
+    OPEN: 'Open',
+    REVIEWING: 'Reviewing',
+    RESOLVED: 'Resolved',
+    DISMISSED: 'Dismissed',
+  }
+
+  const targetTypeColors: Record<string, string> = {
+    PRODUCT: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+    SELLER: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+    ORDER: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+  }
+
+  const reasonLabels: Record<string, string> = {
+    SPAM: 'Spam',
+    INAPPROPRIATE: 'Inappropriate',
+    FRAUD: 'Fraud',
+    COPYRIGHT: 'Copyright Violation',
+    OTHER: 'Other',
+  }
 
   return (
     <AdminAuthGuard>
     <DashboardSidebar role="admin" activeItem="admin-reports" onNavigate={(page) => navigate(page)}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-cm-primary">Reports & Analytics</h1>
-            <p className="text-sm text-cm-dim mt-1">Detailed marketplace performance insights</p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => handleExport('sales')} className="border-cm-border-subtle text-cm-secondary hover:bg-cm-hover rounded-xl h-9 px-4 text-xs">
-              <Download className="w-3.5 h-3.5 mr-1.5" /> Export Sales
-            </Button>
-            <Button onClick={() => handleExport('full')} className="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl h-9 px-4 text-xs">
-              <Download className="w-3.5 h-3.5 mr-1.5" /> Export All
-            </Button>
-          </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-cm-primary">Report Management</h1>
+          <p className="text-sm text-cm-dim mt-1">{reports.length} reports</p>
         </div>
-
-        {/* KPI Summary */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <DollarSign className="w-4 h-4 text-green-400" />
-                <div className="flex items-center gap-0.5 text-green-400">
-                  <ArrowUpRight className="w-3 h-3" />
-                  <span className="text-[10px] font-bold">12.5%</span>
-                </div>
-              </div>
-              <p className="text-xl font-bold text-cm-primary">$843,200</p>
-              <p className="text-[10px] text-cm-dim mt-0.5">Total Revenue (YTD)</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <ShoppingBag className="w-4 h-4 text-blue-400" />
-                <div className="flex items-center gap-0.5 text-green-400">
-                  <ArrowUpRight className="w-3 h-3" />
-                  <span className="text-[10px] font-bold">8.3%</span>
-                </div>
-              </div>
-              <p className="text-xl font-bold text-cm-primary">12,400</p>
-              <p className="text-[10px] text-cm-dim mt-0.5">Total Orders (YTD)</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <Users className="w-4 h-4 text-purple-400" />
-                <div className="flex items-center gap-0.5 text-green-400">
-                  <ArrowUpRight className="w-3 h-3" />
-                  <span className="text-[10px] font-bold">23.1%</span>
-                </div>
-              </div>
-              <p className="text-xl font-bold text-cm-primary">3,420</p>
-              <p className="text-[10px] text-cm-dim mt-0.5">Total Customers</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <DollarSign className="w-4 h-4 text-orange-400" />
-                <div className="flex items-center gap-0.5 text-red-400">
-                  <ArrowDownRight className="w-3 h-3" />
-                  <span className="text-[10px] font-bold">2.1%</span>
-                </div>
-              </div>
-              <p className="text-xl font-bold text-cm-primary">$68.00</p>
-              <p className="text-[10px] text-cm-dim mt-0.5">Avg. Order Value</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Charts Row */}
-        <div className="grid lg:grid-cols-2 gap-6 mb-8">
-          {/* Revenue by Province */}
-          <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-semibold text-cm-secondary">Revenue by Province</h2>
-                <Button variant="ghost" size="sm" onClick={() => handleExport('revenue-by-province')} className="text-[10px] text-cm-dim hover:text-cm-secondary rounded-lg h-7">
-                  <Download className="w-3 h-3 mr-1" />CSV
-                </Button>
-              </div>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={revenueByProvince} layout="vertical">
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
-                    <XAxis type="number" tick={{ fill: '#78716c', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.1)' }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-                    <YAxis type="category" dataKey="province" tick={{ fill: '#a8a29e', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.1)' }} width={30} />
-                    <Tooltip contentStyle={{ backgroundColor: '#171717', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#e7e5e4', fontSize: 12 }} formatter={(v: number) => [`$${v.toLocaleString()}`, 'Revenue']} />
-                    <Bar dataKey="revenue" radius={[0, 6, 6, 0]}>
-                      {revenueByProvince.map((_, i) => <Cell key={i} fill={provinceColors[i % provinceColors.length]} />)}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Order Trends */}
-          <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-semibold text-cm-secondary">Order Trends</h2>
-                <Button variant="ghost" size="sm" onClick={() => handleExport('order-trends')} className="text-[10px] text-cm-dim hover:text-cm-secondary rounded-lg h-7">
-                  <Download className="w-3 h-3 mr-1" />CSV
-                </Button>
-              </div>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={orderTrends}>
-                    <defs>
-                      <linearGradient id="orderGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#dc2626" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#dc2626" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                    <XAxis dataKey="month" tick={{ fill: '#78716c', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.1)' }} />
-                    <YAxis tick={{ fill: '#78716c', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.1)' }} />
-                    <Tooltip contentStyle={{ backgroundColor: '#171717', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#e7e5e4', fontSize: 12 }} />
-                    <Area type="monotone" dataKey="orders" stroke="#dc2626" strokeWidth={2} fill="url(#orderGrad)" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Customer Growth + Category Distribution */}
-        <div className="grid lg:grid-cols-3 gap-6 mb-8">
-          <Card className="lg:col-span-2 bg-cm-elevated border-cm-border-subtle rounded-2xl">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-semibold text-cm-secondary">Customer Growth</h2>
-                <Button variant="ghost" size="sm" onClick={() => handleExport('customer-growth')} className="text-[10px] text-cm-dim hover:text-cm-secondary rounded-lg h-7">
-                  <Download className="w-3 h-3 mr-1" />CSV
-                </Button>
-              </div>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={customerGrowth}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                    <XAxis dataKey="month" tick={{ fill: '#78716c', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.1)' }} />
-                    <YAxis tick={{ fill: '#78716c', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.1)' }} />
-                    <Tooltip contentStyle={{ backgroundColor: '#171717', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#e7e5e4', fontSize: 12 }} />
-                    <Line type="monotone" dataKey="total" stroke="#a855f7" strokeWidth={2} dot={false} name="Total Customers" />
-                    <Line type="monotone" dataKey="new" stroke="#22c55e" strokeWidth={2} dot={false} name="New Customers" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="flex gap-4 mt-3">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-0.5 rounded bg-purple-500" />
-                  <span className="text-[10px] text-cm-dim">Total Customers</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-0.5 rounded bg-green-500" />
-                  <span className="text-[10px] text-cm-dim">New Customers</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
-            <CardContent className="p-6">
-              <h2 className="text-base font-semibold text-cm-secondary mb-4">Sales by Category</h2>
-              <div className="h-48 flex items-center justify-center">
-                <PieChart width={180} height={180}>
-                  <Pie data={categoryDistribution} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={45} outerRadius={75} paddingAngle={2}>
-                    {categoryDistribution.map((entry, i) => (
-                      <Cell key={i} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: '#171717', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#e7e5e4', fontSize: 12 }} formatter={(v: number) => [`${v}%`, 'Share']} />
-                </PieChart>
-              </div>
-              <div className="space-y-1.5 mt-2">
-                {categoryDistribution.map((item) => (
-                  <div key={item.name} className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
-                      <span className="text-[10px] text-cm-dim truncate">{item.name}</span>
-                    </div>
-                    <span className="text-[10px] font-semibold text-cm-secondary">{item.value}%</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Bestsellers + Top Viewed */}
-        <div className="grid lg:grid-cols-2 gap-6">
-          <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-semibold text-cm-secondary">Bestsellers</h2>
-                <Button variant="ghost" size="sm" onClick={() => handleExport('bestsellers')} className="text-[10px] text-cm-dim hover:text-cm-secondary rounded-lg h-7">
-                  <Download className="w-3 h-3 mr-1" />CSV
-                </Button>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-cm-border-subtle">
-                      <th className="text-left px-2 py-2 text-[10px] font-semibold text-cm-dim uppercase">#</th>
-                      <th className="text-left px-2 py-2 text-[10px] font-semibold text-cm-dim uppercase">Product</th>
-                      <th className="text-right px-2 py-2 text-[10px] font-semibold text-cm-dim uppercase">Sold</th>
-                      <th className="text-right px-2 py-2 text-[10px] font-semibold text-cm-dim uppercase">Revenue</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {bestsellers.slice(0, 6).map((item) => (
-                      <tr key={item.rank} className="border-b border-cm-border-subtle last:border-0 hover:bg-cm-hover">
-                        <td className="px-2 py-2.5">
-                          <Badge className="bg-cm-hover text-cm-muted text-[10px] border border-cm-border-hover">{item.rank}</Badge>
-                        </td>
-                        <td className="px-2 py-2.5">
-                          <p className="text-xs font-medium text-cm-secondary truncate max-w-[180px]">{item.name}</p>
-                          <p className="text-[10px] text-cm-faint">{item.store}</p>
-                        </td>
-                        <td className="px-2 py-2.5 text-right text-xs font-medium text-cm-secondary">{item.sold.toLocaleString()}</td>
-                        <td className="px-2 py-2.5 text-right text-xs font-bold text-green-400">${item.revenue.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-semibold text-cm-secondary">Top Viewed Products</h2>
-                <Button variant="ghost" size="sm" onClick={() => handleExport('top-viewed')} className="text-[10px] text-cm-dim hover:text-cm-secondary rounded-lg h-7">
-                  <Download className="w-3 h-3 mr-1" />CSV
-                </Button>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-cm-border-subtle">
-                      <th className="text-left px-2 py-2 text-[10px] font-semibold text-cm-dim uppercase">#</th>
-                      <th className="text-left px-2 py-2 text-[10px] font-semibold text-cm-dim uppercase">Product</th>
-                      <th className="text-right px-2 py-2 text-[10px] font-semibold text-cm-dim uppercase">Views</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {topViewed.map((item) => (
-                      <tr key={item.rank} className="border-b border-cm-border-subtle last:border-0 hover:bg-cm-hover">
-                        <td className="px-2 py-2.5">
-                          <Badge className="bg-cm-hover text-cm-muted text-[10px] border border-cm-border-hover">{item.rank}</Badge>
-                        </td>
-                        <td className="px-2 py-2.5">
-                          <p className="text-xs font-medium text-cm-secondary truncate max-w-[200px]">{item.name}</p>
-                          <p className="text-[10px] text-cm-faint">{item.store}</p>
-                        </td>
-                        <td className="px-2 py-2.5 text-right">
-                          <div className="flex items-center justify-end gap-1">
-                            <Eye className="w-3 h-3 text-cm-faint" />
-                            <span className="text-xs font-medium text-cm-secondary">{item.views.toLocaleString()}</span>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="flex gap-3">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-40 bg-cm-hover border-cm-border-hover text-cm-secondary h-10 rounded-xl">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-cm-elevated border-cm-border-hover">
+              <SelectItem value="all" className="text-cm-secondary">All Statuses</SelectItem>
+              <SelectItem value="OPEN" className="text-cm-secondary">Open</SelectItem>
+              <SelectItem value="REVIEWING" className="text-cm-secondary">Reviewing</SelectItem>
+              <SelectItem value="RESOLVED" className="text-cm-secondary">Resolved</SelectItem>
+              <SelectItem value="DISMISSED" className="text-cm-secondary">Dismissed</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={targetTypeFilter} onValueChange={setTargetTypeFilter}>
+            <SelectTrigger className="w-40 bg-cm-hover border-cm-border-hover text-cm-secondary h-10 rounded-xl">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-cm-elevated border-cm-border-hover">
+              <SelectItem value="all" className="text-cm-secondary">All Types</SelectItem>
+              <SelectItem value="PRODUCT" className="text-cm-secondary">Product</SelectItem>
+              <SelectItem value="SELLER" className="text-cm-secondary">Seller</SelectItem>
+              <SelectItem value="ORDER" className="text-cm-secondary">Order</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
+
+      <div className="space-y-4">
+        {loading ? (
+          Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-24 rounded-2xl bg-cm-input animate-pulse" />)
+        ) : reports.length === 0 ? (
+          <div className="text-center py-16 rounded-2xl bg-cm-elevated border border-cm-border-subtle">
+            <Flag className="w-16 h-16 text-cm-faint mx-auto mb-4" />
+            <p className="text-cm-dim">No reports found</p>
+          </div>
+        ) : (
+          reports.map((report) => (
+            <div key={report.id} className="rounded-2xl bg-cm-elevated border border-cm-border-subtle overflow-hidden">
+              <button onClick={() => setExpandedId(expandedId === report.id ? null : report.id)} className="w-full text-left p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-1 flex-wrap">
+                      <Badge className={`${statusColors[report.status] || ''} text-[10px] border`}>
+                        {statusLabels[report.status] || report.status}
+                      </Badge>
+                      <Badge className={`${targetTypeColors[report.targetType] || ''} text-[10px] border`}>
+                        {report.targetType}
+                      </Badge>
+                      <span className="text-[10px] text-cm-faint">{reasonLabels[report.reason] || report.reason}</span>
+                    </div>
+                    <p className="text-sm font-medium text-cm-secondary">
+                      {report.targetType === 'PRODUCT' ? 'Product' : report.targetType === 'SELLER' ? 'Seller' : 'Order'} — {report.targetId.slice(0, 12)}...
+                    </p>
+                    <p className="text-xs text-cm-dim mt-1">
+                      Reported by {report.reporter?.name} ({report.reporter?.email}) · {new Date(report.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="text-cm-dim flex-shrink-0">
+                    {expandedId === report.id ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  </div>
+                </div>
+              </button>
+
+              {expandedId === report.id && (
+                <div className="border-t border-cm-border-subtle p-5 space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <h4 className="text-xs font-semibold text-cm-dim mb-1">Reporter</h4>
+                      <p className="text-sm text-cm-muted">{report.reporter?.name}</p>
+                      <p className="text-xs text-cm-faint">{report.reporter?.email}</p>
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-semibold text-cm-dim mb-1">Reason</h4>
+                      <p className="text-sm text-cm-muted">{reasonLabels[report.reason] || report.reason}</p>
+                      <p className="text-xs text-cm-faint">Target: {report.targetType} ({report.targetId})</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xs font-semibold text-cm-dim mb-1">Description</h4>
+                    <p className="text-sm text-cm-muted">{report.description}</p>
+                  </div>
+
+                  {report.adminNotes && (
+                    <div className="p-3 rounded-xl bg-cm-hover border border-cm-border-subtle">
+                      <p className="text-xs font-semibold text-cm-muted mb-1">Admin Notes</p>
+                      <p className="text-sm text-cm-dim">{report.adminNotes}</p>
+                    </div>
+                  )}
+
+                  {!['RESOLVED', 'DISMISSED'].includes(report.status) && (
+                    <div className="space-y-3 pt-2 border-t border-cm-border-subtle">
+                      <div>
+                        <Label className="text-xs text-cm-muted mb-1 block">Admin Notes</Label>
+                        <Textarea
+                          value={adminNotes}
+                          onChange={(e) => setAdminNotes(e.target.value)}
+                          placeholder="Internal notes about this report..."
+                          className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl min-h-[60px]"
+                        />
+                      </div>
+                      <div className="flex gap-2 flex-wrap">
+                        {report.status === 'OPEN' && (
+                          <Button
+                            onClick={() => handleUpdate(report.id, 'REVIEWING')}
+                            disabled={updating}
+                            size="sm"
+                            variant="outline"
+                            className="border-yellow-500/20 text-yellow-400 hover:bg-yellow-500/10 rounded-xl"
+                          >
+                            {updating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Eye className="w-4 h-4 mr-2" />}
+                            Start Review
+                          </Button>
+                        )}
+                        <Button
+                          onClick={() => handleUpdate(report.id, 'RESOLVED')}
+                          disabled={updating}
+                          size="sm"
+                          variant="outline"
+                          className="border-green-500/20 text-green-400 hover:bg-green-500/10 rounded-xl"
+                        >
+                          {updating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                          Resolve
+                        </Button>
+                        <Button
+                          onClick={() => handleUpdate(report.id, 'DISMISSED')}
+                          disabled={updating}
+                          size="sm"
+                          variant="outline"
+                          className="border-stone-500/20 text-cm-dim hover:bg-cm-hover hover:text-cm-secondary rounded-xl"
+                        >
+                          <AlertTriangle className="w-4 h-4 mr-2" />
+                          Dismiss
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
     </DashboardSidebar>
     </AdminAuthGuard>
   )

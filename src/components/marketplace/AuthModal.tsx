@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useNavigation, useAuth } from '@/lib/store'
 import { useTranslation } from '@/lib/i18n'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select'
-import { Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2, CheckCircle2, RefreshCw } from 'lucide-react'
 import { PROVINCES } from '@/lib/types'
 import { toast } from 'sonner'
 
@@ -21,6 +21,37 @@ export default function AuthModal() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+
+  // Buyer CAPTCHA
+  const [regCaptchaA, setRegCaptchaA] = useState(0)
+  const [regCaptchaB, setRegCaptchaB] = useState(0)
+  const [regCaptchaAnswer, setRegCaptchaAnswer] = useState('')
+  const [regCaptchaError, setRegCaptchaError] = useState('')
+
+  // Seller CAPTCHA
+  const [sellerCaptchaA, setSellerCaptchaA] = useState(0)
+  const [sellerCaptchaB, setSellerCaptchaB] = useState(0)
+  const [sellerCaptchaAnswer, setSellerCaptchaAnswer] = useState('')
+  const [sellerCaptchaError, setSellerCaptchaError] = useState('')
+
+  const generateRegCaptcha = useCallback(() => {
+    setRegCaptchaA(Math.floor(Math.random() * 10) + 1)
+    setRegCaptchaB(Math.floor(Math.random() * 10) + 1)
+    setRegCaptchaAnswer('')
+    setRegCaptchaError('')
+  }, [])
+
+  const generateSellerCaptcha = useCallback(() => {
+    setSellerCaptchaA(Math.floor(Math.random() * 10) + 1)
+    setSellerCaptchaB(Math.floor(Math.random() * 10) + 1)
+    setSellerCaptchaAnswer('')
+    setSellerCaptchaError('')
+  }, [])
+
+  useEffect(() => {
+    generateRegCaptcha()
+    generateSellerCaptcha()
+  }, [generateRegCaptcha, generateSellerCaptcha])
 
   // Login
   const [loginEmail, setLoginEmail] = useState('')
@@ -85,6 +116,11 @@ export default function AuthModal() {
       toast.error(t('common.fillRequiredFields'))
       return
     }
+    if (parseInt(regCaptchaAnswer) !== regCaptchaA + regCaptchaB) {
+      setRegCaptchaError('Incorrect answer. Please try again.')
+      generateRegCaptcha()
+      return
+    }
     setLoading(true)
     try {
       const res = await fetch('/api/auth/register', {
@@ -110,6 +146,11 @@ export default function AuthModal() {
     e.preventDefault()
     if (!sellerName || !sellerEmail || !sellerPassword || !storeName) {
       toast.error(t('common.fillRequiredFields'))
+      return
+    }
+    if (parseInt(sellerCaptchaAnswer) !== sellerCaptchaA + sellerCaptchaB) {
+      setSellerCaptchaError('Incorrect answer. Please try again.')
+      generateSellerCaptcha()
       return
     }
     setLoading(true)
@@ -288,6 +329,25 @@ export default function AuthModal() {
                     <Input value={regCity} onChange={(e) => setRegCity(e.target.value)} placeholder={t('auth.city')} className={inputClass} />
                   </div>
                 </div>
+                {/* Buyer CAPTCHA */}
+                <div className="p-3 rounded-xl bg-cm-hover border border-cm-border-subtle">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-cm-dim">What is</span>
+                    <span className="text-sm font-bold text-red-400">{regCaptchaA} + {regCaptchaB}</span>
+                    <span className="text-xs text-cm-dim">?</span>
+                    <Input
+                      type="number"
+                      value={regCaptchaAnswer}
+                      onChange={(e) => { setRegCaptchaAnswer(e.target.value); setRegCaptchaError('') }}
+                      placeholder="?"
+                      className={`w-16 h-8 text-xs ${regCaptchaError ? 'border-red-500/50' : ''} ${inputClass}`}
+                    />
+                    <button type="button" onClick={generateRegCaptcha} className="text-cm-dim hover:text-cm-secondary">
+                      <RefreshCw className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  {regCaptchaError && <p className="text-[10px] text-red-400 mt-1">{regCaptchaError}</p>}
+                </div>
                 <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl h-11">
                   {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                   {t('auth.createBuyerAccount')}
@@ -332,6 +392,25 @@ export default function AuthModal() {
                     <Label className="text-cm-secondary text-xs mb-1.5 block">{t('auth.city')}</Label>
                     <Input value={sellerCity} onChange={(e) => setSellerCity(e.target.value)} placeholder={t('auth.city')} className={inputClass} />
                   </div>
+                </div>
+                {/* Seller CAPTCHA */}
+                <div className="p-3 rounded-xl bg-cm-hover border border-cm-border-subtle">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-cm-dim">What is</span>
+                    <span className="text-sm font-bold text-red-400">{sellerCaptchaA} + {sellerCaptchaB}</span>
+                    <span className="text-xs text-cm-dim">?</span>
+                    <Input
+                      type="number"
+                      value={sellerCaptchaAnswer}
+                      onChange={(e) => { setSellerCaptchaAnswer(e.target.value); setSellerCaptchaError('') }}
+                      placeholder="?"
+                      className={`w-16 h-8 text-xs ${sellerCaptchaError ? 'border-red-500/50' : ''} ${inputClass}`}
+                    />
+                    <button type="button" onClick={generateSellerCaptcha} className="text-cm-dim hover:text-cm-secondary">
+                      <RefreshCw className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  {sellerCaptchaError && <p className="text-[10px] text-red-400 mt-1">{sellerCaptchaError}</p>}
                 </div>
                 <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-300 hover:to-red-500 text-black font-semibold rounded-xl h-11">
                   {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}

@@ -9,15 +9,15 @@ import { Badge } from '@/components/ui/badge';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select'
-import { Users, Search, CheckCircle2, XCircle, Shield, Loader2, ChevronDown, ChevronUp, Eye } from 'lucide-react'
+import { Users, Search, CheckCircle2, XCircle, Shield, Loader2, ChevronDown, ChevronUp, Eye, ThumbsUp, ThumbsDown, Ban, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface UserRecord {
   id: string; email: string; name: string; role: string; avatar?: string
   province?: string; city?: string; isVerified: boolean; isActive: boolean
   createdAt: string
-  store?: { id: string; name: string; slug: string; rating: number; totalSales: number; isActive: boolean }
-  _count?: { orders: number; reviews: number; disputes: number }
+  store?: { id: string; name: string; slug: string; rating: number; totalSales: number; isActive: boolean; approvalStatus?: string }
+  _count?: { orders: number; reviews: number; disputes: number; reports?: number }
 }
 
 export default function AdminUsers() {
@@ -39,7 +39,7 @@ export default function AdminUsers() {
       if (search) params.set('search', search)
       if (roleFilter) params.set('role', roleFilter)
       if (statusFilter) params.set('status', statusFilter)
-      const res = await fetch(`/api/users?${params}`)
+      const res = await fetch(`/api/admin/users?${params}`)
       if (res.ok) {
         const data = await res.json()
         setUsers(data.users || [])
@@ -54,7 +54,7 @@ export default function AdminUsers() {
   const handleAction = async (userId: string, action: string, value: any) => {
     setUpdating(true)
     try {
-      const res = await fetch('/api/users', {
+      const res = await fetch('/api/admin/users', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, [action]: value }),
@@ -62,8 +62,32 @@ export default function AdminUsers() {
       if (res.ok) {
         toast.success(`User ${action} updated`)
         fetchUsers()
+      } else {
+        toast.error('Failed to update user')
       }
-    } catch {}
+    } catch {
+      toast.error('Failed to update user')
+    }
+    setUpdating(false)
+  }
+
+  const handleApproval = async (userId: string, approvalStatus: string) => {
+    setUpdating(true)
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, approvalStatus }),
+      })
+      if (res.ok) {
+        toast.success(`Store ${approvalStatus === 'APPROVED' ? 'approved' : 'rejected'}`)
+        fetchUsers()
+      } else {
+        toast.error('Failed to update store approval')
+      }
+    } catch {
+      toast.error('Failed to update store approval')
+    }
     setUpdating(false)
   }
 
@@ -71,6 +95,18 @@ export default function AdminUsers() {
     BUYER: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
     SELLER: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
     ADMIN: 'bg-red-500/10 text-red-400 border-red-500/20',
+  }
+
+  const approvalColors: Record<string, string> = {
+    PENDING: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+    APPROVED: 'bg-green-500/10 text-green-400 border-green-500/20',
+    REJECTED: 'bg-red-500/10 text-red-400 border-red-500/20',
+  }
+
+  const approvalLabels: Record<string, string> = {
+    PENDING: 'Pending Approval',
+    APPROVED: 'Approved',
+    REJECTED: 'Rejected',
   }
 
   return (
@@ -142,7 +178,14 @@ export default function AdminUsers() {
                             {u.name.charAt(0)}
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-cm-secondary">{u.name}</p>
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm font-medium text-cm-secondary">{u.name}</p>
+                              {u.role === 'SELLER' && u.store?.approvalStatus && (
+                                <Badge className={`${approvalColors[u.store.approvalStatus] || ''} text-[10px] border`}>
+                                  {approvalLabels[u.store.approvalStatus] || u.store.approvalStatus}
+                                </Badge>
+                              )}
+                            </div>
                             <p className="text-xs text-cm-faint">{u.email}</p>
                           </div>
                         </div>
@@ -164,13 +207,37 @@ export default function AdminUsers() {
                       </td>
                       <td className="px-5 py-4 text-xs text-cm-dim">{new Date(u.createdAt).toLocaleDateString()}</td>
                       <td className="px-5 py-4">
-                        <div className="flex gap-1">
+                        <div className="flex gap-1 flex-wrap">
+                          {/* Standard actions */}
                           <button onClick={() => handleAction(u.id, 'isVerified', !u.isVerified)} disabled={updating} className="p-1.5 rounded-lg hover:bg-cm-hover text-cm-dim hover:text-blue-400" title="Toggle Verified">
                             <Shield className="w-4 h-4" />
                           </button>
                           <button onClick={() => handleAction(u.id, 'isActive', !u.isActive)} disabled={updating} className="p-1.5 rounded-lg hover:bg-cm-hover text-cm-dim hover:text-green-400" title="Toggle Active">
                             {u.isActive ? <XCircle className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
                           </button>
+
+                          {/* Seller approval actions */}
+                          {u.role === 'SELLER' && u.store?.approvalStatus === 'PENDING' && (
+                            <>
+                              <button onClick={() => handleApproval(u.id, 'APPROVED')} disabled={updating} className="p-1.5 rounded-lg hover:bg-green-500/10 text-cm-dim hover:text-green-400" title="Approve Seller">
+                                <ThumbsUp className="w-4 h-4" />
+                              </button>
+                              <button onClick={() => handleApproval(u.id, 'REJECTED')} disabled={updating} className="p-1.5 rounded-lg hover:bg-red-500/10 text-cm-dim hover:text-red-400" title="Reject Seller">
+                                <ThumbsDown className="w-4 h-4" />
+                              </button>
+                            </>
+                          )}
+                          {u.role === 'SELLER' && u.store?.approvalStatus === 'APPROVED' && (
+                            <button onClick={() => handleApproval(u.id, 'REJECTED')} disabled={updating} className="p-1.5 rounded-lg hover:bg-red-500/10 text-cm-dim hover:text-red-400" title="Suspend Seller">
+                              <Ban className="w-4 h-4" />
+                            </button>
+                          )}
+                          {u.role === 'SELLER' && u.store?.approvalStatus === 'REJECTED' && (
+                            <button onClick={() => handleApproval(u.id, 'APPROVED')} disabled={updating} className="p-1.5 rounded-lg hover:bg-green-500/10 text-cm-dim hover:text-green-400" title="Re-approve Seller">
+                              <RotateCcw className="w-4 h-4" />
+                            </button>
+                          )}
+
                           <button onClick={() => setExpandedId(expandedId === u.id ? null : u.id)} className="p-1.5 rounded-lg hover:bg-cm-hover text-cm-dim hover:text-cm-secondary">
                             {expandedId === u.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                           </button>
@@ -192,7 +259,14 @@ export default function AdminUsers() {
                             {u.store && (
                               <div>
                                 <p className="text-xs text-cm-dim mb-1">Store</p>
-                                <p className="text-cm-secondary">{u.store.name} · Rating: {u.store.rating.toFixed(1)} · Sales: {u.store.totalSales}</p>
+                                <div className="flex items-center gap-2">
+                                  <p className="text-cm-secondary">{u.store.name} · Rating: {u.store.rating.toFixed(1)} · Sales: {u.store.totalSales}</p>
+                                  {u.store.approvalStatus && (
+                                    <Badge className={`${approvalColors[u.store.approvalStatus] || ''} text-[10px] border`}>
+                                      {approvalLabels[u.store.approvalStatus] || u.store.approvalStatus}
+                                    </Badge>
+                                  )}
+                                </div>
                               </div>
                             )}
                           </div>

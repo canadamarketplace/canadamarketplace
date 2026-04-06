@@ -31,11 +31,11 @@ const ADMIN_MENU: MenuItem[] = [
   { label: 'Products', icon: Package, page: 'admin-products' },
   { label: 'Orders', icon: ShoppingCart, page: 'admin-orders' },
   { label: 'Disputes', icon: AlertTriangle, page: 'admin-disputes' },
+  { label: 'Reports', icon: BarChart3, page: 'admin-reports' },
   { label: 'Tax Rules', icon: Receipt, page: 'admin-tax' },
   { label: 'Payments', icon: CreditCard, page: 'admin-payments' },
   { label: 'Shipping', icon: Truck, page: 'admin-shipping' },
   { label: 'Marketing', icon: Megaphone, page: 'admin-marketing' },
-  { label: 'Reports', icon: BarChart3, page: 'admin-reports' },
   { label: 'Settings', icon: Settings, page: 'admin-settings' },
 ]
 

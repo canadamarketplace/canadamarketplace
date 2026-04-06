@@ -54,6 +54,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const order = await db.order.findUnique({
       where: { id },
       include: {
+        buyer: { select: { id: true, name: true, email: true } },
         items: { include: { product: { select: { store: { select: { sellerId: true } } } } } },
       },
     })
@@ -70,7 +71,66 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     const body = await req.json()
-    const { status, trackingNumber } = body
+    const { status, trackingNumber, refundReason } = body
+
+    // Handle seller-initiated refund
+    if (status === "REFUNDED") {
+      // Only allow refund if current status is PAID, SHIPPED, or DELIVERED
+      const refundableStatuses = ["PAID", "SHIPPED", "DELIVERED"]
+      if (!refundableStatuses.includes(order.status)) {
+        return NextResponse.json(
+          { error: `Cannot refund order with status: ${order.status}. Only ${refundableStatuses.join(', ')} orders can be refunded.` },
+          { status: 400 }
+        )
+      }
+
+      // Only sellers or admins can initiate refunds
+      if (!isSeller && !isAdmin) {
+        return NextResponse.json({ error: 'Only sellers can initiate refunds' }, { status: 403 })
+      }
+
+      const updatedOrder = await db.order.update({
+        where: { id },
+        data: {
+          status: "REFUNDED",
+          paymentStatus: "REFUNDED",
+          cancelledAt: new Date(),
+        },
+        include: { items: true, buyer: { select: { id: true, name: true } }, timeline: { orderBy: { createdAt: "desc" } } },
+      })
+
+      // Create timeline entry for refund
+      const refundDescription = refundReason
+        ? `Refund initiated by seller. Reason: ${refundReason}`
+        : "Refund initiated by seller."
+
+      await createTimelineEntry(
+        id,
+        "REFUNDED",
+        "Order Refunded",
+        refundDescription,
+        refundReason ? { refundReason } : undefined
+      )
+
+      // Create notification to buyer about the refund
+      await db.notification.create({
+        data: {
+          userId: order.buyerId,
+          type: "REFUND",
+          title: "Refund Issued",
+          message: `A refund has been issued for your order ${updatedOrder.orderNumber}. ${refundReason ? `Reason: ${refundReason}` : ''} The refund will be processed to your original payment method.`,
+          link: "orders",
+        },
+      })
+
+      // Re-fetch to include new timeline entry
+      const refreshedOrder = await db.order.findUnique({
+        where: { id },
+        include: { items: true, buyer: { select: { id: true, name: true } }, timeline: { orderBy: { createdAt: "desc" } } },
+      })
+
+      return NextResponse.json(refreshedOrder)
+    }
 
     const updateData: any = {}
     const previousStatus = order.status
@@ -119,11 +179,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         case "CANCELLED":
           timelineEntries.push(
             createTimelineEntry(id, "CANCELLED", "Order Cancelled", "This order has been cancelled.")
-          )
-          break
-        case "REFUNDED":
-          timelineEntries.push(
-            createTimelineEntry(id, "REFUNDED", "Order Refunded", "A refund has been issued for this order.")
           )
           break
       }

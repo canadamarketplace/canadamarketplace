@@ -62,6 +62,8 @@ import SellerTransactions from './pages/seller/SellerTransactions'
 import BuyerAddressBook from './pages/buyer/BuyerAddressBook'
 import BuyerReviews from './pages/buyer/BuyerReviews'
 import SellerShipping from './pages/seller/SellerShipping'
+import ComparePage from './pages/ComparePage'
+import CompareFloatingBar from './CompareFloatingBar'
 import type { PageView } from '@/lib/store'
 
 function PageRenderer() {
@@ -95,6 +97,7 @@ function PageRenderer() {
     case 'seller-shipping': return <SellerShipping />
     case 'address-book': return <BuyerAddressBook />
     case 'buyer-reviews': return <BuyerReviews />
+    case 'compare': return <ComparePage />
     case 'profile': return <ProfilePage />
     case 'forgot-password': return <ForgotPasswordPage />
     case 'dashboard': return <SellerDashboard />
@@ -203,6 +206,7 @@ export default function MarketplaceApp() {
       <SearchBar />
       <ChatAI />
       <PWAInstallPrompt />
+      <CompareFloatingBar />
     </div>
   )
 }

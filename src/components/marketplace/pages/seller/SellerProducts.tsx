@@ -4,13 +4,14 @@ import { useNavigation, useAuth } from '@/lib/store'
 import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Package, Plus, Edit, Trash2, Eye, MoreHorizontal, Upload, FileSpreadsheet, Download, CheckCircle, X, Loader2 } from 'lucide-react'
+import { Package, Plus, Edit, Trash2, Eye, MoreHorizontal, Upload, FileSpreadsheet, Download, CheckCircle, X, Loader2, AlertTriangle, ChevronDown } from 'lucide-react'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from '@/components/ui/dialog'
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible'
 import { toast } from 'sonner'
 
 interface Product {
@@ -25,6 +26,10 @@ export default function SellerProducts() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
+  // Low stock state
+  const [lowStockProducts, setLowStockProducts] = useState<Array<{ id: string; title: string; stock: number }>>([])
+  const [lowStockOpen, setLowStockOpen] = useState(true)
+
   // Bulk CSV state
   const [bulkDialogOpen, setBulkDialogOpen] = useState(false)
   const [csvData, setCsvData] = useState<string[][]>([])
@@ -33,6 +38,16 @@ export default function SellerProducts() {
   const [importSuccess, setImportSuccess] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const fetchLowStock = useCallback(async () => {
+    try {
+      const res = await fetch('/api/products/low-stock')
+      if (res.ok) {
+        const data = await res.json()
+        setLowStockProducts((data.products || []).map((p: any) => ({ id: p.id, title: p.title, stock: p.stock })))
+      }
+    } catch {}
+  }, [])
 
   const fetchProducts = useCallback(async () => {
     setLoading(true)
@@ -50,7 +65,8 @@ export default function SellerProducts() {
 
   useEffect(() => {
     fetchProducts()
-  }, [fetchProducts])
+    fetchLowStock()
+  }, [fetchProducts, fetchLowStock])
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this product?')) return
@@ -153,6 +169,52 @@ export default function SellerProducts() {
         </div>
       </div>
 
+      {/* Low Stock Warning Banner */}
+      {lowStockProducts.length > 0 && (
+        <div className="mb-6">
+          <Collapsible open={lowStockOpen} onOpenChange={setLowStockOpen}>
+            <div className="rounded-2xl bg-amber-500/10 border border-amber-500/20 overflow-hidden">
+              <CollapsibleTrigger className="w-full">
+                <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-amber-500/5 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0" />
+                    <p className="text-sm font-medium text-amber-300">
+                      You have {lowStockProducts.length} product{lowStockProducts.length !== 1 ? 's' : ''} with low stock (5 or fewer remaining). Consider restocking soon.
+                    </p>
+                  </div>
+                  <ChevronDown className={`w-4 h-4 text-amber-400 transition-transform ${lowStockOpen ? 'rotate-180' : ''}`} />
+                </div>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="border-t border-amber-500/20 p-4 pt-3 space-y-2">
+                  {lowStockProducts.slice(0, 5).map((product) => (
+                    <div key={product.id} className="flex items-center justify-between py-1.5">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-sm text-cm-secondary truncate">{product.title}</span>
+                      </div>
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        <span className={`text-xs font-semibold ${product.stock === 0 ? 'text-red-400' : 'text-amber-400'}`}>
+                          {product.stock} left
+                        </span>
+                        <button
+                          onClick={() => navigate('edit-product', { id: product.id })}
+                          className="text-xs text-cm-dim hover:text-amber-400 transition-colors"
+                        >
+                          Restock
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {lowStockProducts.length > 5 && (
+                    <p className="text-xs text-cm-faint pt-1">+{lowStockProducts.length - 5} more product{lowStockProducts.length - 5 !== 1 ? 's' : ''}</p>
+                  )}
+                </div>
+              </CollapsibleContent>
+            </div>
+          </Collapsible>
+        </div>
+      )}
+
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -189,7 +251,15 @@ export default function SellerProducts() {
                   <h3 className="text-sm font-medium text-cm-secondary truncate">{product.title}</h3>
                   <div className="flex items-center justify-between mt-2">
                     <span className="text-base font-bold text-red-400">${product.price.toFixed(2)}</span>
-                    <span className="text-[10px] text-cm-faint">{product.sold} sold</span>
+                    <div className="flex items-center gap-2">
+                      {product.stock <= 5 && product.stock > 0 && (
+                        <span className="text-[10px] font-medium bg-amber-500/15 text-amber-400 px-2 py-0.5 rounded-full">Low Stock</span>
+                      )}
+                      {product.stock === 0 && (
+                        <span className="text-[10px] font-medium bg-red-500/15 text-red-400 px-2 py-0.5 rounded-full">Out of Stock</span>
+                      )}
+                      <span className="text-[10px] text-cm-faint">{product.sold} sold</span>
+                    </div>
                   </div>
                   <div className="flex gap-2 mt-3">
                     <Button

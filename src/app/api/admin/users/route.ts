@@ -34,8 +34,8 @@ export async function GET(req: NextRequest) {
           id: true, email: true, name: true, role: true, avatar: true,
           province: true, city: true, isVerified: true, isActive: true,
           createdAt: true,
-          store: { select: { id: true, name: true, slug: true, rating: true, totalSales: true, isActive: true } },
-          _count: { select: { orders: true, reviews: true, disputes: true } },
+          store: { select: { id: true, name: true, slug: true, rating: true, totalSales: true, isActive: true, approvalStatus: true } },
+          _count: { select: { orders: true, reviews: true, disputes: true, reports: true } },
         },
         orderBy: { createdAt: "desc" },
         skip: (page - 1) * limit,
@@ -58,11 +58,29 @@ export async function PATCH(req: NextRequest) {
     }
 
     const body = await req.json()
-    const { userId, role, isActive, isVerified } = body
+    const { userId, role, isActive, isVerified, approvalStatus } = body
+
+    // If approvalStatus is provided, update the seller's store
+    if (approvalStatus) {
+      const store = await db.store.findUnique({ where: { sellerId: userId } })
+      if (store) {
+        await db.store.update({
+          where: { sellerId: userId },
+          data: { approvalStatus },
+        })
+      } else {
+        return NextResponse.json({ error: 'User does not have a store' }, { status: 404 })
+      }
+    }
 
     const user = await db.user.update({
       where: { id: userId },
-      data: { ...(role && { role }), ...(isActive !== undefined && { isActive }), ...(isVerified !== undefined && { isVerified }) },
+      data: {
+        ...(role && { role }),
+        ...(isActive !== undefined && { isActive }),
+        ...(isVerified !== undefined && { isVerified }),
+      },
+      include: { store: { select: { id: true, name: true, approvalStatus: true } } },
     })
 
     return NextResponse.json(user)

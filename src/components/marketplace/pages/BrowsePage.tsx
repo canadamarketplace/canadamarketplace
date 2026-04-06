@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigation, useCart, useAuth, useWishlist } from '@/lib/store'
+import { useNavigation, useCart, useAuth, useWishlist, useCompare } from '@/lib/store'
 import { useTranslation } from '@/lib/i18n'
 import { useSEO } from '@/hooks/useSEO'
 import { BreadcrumbJsonLd } from '@/components/seo/JsonLd'
@@ -13,7 +13,7 @@ import {
 import { CATEGORIES, PROVINCES } from '@/lib/types'
 import {
   Search, SlidersHorizontal, X, Package, Star, ShoppingCart, MapPin, Heart,
-  ChevronLeft, ChevronRight, ArrowUpDown, ChevronDown, Store
+  ChevronLeft, ChevronRight, ArrowUpDown, ChevronDown, Store, GitCompare
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -47,6 +47,7 @@ export default function BrowsePage() {
   const { addItem } = useCart()
   const { user } = useAuth()
   const { isWished, toggleItem } = useWishlist()
+  const { isComparing, toggleItem: toggleCompare, items: compareItems } = useCompare()
   const { openAuthModal } = useNavigation()
   const { t } = useTranslation()
   const [products, setProducts] = useState<Product[]>([])
@@ -549,12 +550,28 @@ export default function BrowsePage() {
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-cm-faint"><Package className="w-12 h-12" /></div>
                             )}
-                            <button
-                              onClick={(e) => { e.stopPropagation(); toggleItem({ productId: product.id, title: product.title, price: product.price, image: getImages(product.images)[0], storeName: product.store.name, storeSlug: product.store.slug }) }}
-                              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-cm-secondary hover:text-red-400 transition-all z-10"
-                            >
-                              <Heart className={`w-4 h-4 ${isWished(product.id) ? 'fill-red-500 text-red-500' : ''}`} />
-                            </button>
+                            <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
+                              <button
+                                onClick={(e) => { e.stopPropagation(); toggleItem({ productId: product.id, title: product.title, price: product.price, image: getImages(product.images)[0], storeName: product.store.name, storeSlug: product.store.slug }); toast.success(isWished(product.id) ? 'Removed from wishlist' : 'Added to wishlist') }}
+                                className="w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-cm-secondary hover:text-red-400 transition-all"
+                              >
+                                <Heart className={`w-4 h-4 ${isWished(product.id) ? 'fill-red-500 text-red-500' : ''}`} />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  if (!isComparing(product.id) && compareItems.length >= 4) {
+                                    toast.error('You can compare up to 4 products at a time')
+                                    return
+                                  }
+                                  toggleCompare(product.id)
+                                  toast.success(isComparing(product.id) ? 'Removed from comparison' : 'Added to comparison')
+                                }}
+                                className={`w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center transition-all ${isComparing(product.id) ? 'text-red-500' : 'text-cm-secondary hover:text-red-400'}`}
+                              >
+                                <GitCompare className={`w-4 h-4 ${isComparing(product.id) ? 'fill-red-500' : ''}`} />
+                              </button>
+                            </div>
                             <Badge className="absolute top-3 left-3 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-lg">
                               {product.condition}
                             </Badge>

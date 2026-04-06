@@ -1,13 +1,21 @@
 'use client'
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { useNavigation } from '@/lib/store'
+import { useNavigation, useAuth } from '@/lib/store'
 import { useSEO } from '@/hooks/useSEO'
 import { LocalBusinessJsonLd, BreadcrumbJsonLd } from '@/components/seo/JsonLd'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
+} from '@/components/ui/dialog'
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+} from '@/components/ui/select'
 import {
   Store, Star, MapPin, Package, CheckCircle2, ChevronLeft, ShoppingCart,
-  Clock, TrendingUp, Calendar, MessageCircle, Facebook, Twitter, Instagram, Globe
+  Clock, TrendingUp, Calendar, MessageCircle, Facebook, Twitter, Instagram, Globe, Flag
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -37,8 +45,46 @@ interface StoreData {
 
 export default function StorefrontPage() {
   const { navigate, pageParams } = useNavigation()
+  const { user } = useAuth()
   const [store, setStore] = useState<StoreData | null>(null)
   const [loading, setLoading] = useState(true)
+
+  // Report dialog state
+  const [reportOpen, setReportOpen] = useState(false)
+  const [reportReason, setReportReason] = useState('')
+  const [reportDescription, setReportDescription] = useState('')
+  const [reporting, setReporting] = useState(false)
+
+  const handleReportSubmit = async () => {
+    if (!store || !reportReason || !reportDescription.trim()) {
+      toast.error('Please fill in all fields')
+      return
+    }
+    setReporting(true)
+    try {
+      const res = await fetch('/api/reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          targetType: 'SELLER',
+          targetId: store.id,
+          reason: reportReason,
+          description: reportDescription.trim(),
+        }),
+      })
+      if (res.ok) {
+        toast.success('Report submitted. Our team will review it shortly.')
+        setReportOpen(false)
+        setReportReason('')
+        setReportDescription('')
+      } else {
+        toast.error('Failed to submit report. Please try again.')
+      }
+    } catch {
+      toast.error('Failed to submit report. Please try again.')
+    }
+    setReporting(false)
+  }
 
   const fetchStore = useCallback(async (slug: string) => {
     setLoading(true)
@@ -175,7 +221,7 @@ export default function StorefrontPage() {
               <p className="text-sm text-cm-dim mt-3 max-w-xl leading-relaxed">{store.description}</p>
             )}
 
-            {/* E. Social Media Links */}
+            {/* Social Media Links */}
             {(store.facebookUrl || store.twitterUrl || store.instagramUrl || store.websiteUrl) && (
               <div className="flex items-center gap-3 mt-3">
                 {store.facebookUrl && (
@@ -199,6 +245,19 @@ export default function StorefrontPage() {
                   </a>
                 )}
               </div>
+            )}
+          </div>
+          <div className="flex-shrink-0">
+            {user && user.id !== store.seller.id && (
+              <Button
+                onClick={() => setReportOpen(true)}
+                variant="outline"
+                size="sm"
+                className="border-cm-border-hover text-cm-dim hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20 rounded-xl text-xs"
+              >
+                <Flag className="w-3.5 h-3.5 mr-1.5" />
+                Report Seller
+              </Button>
             )}
           </div>
         </div>
@@ -372,6 +431,51 @@ export default function StorefrontPage() {
           )}
         </div>
       </div>
+
+      {/* Report Seller Dialog */}
+      <Dialog open={reportOpen} onOpenChange={setReportOpen}>
+        <DialogContent className="sm:max-w-md bg-cm-elevated border-cm-border-hover">
+          <DialogHeader>
+            <DialogTitle className="text-cm-primary">Report This Seller</DialogTitle>
+            <DialogDescription className="text-cm-dim">Help us keep the marketplace safe by reporting sellers that violate our policies.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Reason *</Label>
+              <Select value={reportReason} onValueChange={setReportReason}>
+                <SelectTrigger className="bg-cm-hover border-cm-border-hover text-cm-secondary rounded-xl">
+                  <SelectValue placeholder="Select a reason" />
+                </SelectTrigger>
+                <SelectContent className="bg-cm-elevated border-cm-border-hover">
+                  <SelectItem value="SPAM" className="text-cm-secondary">Spam</SelectItem>
+                  <SelectItem value="INAPPROPRIATE" className="text-cm-secondary">Inappropriate Content</SelectItem>
+                  <SelectItem value="FRAUD" className="text-cm-secondary">Fraud / Scam</SelectItem>
+                  <SelectItem value="COPYRIGHT" className="text-cm-secondary">Copyright Violation</SelectItem>
+                  <SelectItem value="OTHER" className="text-cm-secondary">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Description *</Label>
+              <Textarea
+                value={reportDescription}
+                onChange={(e) => setReportDescription(e.target.value)}
+                placeholder="Please describe the issue..."
+                rows={4}
+                className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl resize-none"
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setReportOpen(false)} className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-xl">
+              Cancel
+            </Button>
+            <Button onClick={handleReportSubmit} disabled={reporting || !reportReason || !reportDescription.trim()} className="bg-red-600 hover:bg-red-500 text-white rounded-xl">
+              {reporting ? 'Submitting...' : 'Submit Report'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

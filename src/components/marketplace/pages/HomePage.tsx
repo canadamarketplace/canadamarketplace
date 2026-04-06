@@ -10,7 +10,8 @@ import {
   Leaf, Shield, CheckCircle2, MapPin, DollarSign, FileText, Scale,
   Search, ArrowRight, Star, ShoppingCart, ChevronRight, Users, Package,
   TrendingUp, Lock, Eye, Zap, Globe, CreditCard, Store, Truck, ThumbsUp,
-  Timer, Sparkles, Quote, Award, Map, MapPinned, Shirt, CupSoda, Crown
+  Timer, Sparkles, Quote, Award, Map, MapPinned, Shirt, CupSoda, Crown,
+  Music, Home, Trophy, Monitor, BookOpen, Gamepad2, Car, PawPrint
 } from 'lucide-react'
 
 interface Product {
@@ -91,7 +92,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
   ]
 
   const categoryIcons: Record<string, any> = {
-    tshirts: Shirt, mugs: CupSoda, caps: Crown, 'music-culture': Sparkles,
+    apparel: Shirt, drinkware: CupSoda, headwear: Crown, 'music-audio': Music, 'home-garden': Home, 'sports-outdoors': Trophy, electronics: Monitor, 'beauty-health': Sparkles, 'books-media': BookOpen, 'toys-games': Gamepad2, automotive: Car, 'pet-supplies': PawPrint,
   }
 
   const steps = [

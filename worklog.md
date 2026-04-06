@@ -161,3 +161,277 @@ Updated both seed files with identical Tunog Kalye data:
 **Files changed**:
 - `prisma/seed.ts` — Full rewrite of categories, sellers, products, variants, conversations, notifications, coupons
 - `src/lib/auto-seed.ts` — Same changes adapted to auto-seed structure
+
+---
+## Task ID: 7 - foundational-changes
+### Work Task
+Implement foundational changes: Prisma schema updates (approvalStatus, moderationStatus, Report model), category migration to Canadian marketplace categories, seed data updates, new API routes (admin settings, seller approval, product moderation, reports, seller refunds, low stock alerts).
+
+### Work Summary
+
+**Prisma Schema** (`prisma/schema.prisma`):
+- Added `approvalStatus` field (default "APPROVED") to Store model
+- Added `moderationStatus` field (default "APPROVED") to Product model
+- Created new `Report` model with reporter relation to User, indexes on targetType/targetId and status
+- Added `reports` relation to User model
+
+**Categories** (`src/lib/types.ts`):
+- Replaced 4 Tunog Kalye categories (T-Shirts, Mugs, Caps, Music & Culture) with 12 Canadian marketplace categories: Apparel, Drinkware, Headwear, Music & Audio, Home & Garden, Sports & Outdoors, Electronics, Beauty & Health, Books & Media, Toys & Games, Automotive, Pet Supplies
+- Updated HomePage.tsx categoryIcons map to match new category slugs with correct Lucide icons
+
+**Seed Data** (`src/lib/auto-seed.ts` and `prisma/seed.ts`):
+- Updated both files to create all 12 categories with correct slugs and icons
+- Remapped 18 Tunog Kalye products: T-Shirts → "apparel", Mugs → "drinkware", Caps → "headwear"
+- Added `low_stock_threshold` setting (value: "5") to site settings seed data
+- Added `db.report.deleteMany()` to cleanup sequences in both files
+
+**API Routes Created/Updated**:
+1. `src/app/api/admin/settings/route.ts` (NEW) — GET all settings as key-value object, PUT upsert settings array
+2. `src/app/api/admin/users/route.ts` (UPDATED) — PATCH now supports `approvalStatus` to approve/reject seller stores; store select includes approvalStatus; reports count added
+3. `src/app/api/admin/products/route.ts` (UPDATED) — GET supports filtering by moderationStatus/status/search with pagination; PATCH supports moderationStatus field and bulk operations (`action: "bulk_update"`)
+4. `src/app/api/reports/route.ts` (NEW) — GET list reports (admin, with status/targetType filters), POST create report (authenticated, with duplicate prevention), PATCH update report status (admin only)
+5. `src/app/api/orders/[id]/route.ts` (UPDATED) — Sellers can now initiate refunds on PAID/SHIPPED/DELIVERED orders; creates timeline entry and buyer notification; sets paymentStatus to REFUNDED
+6. `src/app/api/products/low-stock/route.ts` (NEW) — GET returns products where stock <= configurable threshold (from SiteSetting, default 5); sellers see only their own products, admins see all
+7. `src/app/api/setup/route.ts` (UPDATED) — Schema sync now checks for approvalStatus on Store and moderationStatus on Product tables
+
+**Verified**: `npm run lint` passes with zero errors. `npx prisma generate` succeeds.
+
+**Files changed** (10 total):
+- `prisma/schema.prisma` — New fields + Report model
+- `src/lib/types.ts` — 12 new categories
+- `src/lib/auto-seed.ts` — Categories, product mappings, report cleanup, low_stock_threshold setting
+- `prisma/seed.ts` — Same seed data changes
+- `src/app/api/admin/settings/route.ts` — New API route
+- `src/app/api/admin/users/route.ts` — Seller approval support
+- `src/app/api/admin/products/route.ts` — Moderation + bulk operations
+- `src/app/api/reports/route.ts` — New API route
+- `src/app/api/orders/[id]/route.ts` — Seller refund support
+- `src/app/api/products/low-stock/route.ts` — New API route
+- `src/app/api/setup/route.ts` — Schema sync for new columns
+- `src/components/marketplace/pages/HomePage.tsx` — Category icon map update
+
+---
+## Task ID: 8 - admin-ui-enhancements
+### Work Task
+Implement 5 UI changes: Admin Settings Persistence, Seller Approval Workflow, Product Moderation + Bulk Operations, Report Management Page, and Navigation wiring.
+
+### Work Summary
+
+**Task 1: Admin Settings Persistence** (`src/components/marketplace/pages/admin/AdminSettings.tsx`):
+- Replaced fake `setTimeout` save with real API integration
+- On mount: fetches settings from `GET /api/admin/settings` and populates the form
+- On save: PUTs to `/api/admin/settings` with `{ settings: [{ key, value }] }` array
+- Added 9 settings fields: marketplace_fee, gold_seller_fee, dispute_window_days, payout_speed_days, max_listing_images, low_stock_threshold, currency, site_name, site_description
+- Shows loading spinner (Loader2) on mount while fetching
+- Shows toast on successful/failed save via `sonner`
+- Uses `settingFields` config array with key, label, desc, icon, type, defaultValue
+
+**Task 2: Admin Users — Seller Approval Workflow** (`src/components/marketplace/pages/admin/AdminUsers.tsx`):
+- Changed API calls from `/api/users` (public) to `/api/admin/users` (admin) so store data includes `approvalStatus`
+- Updated `UserRecord` interface to include `approvalStatus?: string` on store
+- For sellers, shows `approvalStatus` badge next to name: PENDING (yellow "Pending Approval"), APPROVED (green "Approved"), REJECTED (red "Rejected")
+- Added action buttons for seller approval:
+  - PENDING sellers: ThumbsUp (Approve) + ThumbsDown (Reject) icons
+  - APPROVED sellers: Ban (Suspend) icon → sets to REJECTED
+  - REJECTED sellers: RotateCcw (Re-approve) icon → sets to APPROVED
+- Expanded detail row shows store approval status badge alongside store info
+- Added proper toast notifications for success/failure
+
+**Task 3: Admin Products — Moderation + Bulk Operations** (`src/components/marketplace/pages/admin/AdminProducts.tsx`):
+- Added `moderationStatus` column showing colored badges: PENDING_REVIEW (yellow), APPROVED (green), REJECTED (red)
+- Added moderation action buttons for PENDING_REVIEW products (approve/reject via `moderationStatus`)
+- Added checkbox column with "Select All" header checkbox
+- When items selected, shows bulk action bar with: Approve Selected, Reject Selected, Remove Selected buttons + selected count
+- Bulk actions call PATCH `/api/admin/products` with `{ action: "bulk_update", productIds, moderationStatus/status }`
+- Added search input for filtering products
+- All actions show toast notifications
+
+**Task 4: Admin Reports Page** (`src/components/marketplace/pages/admin/AdminReports.tsx`):
+- Completely replaced the old analytics charts page with a report management page following AdminDisputes.tsx pattern
+- Lists all reports as expandable cards with: status badge, target type badge, reason, reporter info, date
+- Filter by status (OPEN, REVIEWING, RESOLVED, DISMISSED) and target type (PRODUCT, SELLER, ORDER)
+- Expanded view shows: reporter details, reason, full description, admin notes (if any)
+- Action buttons: Start Review (OPEN→REVIEWING), Resolve (any→RESOLVED), Dismiss (any→DISMISSED)
+- Admin notes textarea for Resolve/Dismiss actions
+- Fetches from `GET /api/reports?status=...&targetType=...`, updates via `PATCH /api/reports`
+
+**Task 5: Navigation** (`src/components/marketplace/layouts/DashboardSidebar.tsx`):
+- Verified `admin-reports` already existed in store.ts PageView type, pageToUrlBase map, urlToPage function
+- Verified AdminReports import and case in MarketplaceApp.tsx PageRenderer already existed
+- Moved Reports menu item in DashboardSidebar ADMIN_MENU to be directly after Disputes (was after Marketing)
+
+**Verified**: `npm run lint` passes with zero errors.
+
+**Files changed** (4 total):
+- `src/components/marketplace/pages/admin/AdminSettings.tsx` — Full rewrite with API persistence + 9 settings fields
+- `src/components/marketplace/pages/admin/AdminUsers.tsx` — Seller approval workflow + switched to /api/admin/users
+- `src/components/marketplace/pages/admin/AdminProducts.tsx` — Moderation column + bulk operations + checkboxes
+- `src/components/marketplace/pages/admin/AdminReports.tsx` — Full rewrite as report management page
+- `src/components/marketplace/layouts/DashboardSidebar.tsx` — Reordered Reports menu item after Disputes
+
+---
+## Task ID: 9 - seller-refund-low-stock-ui
+### Work Task
+Implement 4 UI features: Seller Refund Flow, Seller Low Stock Alerts, Seller Dashboard Low Stock Widget, and Admin Low Stock View.
+
+### Work Summary
+
+**Task 1: Seller Refund Flow** (`src/components/marketplace/pages/seller/SellerOrders.tsx`):
+- Added `RotateCcw` icon import from lucide-react
+- Added `Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter` imports from shadcn/ui
+- Added `Textarea` import from shadcn/ui
+- Added state variables: `refundOrderId`, `refundReason`, `refunding`
+- Added `handleRefund` async function that calls `PATCH /api/orders/[id]` with `{ status: 'REFUNDED', refundReason }`
+- Added "Process Refund" button (amber-colored) for orders with status PAID, SHIPPED, or DELIVERED
+- Button NOT shown for REFUNDED, CANCELLED, or DISPUTED orders (handled by status condition)
+- Added Refund Dialog with: title, confirmation warning text, required textarea for reason, Cancel and Confirm buttons
+- Dialog uses `Loader2` spinner during API call, `RotateCcw` icon on confirm button
+- On success: shows toast, closes dialog, collapses order, refreshes orders list
+- On failure: shows error toast
+
+**Task 2: Seller Low Stock Alerts** (`src/components/marketplace/pages/seller/SellerProducts.tsx`):
+- Added `AlertTriangle, ChevronDown` icon imports
+- Added `Collapsible, CollapsibleTrigger, CollapsibleContent` imports
+- Added state: `lowStockProducts` (array of {id, title, stock}), `lowStockOpen` (boolean)
+- Added `fetchLowStock` callback that calls `GET /api/products/low-stock`
+- Added low stock fetch to useEffect on mount
+- Added warning banner above products grid (only shown when low stock products exist):
+  - Amber-themed collapsible section with AlertTriangle icon
+  - Warning text: "You have X product(s) with low stock (5 or fewer remaining). Consider restocking soon."
+  - Expandable list showing up to 5 products with name, stock count (amber/red color), and "Restock" link
+  - Shows "+N more" if more than 5 items
+- Added "Low Stock" badge (amber) and "Out of Stock" badge (red) next to stock count in product cards
+
+**Task 3: Seller Dashboard Low Stock Widget** (`src/components/marketplace/pages/seller/SellerDashboard.tsx`):
+- Added state: `lowStockProducts` array
+- Added `fetchLowStock` async function calling `GET /api/products/low-stock`
+- Added fetch to useEffect on mount
+- Added new Card widget below Growth Metrics Row and above Tabs:
+  - Title "Low Stock Alert" with AlertTriangle icon (amber when items exist, green when none)
+  - Badge showing count when items exist
+  - When no low stock: shows "All products are well stocked ✓" in green
+  - When items exist: compact scrollable list (max 5 items) with product name, stock count, and "Restock" button
+  - "View all X low stock products →" link if more than 5 items
+
+**Task 4: Admin Low Stock View** (`src/components/marketplace/pages/admin/AdminDashboard.tsx`):
+- Added state: `lowStockCount` number
+- Added `fetchLowStockCount` callback calling `GET /api/products/low-stock`
+- Added fetch to useEffect on mount
+- Added "Low Stock Products" stat card to the stats grid (6 cards now, grid changed to lg:grid-cols-6)
+- Card uses amber color theme (from-amber-500/10 to-amber-600/5 gradient, text-amber-400)
+- Card is clickable and navigates to 'admin-products' page
+- Shows low stock product count
+
+**Verified**: `npm run lint` passes with zero errors.
+
+**Files changed** (4 total):
+- `src/components/marketplace/pages/seller/SellerOrders.tsx` — Refund dialog + button + handler
+- `src/components/marketplace/pages/seller/SellerProducts.tsx` — Low stock banner + product badges
+- `src/components/marketplace/pages/seller/SellerDashboard.tsx` — Low stock alert widget
+- `src/components/marketplace/pages/admin/AdminDashboard.tsx` — Low stock stat card
+
+---
+## Task ID: 10 - customer-features
+### Work Task
+Implement 3 customer-facing UI features: Product Comparison Tool, Report/Flag System, and Simple Math CAPTCHA.
+
+### Work Summary
+
+**Task 1: Product Comparison Tool**
+
+1a. **Compare Store State** (`src/lib/store.ts`):
+- Added `"compare"` to the `PageView` union type
+- Added `"compare": "/compare"` mapping in `pageToUrlBase`
+- Added `if (cleanPath === "/compare")` check in `urlToPage`
+- Created `useCompare` Zustand store with: `items` (string[] of product IDs), `addItem`, `removeItem`, `toggleItem`, `isComparing`, `clearAll`, `itemCount`
+- Max 4 items enforced; persisted to localStorage as `cm-compare`
+- Follows same pattern as existing `useWishlist` store
+
+1b. **Compare Button on Browse Page** (`src/components/marketplace/pages/BrowsePage.tsx`):
+- Added `useCompare` import and state hooks (`isComparing`, `toggleItem`, `items`)
+- Added `GitCompare` icon import from lucide-react
+- Replaced single wishlist button with a column of two buttons (wishlist + compare) on product cards
+- Compare button is highlighted (filled/red) when product is in compare list
+- Shows toast "Added to comparison" / "Removed from comparison" / "You can compare up to 4 products at a time"
+
+1c. **Compare Button on Product Detail Page** (`src/components/marketplace/pages/ProductDetailPage.tsx`):
+- Added `useCompare` import and state hooks
+- Added compare toggle button next to the wishlist and share buttons
+- Same highlight and toast behavior as browse page
+- Added `GitCompare` icon import
+
+1d. **Compare Floating Bar** (`src/components/marketplace/CompareFloatingBar.tsx`) — NEW FILE:
+- Fixed position at bottom of screen, full width, z-50
+- Shows when 2+ items in compare list
+- Displays "X products selected for comparison" with compare icon
+- "Compare Now" button navigates to compare page
+- "Clear All" button to clear list
+- Dark theme styling with backdrop blur
+
+1e. **Compare Page** (`src/components/marketplace/pages/ComparePage.tsx`) — NEW FILE:
+- Full side-by-side comparison table layout
+- Fetches product details for each compared ID from `/api/products/[id]`
+- Rows: Product Image+Title (clickable), Price, Compare Price/Discount, Store Name (clickable), Condition, Stock, Rating, Category, Description (truncated), Actions
+- Each column has "Remove" button (X) on hover
+- "Clear All" button at top
+- Shows "Add at least 2 products to compare" message when < 2 items
+- Responsive with horizontal scroll on mobile
+- Loading skeleton while fetching
+
+1f. **Navigation Wiring** (`src/components/marketplace/MarketplaceApp.tsx`):
+- Imported `ComparePage` and `CompareFloatingBar`
+- Added `case 'compare': return <ComparePage />` in PageRenderer
+- Added `<CompareFloatingBar />` to render tree
+
+**Task 2: Report/Flag System**
+
+2a. **Report Button on Product Detail Page** (`src/components/marketplace/pages/ProductDetailPage.tsx`):
+- Added `Flag` icon import
+- Added `Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter` imports
+- Added `Input, Label, Textarea, Select` imports
+- Added report dialog state (`reportOpen`, `reportReason`, `reportDescription`, `reporting`)
+- Added `handleReportSubmit` async function calling `POST /api/reports` with `{ targetType: "PRODUCT", targetId, reason, description }`
+- Flag button only shown for authenticated users (checks `user`)
+- Dialog has: Title "Report This Product", reason select (SPAM/INAPPROPRIATE/FRAUD/COPYRIGHT/OTHER), description textarea, submit/cancel buttons
+- Shows success toast: "Report submitted. Our team will review it shortly."
+
+2b. **Report Button on Storefront Page** (`src/components/marketplace/pages/StorefrontPage.tsx`):
+- Added `useAuth` import
+- Added `Flag` icon, Dialog, Select, Textarea, Label imports
+- Added "Report Seller" button in store header area (next to store info)
+- Button only shown for authenticated users who are NOT the store owner
+- Same dialog pattern but with `{ targetType: "SELLER", targetId: store.id, reason, description }`
+
+**Task 3: Simple Math CAPTCHA**
+
+3a. **CAPTCHA on Contact Page** (`src/components/marketplace/pages/ContactPage.tsx`):
+- Added `useCallback, useEffect` imports
+- Added `RefreshCw` icon import
+- Added CAPTCHA state: `captchaA`, `captchaB`, `captchaAnswer`, `captchaError`
+- Added `generateCaptcha` function creating random 1-10 addition
+- CAPTCHA rendered in a styled card: "What is X + Y ?" with input field and refresh button
+- Validates answer before form submission
+- Shows error "Incorrect answer. Please try again." on wrong answer
+- Regenerates question on wrong answer
+
+3b. **CAPTCHA on Register Forms** (`src/components/marketplace/AuthModal.tsx`):
+- Added `useCallback, useEffect` imports
+- Added `RefreshCw` icon import
+- Separate CAPTCHA state for buyer register and seller register forms
+- Each has independent `generateCaptcha` function with `useEffect` initialization
+- CAPTCHA validates before registration submission
+- Shown in a compact inline card: "What is X + Y ?" + input + refresh button
+- Error message shown below on wrong answer
+
+**Verified**: `npm run lint` passes with zero errors.
+
+**Files changed** (9 total):
+- `src/lib/store.ts` — useCompare store + compare page routing
+- `src/components/marketplace/pages/BrowsePage.tsx` — Compare button on product cards
+- `src/components/marketplace/pages/ProductDetailPage.tsx` — Compare button + Report dialog
+- `src/components/marketplace/pages/StorefrontPage.tsx` — Report Seller button + dialog
+- `src/components/marketplace/pages/ContactPage.tsx` — Math CAPTCHA
+- `src/components/marketplace/AuthModal.tsx` — Math CAPTCHA on both register forms
+- `src/components/marketplace/pages/ComparePage.tsx` — NEW: Product comparison page
+- `src/components/marketplace/CompareFloatingBar.tsx` — NEW: Floating compare bar
+- `src/components/marketplace/MarketplaceApp.tsx` — Wire up ComparePage + CompareFloatingBar

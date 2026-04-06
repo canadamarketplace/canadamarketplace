@@ -11,7 +11,9 @@ import {
 } from '@/components/ui/select'
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/types'
 import { OrderTimeline } from '@/components/marketplace/OrderTimeline'
-import { Package, Truck, Loader2, ChevronDown, ChevronUp, Clock, FileText, Printer } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
+import { Package, Truck, Loader2, ChevronDown, ChevronUp, Clock, FileText, Printer, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface TimelineEvent {
@@ -43,6 +45,9 @@ export default function SellerOrders() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
   const [trackingNum, setTrackingNum] = useState('')
+  const [refundOrderId, setRefundOrderId] = useState<string | null>(null)
+  const [refundReason, setRefundReason] = useState('')
+  const [refunding, setRefunding] = useState(false)
 
   const fetchOrders = useCallback(async () => {
     setLoading(true)
@@ -94,6 +99,30 @@ export default function SellerOrders() {
       }
     } catch {}
     setUpdatingId(null)
+  }
+
+  const handleRefund = async () => {
+    if (!refundOrderId || !refundReason.trim()) return
+    setRefunding(true)
+    try {
+      const res = await fetch(`/api/orders/${refundOrderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'REFUNDED', refundReason: refundReason.trim() }),
+      })
+      if (res.ok) {
+        toast.success('Order refunded successfully')
+        setRefundOrderId(null)
+        setRefundReason('')
+        setExpandedId(null)
+        fetchOrders()
+      } else {
+        toast.error('Failed to process refund')
+      }
+    } catch {
+      toast.error('Failed to process refund')
+    }
+    setRefunding(false)
   }
 
   const handlePrintInvoice = (order: Order) => {
@@ -414,10 +443,60 @@ export default function SellerOrders() {
                       {t('timeline.markAsDelivered')}
                     </Button>
                   )}
+
+                  {(order.status === 'PAID' || order.status === 'SHIPPED' || order.status === 'DELIVERED') && (
+                    <Button
+                      onClick={() => { setRefundOrderId(order.id); setRefundReason('') }}
+                      size="sm"
+                      className="bg-amber-600/80 hover:bg-amber-600 text-white rounded-lg text-sm"
+                    >
+                      <RotateCcw className="w-3 h-3 mr-1" />
+                      Process Refund
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
           ))}
+
+          {/* Refund Dialog */}
+          <Dialog open={!!refundOrderId} onOpenChange={(open) => { if (!open) { setRefundOrderId(null); setRefundReason('') } }}>
+            <DialogContent className="bg-cm-elevated border-cm-border-hover rounded-2xl max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-cm-primary">Process Refund</DialogTitle>
+                <DialogDescription className="text-cm-dim">
+                  Are you sure you want to refund this order? This action cannot be undone.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-2">
+                <label className="text-sm font-medium text-cm-secondary mb-2 block">Refund Reason <span className="text-red-400">*</span></label>
+                <Textarea
+                  value={refundReason}
+                  onChange={(e) => setRefundReason(e.target.value)}
+                  placeholder="Please provide a reason for this refund..."
+                  className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint min-h-[100px] rounded-xl"
+                />
+              </div>
+              <DialogFooter className="gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => { setRefundOrderId(null); setRefundReason('') }}
+                  disabled={refunding}
+                  className="border-cm-border-hover text-cm-secondary rounded-xl"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleRefund}
+                  disabled={refunding || !refundReason.trim()}
+                  className="bg-amber-600/80 hover:bg-amber-600 text-white rounded-xl"
+                >
+                  {refunding ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RotateCcw className="w-4 h-4 mr-2" />}
+                  Confirm Refund
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       )}
     </div>

@@ -1,16 +1,25 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigation, useCart, useAuth, useWishlist } from '@/lib/store'
+import { useNavigation, useCart, useAuth, useWishlist, useCompare } from '@/lib/store'
 import { useSEO } from '@/hooks/useSEO'
 import { ProductJsonLd, BreadcrumbJsonLd } from '@/components/seo/JsonLd'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
+} from '@/components/ui/dialog'
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+} from '@/components/ui/select'
 import { ORDER_STATUS_LABELS } from '@/lib/types'
 import {
   Star, ShoppingCart, MapPin, Shield, ChevronLeft, Package,
   Heart, Share2, Store, Clock, Truck, CheckCircle2, ThumbsUp, User, ChevronRight, MessageCircle,
-  X, ZoomIn, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon
+  X, ZoomIn, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, GitCompare, Flag
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -138,6 +147,7 @@ export default function ProductDetailPage() {
   const { addItem } = useCart()
   const { user } = useAuth()
   const { isWished, toggleItem } = useWishlist()
+  const { isComparing, toggleItem: toggleCompare, items: compareItems } = useCompare()
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [selectedImage, setSelectedImage] = useState(0)
@@ -261,6 +271,53 @@ export default function ProductDetailPage() {
       return
     }
     navigate('messaging', { recipientId: product.store.seller.id })
+  }
+
+  // Report dialog state
+  const [reportOpen, setReportOpen] = useState(false)
+  const [reportReason, setReportReason] = useState('')
+  const [reportDescription, setReportDescription] = useState('')
+  const [reporting, setReporting] = useState(false)
+
+  const handleReportSubmit = async () => {
+    if (!product || !reportReason || !reportDescription.trim()) {
+      toast.error('Please fill in all fields')
+      return
+    }
+    setReporting(true)
+    try {
+      const res = await fetch('/api/reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          targetType: 'PRODUCT',
+          targetId: product.id,
+          reason: reportReason,
+          description: reportDescription.trim(),
+        }),
+      })
+      if (res.ok) {
+        toast.success('Report submitted. Our team will review it shortly.')
+        setReportOpen(false)
+        setReportReason('')
+        setReportDescription('')
+      } else {
+        toast.error('Failed to submit report. Please try again.')
+      }
+    } catch {
+      toast.error('Failed to submit report. Please try again.')
+    }
+    setReporting(false)
+  }
+
+  const handleToggleCompare = () => {
+    if (!product) return
+    if (!isComparing(product.id) && compareItems.length >= 4) {
+      toast.error('You can compare up to 4 products at a time')
+      return
+    }
+    toggleCompare(product.id)
+    toast.success(isComparing(product.id) ? 'Removed from comparison' : 'Added to comparison')
   }
 
   const hasDiscount = product?.comparePrice && product.comparePrice > product.price
@@ -472,9 +529,27 @@ export default function ProductDetailPage() {
               >
                 <Heart className={`w-5 h-5 ${wished ? 'fill-red-500' : ''}`} />
               </Button>
+              <Button
+                onClick={handleToggleCompare}
+                variant="outline"
+                size="lg"
+                className={`border-cm-border-hover rounded-xl h-12 ${isComparing(product.id) ? 'text-red-500 hover:text-red-400 border-red-500/30 hover:bg-red-500/10' : 'text-cm-primary hover:bg-cm-hover'}`}
+              >
+                <GitCompare className={`w-5 h-5 ${isComparing(product.id) ? 'fill-red-500' : ''}`} />
+              </Button>
               <Button variant="outline" size="lg" className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-xl h-12">
                 <Share2 className="w-5 h-5" />
               </Button>
+              {user && (
+                <Button
+                  onClick={() => setReportOpen(true)}
+                  variant="outline"
+                  size="lg"
+                  className="border-cm-border-hover text-cm-primary hover:bg-cm-hover hover:text-red-400 rounded-xl h-12"
+                >
+                  <Flag className="w-5 h-5" />
+                </Button>
+              )}
             </div>
 
             <Separator className="bg-cm-hover my-6" />
@@ -614,6 +689,51 @@ export default function ProductDetailPage() {
           onClose={() => setLightboxOpen(false)}
         />
       )}
+
+      {/* Report Dialog */}
+      <Dialog open={reportOpen} onOpenChange={setReportOpen}>
+        <DialogContent className="sm:max-w-md bg-cm-elevated border-cm-border-hover">
+          <DialogHeader>
+            <DialogTitle className="text-cm-primary">Report This Product</DialogTitle>
+            <DialogDescription className="text-cm-dim">Help us keep the marketplace safe by reporting products that violate our policies.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Reason *</Label>
+              <Select value={reportReason} onValueChange={setReportReason}>
+                <SelectTrigger className="bg-cm-hover border-cm-border-hover text-cm-secondary rounded-xl">
+                  <SelectValue placeholder="Select a reason" />
+                </SelectTrigger>
+                <SelectContent className="bg-cm-elevated border-cm-border-hover">
+                  <SelectItem value="SPAM" className="text-cm-secondary">Spam</SelectItem>
+                  <SelectItem value="INAPPROPRIATE" className="text-cm-secondary">Inappropriate Content</SelectItem>
+                  <SelectItem value="FRAUD" className="text-cm-secondary">Fraud / Scam</SelectItem>
+                  <SelectItem value="COPYRIGHT" className="text-cm-secondary">Copyright Violation</SelectItem>
+                  <SelectItem value="OTHER" className="text-cm-secondary">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Description *</Label>
+              <Textarea
+                value={reportDescription}
+                onChange={(e) => setReportDescription(e.target.value)}
+                placeholder="Please describe the issue..."
+                rows={4}
+                className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl resize-none"
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setReportOpen(false)} className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-xl">
+              Cancel
+            </Button>
+            <Button onClick={handleReportSubmit} disabled={reporting || !reportReason || !reportDescription.trim()} className="bg-red-600 hover:bg-red-500 text-white rounded-xl">
+              {reporting ? 'Submitting...' : 'Submit Report'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

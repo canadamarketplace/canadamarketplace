@@ -38,6 +38,7 @@ model User {
   conversation1  Conversation[] @relation("ConversationParticipant1")
   conversation2  Conversation[] @relation("ConversationParticipant2")
   notifications  Notification[]
+  reports        Report[]
 }
 
 model Store {
@@ -62,6 +63,7 @@ model Store {
 
   seller   User      @relation(fields: [sellerId], references: [id])
   products Product[]
+  approvalStatus String   @default("APPROVED")  // PENDING, APPROVED, REJECTED
 }
 
 model Category {
@@ -101,8 +103,9 @@ model Product {
   stock        Int      @default(1)
   sold         Int      @default(0)
   status       String   @default("ACTIVE")
-  isFeatured   Boolean  @default(false)
-  views        Int      @default(0)
+  isFeatured       Boolean  @default(false)
+  views            Int      @default(0)
+  moderationStatus String   @default("APPROVED")  // PENDING_REVIEW, APPROVED, REJECTED
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -318,6 +321,24 @@ model OrderTimeline {
 
   @@index([orderId])
   @@index([createdAt])
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  reporterId  String
+  targetType  String   // PRODUCT, SELLER, ORDER
+  targetId    String
+  reason      String   // SPAM, INAPPROPRIATE, FRAUD, COPYRIGHT, OTHER
+  description String
+  status      String   @default("OPEN")  // OPEN, REVIEWING, RESOLVED, DISMISSED
+  adminNotes  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  reporter User @relation(fields: [reporterId], references: [id])
+
+  @@index([targetType, targetId])
+  @@index([status])
 }
 
 model AppliedCoupon {

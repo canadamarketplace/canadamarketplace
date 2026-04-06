@@ -61,6 +61,7 @@ export default function SellerDashboard() {
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [orders, setOrders] = useState<any[]>([])
+  const [lowStockProducts, setLowStockProducts] = useState<any[]>([])
   const [activeTab, setActiveTab] = useState('overview')
 
   const fetchDashboard = async () => {
@@ -83,9 +84,20 @@ export default function SellerDashboard() {
     } catch {}
   }
 
+  const fetchLowStock = async () => {
+    try {
+      const res = await fetch('/api/products/low-stock')
+      if (res.ok) {
+        const data = await res.json()
+        setLowStockProducts(data.products || [])
+      }
+    } catch {}
+  }
+
   useEffect(() => {
     fetchDashboard()
     fetchOrders()
+    fetchLowStock()
   }, [])
 
   // Use API data where available
@@ -403,6 +415,62 @@ export default function SellerDashboard() {
             )
           })}
         </div>
+
+        {/* Low Stock Alert Widget */}
+        <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl mb-6">
+          <CardContent className="p-5">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-semibold text-cm-secondary flex items-center gap-2">
+                <AlertTriangle className={`w-4 h-4 ${lowStockProducts.length > 0 ? 'text-amber-400' : 'text-green-400'}`} />
+                Low Stock Alert
+              </h2>
+              {lowStockProducts.length > 0 && (
+                <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 text-xs border">
+                  {lowStockProducts.length} item{lowStockProducts.length !== 1 ? 's' : ''}
+                </Badge>
+              )}
+            </div>
+            {lowStockProducts.length === 0 ? (
+              <div className="flex items-center gap-2 py-2">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                <p className="text-sm text-green-400">All products are well stocked ✓</p>
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {lowStockProducts.slice(0, 5).map((p: any) => (
+                  <div key={p.id} className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-cm-hover transition-colors">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Package className="w-3.5 h-3.5 text-cm-faint flex-shrink-0" />
+                      <span className="text-xs text-cm-secondary truncate max-w-[200px]">{p.title}</span>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span className={`text-xs font-semibold ${p.stock === 0 ? 'text-red-400' : 'text-amber-400'}`}>
+                        {p.stock} left
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => navigate('edit-product', { id: p.id })}
+                        className="text-[10px] text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 h-6 px-2"
+                      >
+                        Restock
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                {lowStockProducts.length > 5 && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => navigate('my-products')}
+                    className="w-full text-xs text-cm-dim hover:text-cm-secondary"
+                  >
+                    View all {lowStockProducts.length} low stock products →
+                  </Button>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">

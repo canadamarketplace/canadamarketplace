@@ -24,15 +24,27 @@ async function ensureSchemaSync(): Promise<{ synced: boolean; message: string }>
     if (!existingCols.has('websiteUrl')) missingColumns.push({ name: 'websiteUrl', type: 'TEXT', default: 'NULL' })
     if (!existingCols.has('vacationMode')) missingColumns.push({ name: 'vacationMode', type: 'BOOLEAN', default: 'DEFAULT false' })
     if (!existingCols.has('vacationMessage')) missingColumns.push({ name: 'vacationMessage', type: 'TEXT', default: 'NULL' })
+    if (!existingCols.has('approvalStatus')) missingColumns.push({ name: 'approvalStatus', type: 'TEXT', default: "DEFAULT 'APPROVED'" })
+
+    // Check for missing columns in Product table
+    const productColumns = await db.$queryRawUnsafe(
+      `SELECT column_name FROM information_schema.columns WHERE table_name = 'Product'`
+    ) as Array<{ column_name: string }>
+
+    const existingProductCols = new Set(productColumns.map(c => c.column_name))
+    if (!existingProductCols.has('moderationStatus')) {
+      missingColumns.push({ name: 'moderationStatus', type: 'TEXT', default: "DEFAULT 'APPROVED'" })
+    }
 
     if (missingColumns.length === 0) {
       return { synced: false, message: 'Schema already in sync' }
     }
 
-    console.log(`🔧 Adding ${missingColumns.length} missing columns to Store table...`)
+    console.log(`🔧 Adding ${missingColumns.length} missing columns...`)
     for (const col of missingColumns) {
+      const table = ['approvalStatus'].includes(col.name) ? '"Store"' : ['moderationStatus'].includes(col.name) ? '"Product"' : '"Store"'
       await db.$executeRawUnsafe(
-        `ALTER TABLE "Store" ADD COLUMN "${col.name}" ${col.type} ${col.default}`
+        `ALTER TABLE ${table} ADD COLUMN "${col.name}" ${col.type} ${col.default}`
       )
       console.log(`  ✅ Added column: ${col.name}`)
     }

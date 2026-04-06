@@ -65,6 +65,7 @@ export type PageView =
   | "seller-shipping"
   | "address-book"
   | "buyer-reviews"
+  | "compare"
 
 interface NavigationState {
   currentPage: PageView
@@ -105,6 +106,7 @@ function pageToUrlBase(page: PageView, params: Record<string, string>): string {
     "seller-guide": "/seller-guide",
     "shipping": "/shipping",
     "faq": "/faq",
+    "compare": "/compare",
     "wishlist": "/wishlist",
     "coupons": "/seller/coupons",
     "seller-transactions": "/seller/transactions",
@@ -178,6 +180,7 @@ export function urlToPage(pathname: string, search: string): { page: PageView; p
   if (cleanPath === "/seller-guide") return { page: "seller-guide", params: {} }
   if (cleanPath === "/shipping") return { page: "shipping", params: {} }
   if (cleanPath === "/faq") return { page: "faq", params: {} }
+  if (cleanPath === "/compare") return { page: "compare", params: {} }
   if (cleanPath === "/wishlist") return { page: "wishlist", params: {} }
   if (cleanPath === "/seller/coupons") return { page: "coupons", params: {} }
   if (cleanPath === "/seller/transactions") return { page: "seller-transactions", params: {} }
@@ -394,4 +397,45 @@ export const useCoupon = create<CouponState>((set) => ({
   appliedCoupon: null,
   applyCoupon: (coupon) => set({ appliedCoupon: coupon }),
   removeCoupon: () => set({ appliedCoupon: null }),
+}))
+
+interface CompareState {
+  items: string[]
+  addItem: (id: string) => void
+  removeItem: (id: string) => void
+  toggleItem: (id: string) => void
+  isComparing: (id: string) => boolean
+  clearAll: () => void
+  itemCount: () => number
+}
+
+export const useCompare = create<CompareState>((set, get) => ({
+  items: typeof window !== 'undefined' ? (() => {
+    try { const saved = localStorage.getItem('cm-compare'); return saved ? JSON.parse(saved) : [] }
+    catch { return [] }
+  })() : [],
+  addItem: (id) => {
+    const items = get().items
+    if (items.length >= 4) return false
+    if (!items.includes(id)) {
+      const updated = [...items, id]
+      set({ items: updated })
+      try { localStorage.setItem('cm-compare', JSON.stringify(updated)) } catch {}
+    }
+  },
+  removeItem: (id) => {
+    const updated = get().items.filter(i => i !== id)
+    set({ items: updated })
+    try { localStorage.setItem('cm-compare', JSON.stringify(updated)) } catch {}
+  },
+  toggleItem: (id) => {
+    if (get().isComparing(id)) get().removeItem(id)
+    else get().addItem(id)
+  },
+  isComparing: (id) => get().items.includes(id),
+  clearAll: () => {
+    set({ items: [] })
+    try { localStorage.removeItem('cm-compare') } catch {}
+  },
+  itemCount: () => get().items.length,
 }))

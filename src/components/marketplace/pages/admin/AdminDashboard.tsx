@@ -22,6 +22,7 @@ export default function AdminDashboard() {
   const { navigate } = useNavigation()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [lowStockCount, setLowStockCount] = useState(0)
 
   const fetchDashboard = useCallback(async () => {
     try {
@@ -31,7 +32,17 @@ export default function AdminDashboard() {
     setLoading(false)
   }, [])
 
-  useEffect(() => { fetchDashboard() }, [fetchDashboard])
+  const fetchLowStockCount = useCallback(async () => {
+    try {
+      const res = await fetch('/api/products/low-stock')
+      if (res.ok) {
+        const data = await res.json()
+        setLowStockCount(data.products?.length || 0)
+      }
+    } catch {}
+  }, [])
+
+  useEffect(() => { fetchDashboard(); fetchLowStockCount() }, [fetchDashboard, fetchLowStockCount])
 
   const stats = [
     { label: 'Total Users', value: data?.totalUsers || 0, icon: Users, color: 'from-blue-500/10 to-blue-600/5', textColor: 'text-blue-400' },
@@ -39,6 +50,7 @@ export default function AdminDashboard() {
     { label: 'Total Products', value: data?.totalProducts || 0, icon: Package, color: 'from-red-500/10 to-red-600/5', textColor: 'text-red-300' },
     { label: 'Total Revenue', value: data ? `$${data.totalRevenue.toFixed(0)}` : '$0', icon: DollarSign, color: 'from-green-500/10 to-green-600/5', textColor: 'text-green-400' },
     { label: 'Pending Disputes', value: data?.pendingDisputes || 0, icon: AlertTriangle, color: 'from-red-500/10 to-red-600/5', textColor: 'text-red-400' },
+    { label: 'Low Stock Products', value: lowStockCount, icon: Package, color: 'from-amber-500/10 to-amber-600/5', textColor: 'text-amber-400', clickable: true, page: 'admin-products' as const },
   ]
 
   const chartData = data?.monthlyStats || []
@@ -62,7 +74,7 @@ export default function AdminDashboard() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
         {stats.map((stat) => (
-          <Card key={stat.label} className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
+          <Card key={stat.label} className={`bg-cm-elevated border-cm-border-subtle rounded-2xl ${'clickable' in stat && stat.clickable ? 'cursor-pointer hover:border-cm-border-hover transition-all' : ''}`} {...('clickable' in stat && stat.clickable ? { onClick: () => navigate(stat.page) } : {})}>
             <CardContent className="p-4">
               <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-2`}>
                 <stat.icon className={`w-4 h-4 ${stat.textColor}`} />

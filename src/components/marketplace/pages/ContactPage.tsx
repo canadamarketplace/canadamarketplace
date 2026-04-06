@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useNavigation } from '@/lib/store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/select'
 import {
   MapPin, Phone, Mail, Clock, Send, Leaf, CheckCircle,
-  Building2, MessageSquare, Globe, ArrowLeft
+  Building2, MessageSquare, Globe, ArrowLeft, RefreshCw
 } from 'lucide-react'
 
 const SUBJECTS = [
@@ -36,8 +36,35 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
   const [sending, setSending] = useState(false)
 
+  // Math CAPTCHA state
+  const [captchaA, setCaptchaA] = useState(0)
+  const [captchaB, setCaptchaB] = useState(0)
+  const [captchaAnswer, setCaptchaAnswer] = useState('')
+  const [captchaError, setCaptchaError] = useState('')
+
+  const generateCaptcha = useCallback(() => {
+    const a = Math.floor(Math.random() * 10) + 1
+    const b = Math.floor(Math.random() * 10) + 1
+    setCaptchaA(a)
+    setCaptchaB(b)
+    setCaptchaAnswer('')
+    setCaptchaError('')
+  }, [])
+
+  useEffect(() => {
+    generateCaptcha()
+  }, [generateCaptcha])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Validate CAPTCHA
+    if (parseInt(captchaAnswer) !== captchaA + captchaB) {
+      setCaptchaError('Incorrect answer. Please try again.')
+      generateCaptcha()
+      return
+    }
+
     setSending(true)
     // Simulate sending
     await new Promise(resolve => setTimeout(resolve, 1500))
@@ -221,6 +248,37 @@ export default function ContactPage() {
                     className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl resize-none"
                     required
                   />
+                </div>
+
+                {/* Math CAPTCHA */}
+                <div className="p-4 rounded-xl bg-cm-elevated border border-cm-border-subtle">
+                  <Label className="text-cm-secondary text-xs mb-2 block flex items-center gap-2">
+                    <span className="text-cm-faint text-[10px] uppercase tracking-wider font-semibold">Security Check</span>
+                  </Label>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-cm-hover border border-cm-border-subtle">
+                      <span className="text-sm font-medium text-cm-primary">What is</span>
+                      <span className="text-base font-bold text-red-400">{captchaA} + {captchaB}</span>
+                      <span className="text-sm font-medium text-cm-primary">?</span>
+                    </div>
+                    <Input
+                      type="number"
+                      value={captchaAnswer}
+                      onChange={(e) => { setCaptchaAnswer(e.target.value); setCaptchaError('') }}
+                      placeholder="Answer"
+                      className={`w-24 bg-cm-hover border ${captchaError ? 'border-red-500/50' : 'border-cm-border-hover'} text-cm-secondary placeholder:text-cm-faint rounded-xl text-center`}
+                    />
+                    <button
+                      type="button"
+                      onClick={generateCaptcha}
+                      className="w-9 h-9 rounded-lg bg-cm-hover border border-cm-border-subtle flex items-center justify-center text-cm-dim hover:text-cm-secondary hover:bg-cm-hover-strong transition-colors"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  {captchaError && (
+                    <p className="text-xs text-red-400 mt-2">{captchaError}</p>
+                  )}
                 </div>
 
                 <Button
