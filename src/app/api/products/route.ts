@@ -22,7 +22,13 @@ export async function GET(req: NextRequest) {
     const maxPrice = searchParams.get("maxPrice")
     const rating = searchParams.get("rating")
 
-    const where: any = { status: status || "ACTIVE" }
+    const where: any = {}
+    // Only filter by status if it's a specific value (not "all")
+    if (status && status !== "all") {
+      where.status = status
+    } else if (!status) {
+      where.status = "ACTIVE" // Default to active for public browsing
+    }
 
     if (category) {
       const cats = category.split(",").map(c => c.trim())
