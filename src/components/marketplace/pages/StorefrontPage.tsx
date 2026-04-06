@@ -1,6 +1,8 @@
 'use client'
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigation } from '@/lib/store'
+import { useSEO } from '@/hooks/useSEO'
+import { LocalBusinessJsonLd, BreadcrumbJsonLd } from '@/components/seo/JsonLd'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -68,6 +70,16 @@ export default function StorefrontPage() {
     try { return JSON.parse(imagesStr) } catch { return [] }
   }
 
+  // Dynamic SEO for storefront pages — must be called before any early return
+  useSEO({
+    title: store ? `${store.name} — Verified Canadian Seller | Canada Marketplace` : 'Visit Seller Store',
+    description: store
+      ? (store.description?.substring(0, 160) || `Shop at ${store.name} on Canada Marketplace. Verified seller from ${store.seller.city}, ${store.seller.province}. ${store._count.products} products with secure escrow payments.`)
+      : 'Browse this verified Canadian seller\'s storefront on Canada Marketplace.',
+    ogType: 'business.business',
+    ogImage: store?.logo || store?.banner,
+  })
+
   // Compute rating distribution for the reviews section
   const starDistribution = useMemo(() => {
     const dist: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
@@ -94,6 +106,23 @@ export default function StorefrontPage() {
 
   return (
     <div className="min-h-screen">
+      <LocalBusinessJsonLd
+        name={store.name}
+        description={store.description || `Verified Canadian seller — ${store.name}`}
+        url={`/store/${store.slug}`}
+        image={store.logo || undefined}
+        address={{
+          addressLocality: store.seller.city,
+          addressRegion: store.seller.province,
+        }}
+        ratingValue={store.averageRating || store.rating}
+        reviewCount={store.reviewCount || 0}
+        priceRange="$$"
+      />
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: '/' },
+        { name: store.name, url: `/store/${store.slug}` },
+      ]} />
       {/* Banner */}
       <div className="h-48 sm:h-64 bg-gradient-to-r from-red-900/30 via-neutral-900 to-red-900/20 relative">
         {store.banner && (

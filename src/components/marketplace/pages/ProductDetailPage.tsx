@@ -1,6 +1,8 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigation, useCart, useAuth, useWishlist } from '@/lib/store'
+import { useSEO } from '@/hooks/useSEO'
+import { ProductJsonLd, BreadcrumbJsonLd } from '@/components/seo/JsonLd'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -174,6 +176,17 @@ export default function ProductDetailPage() {
     try { return JSON.parse(imagesStr) } catch { return [] }
   }
 
+  // Dynamic SEO for product pages — must be called before any early return
+  const productImages = product ? getImages(product.images) : []
+  useSEO({
+    title: product ? `${product.title} | Canada Marketplace` : 'Product Details',
+    description: product
+      ? (product.description?.substring(0, 160) || `Buy ${product.title} on Canada Marketplace. Secure payment with escrow protection. Ships across Canada.`)
+      : 'View product details on Canada Marketplace. Buy with confidence using our secure escrow payment system.',
+    ogType: 'product',
+    ogImage: productImages.length > 0 ? productImages[0] : undefined,
+  })
+
   // Group variants by name
   const variantGroups = product?.variants?.length ? (() => {
     const groups: Record<string, ProductVariant[]> = {}
@@ -285,7 +298,8 @@ export default function ProductDetailPage() {
 
   if (!product) return null
 
-  const images = getImages(product.images)
+  const images = productImages
+
   const conditionColors: Record<string, string> = {
     NEW: 'bg-green-500/10 text-green-400 border-green-500/20',
     LIKE_NEW: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
@@ -296,6 +310,25 @@ export default function ProductDetailPage() {
 
   return (
     <>
+      <ProductJsonLd
+        name={product.title}
+        description={product.description?.substring(0, 5000) || `Buy ${product.title} on Canada Marketplace.`}
+        image={images.length > 0 ? images : '/placeholder-product.png'}
+        price={effectivePrice}
+        availability={product.stock > 0 ? 'InStock' : 'OutOfStock'}
+        condition={product.condition === 'NEW' ? 'NewCondition' : product.condition === 'LIKE_NEW' ? 'RefurbishedCondition' : 'UsedCondition'}
+        sellerName={product.store.name}
+        sellerUrl={`/store/${product.store.slug}`}
+        category={product.category.name}
+        ratingValue={product.avgRating}
+        reviewCount={product._count.reviews}
+        url={`/product/${product.id}`}
+      />
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: '/' },
+        { name: 'Browse', url: '/browse' },
+        { name: product.title, url: `/product/${product.id}` },
+      ]} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <button onClick={() => navigate('browse')} className="flex items-center gap-2 text-sm text-cm-dim hover:text-cm-secondary mb-6 group">

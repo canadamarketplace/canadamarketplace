@@ -61,3 +61,59 @@ Fix the `/orders` page showing "Become a Seller" promotional content instead of 
 - **Verified**: `npm run lint` passes with no errors. TypeScript compilation shows only pre-existing warnings unrelated to this change. The orders page now shows only: "My Orders" heading → status filter → loading/empty/order list.
 
 - **File changed**: `src/components/marketplace/pages/buyer/OrdersPage.tsx` (-22 lines, +1 line import cleanup)
+
+---
+## Task ID: 4 - seo-infrastructure
+### Work Task
+Create SEO infrastructure for the Canada Marketplace SPA: useSEO hook, JSON-LD structured data components, and comprehensive SEO page config.
+
+### Work Summary
+- Created `/home/z/my-project/src/hooks/useSEO.ts` — Client-side hook that dynamically updates document head meta tags via useEffect. Handles: document.title, meta description, keywords, canonical URL, OG tags (title, description, type, url, image, site_name), Twitter Card tags (card, title, description, image), and robots meta (noindex/nofollow). Cleans up added elements on unmount. Uses helper functions `getOrCreateMeta` and `getOrCreateLink` to safely find-or-create tags in document.head.
+
+- Created `/home/z/my-project/src/components/seo/JsonLd.tsx` — Six JSON-LD structured data components:
+  1. `OrganizationJsonLd` — Organization schema with contact point and Canadian address
+  2. `WebSiteJsonLd` — WebSite schema with SearchAction targeting /browse?q={search_term_string}
+  3. `BreadcrumbJsonLd` — BreadcrumbList schema accepting { name, url }[] items
+  4. `ProductJsonLd` — Product schema with offers, seller, ratings, condition, SKU
+  5. `FAQJsonLd` — FAQPage schema accepting { question, answer }[] items
+  6. `LocalBusinessJsonLd` — LocalBusiness schema with geo coordinates, ratings, hours for seller locator
+
+- Created `/home/z/my-project/src/lib/seoConfig.ts` — Comprehensive SEO config covering ALL 50+ PageView values. Public pages have keyword-optimised titles (e.g. "Buy & Sell Online in Canada", "Find Canadian Sellers Near You"). All admin pages (admin-dashboard through admin-dispute-detail) and seller dashboard pages (dashboard, my-products, add-product, edit-product, my-orders, my-store, my-payouts, seller-transactions, seller-reviews, seller-shipping) have `noIndex: true`. Includes helper functions `getSEOConfig()` (with dynamic overrides for product-detail/storefront), `buildCanonicalUrl()`, and `buildTitle()`.
+
+- Verified: `npm run lint` passes with zero errors.
+
+---
+## Task ID: 5 - seo-integration
+### Work Task
+Integrate the SEO infrastructure (useSEO hook, JSON-LD components, seoConfig) into the marketplace application pages.
+
+### Work Summary
+Integrated SEO across 5 files in the marketplace:
+
+1. **MarketplaceApp.tsx** — Added global SEO that auto-updates on every route change:
+   - Imported `useSEO`, `OrganizationJsonLd`, `WebSiteJsonLd`, `getSEOConfig`
+   - Added `useSEO(getSEOConfig(currentPage))` in the MarketplaceApp component so every page gets proper meta tags (title, description, keywords, canonical, OG, Twitter Cards, robots noindex for admin pages)
+   - Added `<OrganizationJsonLd />` and `<WebSiteJsonLd />` as the first children inside the root `<div>` so they are always present sitewide
+
+2. **ProductDetailPage.tsx** — Dynamic product SEO + JSON-LD structured data:
+   - Added `useSEO` with product-specific title, description, ogType='product', ogImage from product images
+   - Added `<ProductJsonLd>` with name, description, image, price, availability, condition, seller info, category, ratings
+   - Added `<BreadcrumbJsonLd>` with Home → Browse → Product Name
+   - Placed hooks before early returns to satisfy React Rules of Hooks
+
+3. **BrowsePage.tsx** — Dynamic browse SEO + JSON-LD breadcrumbs + H1:
+   - Added `useSEO` with dynamic title/description based on active category filter or search query
+   - Added `<BreadcrumbJsonLd>` with Home → Browse (or Home → Category → Browse when filtered)
+   - Added a screen-reader-only `<h1>` tag ("Shop Products Across Canada") for proper heading hierarchy and SEO accessibility
+
+4. **StorefrontPage.tsx** — Dynamic store SEO + JSON-LD structured data:
+   - Added `useSEO` with store-specific title, description, ogType='business.business', ogImage from logo/banner
+   - Added `<LocalBusinessJsonLd>` with store name, description, URL, image, address, rating, priceRange
+   - Added `<BreadcrumbJsonLd>` with Home → Store Name
+   - Placed hooks before early returns to satisfy React Rules of Hooks
+
+5. **FaqPage.tsx** — FAQ JSON-LD structured data:
+   - Added `<FAQJsonLd>` with all 24 FAQ questions and answers mapped from the faqItems array
+   - All FAQ items are included in structured data regardless of active category filter, ensuring search engines see the full FAQ content
+
+- Verified: `npm run lint` passes with zero errors.

@@ -2,6 +2,9 @@
 import { useEffect } from 'react'
 import { useNavigation, urlToPage } from '@/lib/store'
 import { useLocale } from '@/lib/i18n'
+import { useSEO } from '@/hooks/useSEO'
+import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/seo/JsonLd'
+import { getSEOConfig } from '@/lib/seoConfig'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import AuthModal from './AuthModal'
@@ -125,8 +128,20 @@ function PageRenderer() {
 }
 
 export default function MarketplaceApp() {
-  const { navigate } = useNavigation()
+  const { navigate, currentPage } = useNavigation()
   const { setLocale } = useLocale()
+
+  // Global SEO — updates whenever the route changes
+  const seoConfig = getSEOConfig(currentPage)
+  useSEO({
+    title: seoConfig.title,
+    description: seoConfig.description,
+    keywords: seoConfig.keywords,
+    canonicalUrl: seoConfig.canonicalPath,
+    ogType: seoConfig.ogType,
+    ogImage: seoConfig.ogImage,
+    noIndex: seoConfig.noIndex,
+  })
 
   // Ensure database is seeded on first visit
   useEffect(() => {
@@ -176,6 +191,8 @@ export default function MarketplaceApp() {
 
   return (
     <div className="min-h-screen bg-cm-bg text-cm-primary">
+      <OrganizationJsonLd />
+      <WebSiteJsonLd />
       <Navbar />
       <main className="pt-16 lg:pt-20">
         <PageRenderer />

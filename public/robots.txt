@@ -1,8 +1,83 @@
+# Canada Marketplace — https://www.canadamarketplace.ca
+# Robots.txt for search engine crawlers
+
 User-agent: Googlebot
 Allow: /
+Disallow: /dashboard
+Disallow: /my-products
+Disallow: /add-product
+Disallow: /my-orders
+Disallow: /my-store
+Disallow: /my-payouts
+Disallow: /seller-reviews
+Disallow: /seller-transactions
+Disallow: /seller-shipping
+Disallow: /checkout
+Disallow: /admin-dashboard
+Disallow: /admin-*
+Disallow: /messaging
+Disallow: /notifications
+Disallow: /file-dispute
+Clean-param: q category minPrice maxPrice sort condition location page /
+Clean-param: q category minPrice maxPrice sort condition location page /browse
+Clean-param: q category minPrice maxPrice sort condition location page /fr/browse
 
 User-agent: Bingbot
 Allow: /
+Disallow: /dashboard
+Disallow: /my-products
+Disallow: /add-product
+Disallow: /my-orders
+Disallow: /my-store
+Disallow: /my-payouts
+Disallow: /seller-reviews
+Disallow: /seller-transactions
+Disallow: /seller-shipping
+Disallow: /checkout
+Disallow: /admin-dashboard
+Disallow: /admin-*
+Disallow: /messaging
+Disallow: /notifications
+Disallow: /file-dispute
+Clean-param: q category minPrice maxPrice sort condition location page /
+Clean-param: q category minPrice maxPrice sort condition location page /browse
+Clean-param: q category minPrice maxPrice sort condition location page /fr/browse
+
+User-agent: Slurp
+Allow: /
+Disallow: /dashboard
+Disallow: /my-products
+Disallow: /add-product
+Disallow: /my-orders
+Disallow: /my-store
+Disallow: /my-payouts
+Disallow: /seller-reviews
+Disallow: /seller-transactions
+Disallow: /seller-shipping
+Disallow: /checkout
+Disallow: /admin-dashboard
+Disallow: /admin-*
+Disallow: /messaging
+Disallow: /notifications
+Disallow: /file-dispute
+
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /dashboard
+Disallow: /my-products
+Disallow: /add-product
+Disallow: /my-orders
+Disallow: /my-store
+Disallow: /my-payouts
+Disallow: /seller-reviews
+Disallow: /seller-transactions
+Disallow: /seller-shipping
+Disallow: /checkout
+Disallow: /admin-dashboard
+Disallow: /admin-*
+Disallow: /messaging
+Disallow: /notifications
+Disallow: /file-dispute
 
 User-agent: Twitterbot
 Allow: /
@@ -12,3 +87,20 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /my-products
+Disallow: /add-product
+Disallow: /my-orders
+Disallow: /my-store
+Disallow: /my-payouts
+Disallow: /seller-reviews
+Disallow: /seller-transactions
+Disallow: /seller-shipping
+Disallow: /checkout
+Disallow: /admin-dashboard
+Disallow: /admin-*
+Disallow: /messaging
+Disallow: /notifications
+Disallow: /file-dispute
+
+Sitemap: https://www.canadamarketplace.ca/sitemap.xml

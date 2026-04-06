@@ -24,10 +24,12 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.canadamarketplace.ca"),
   title: "Canada Marketplace — Buy & Sell Across Canada",
   description: "Canada's most trusted marketplace. Escrow protection, verified sellers, and all transactions in CAD. Built safe by design.",
   keywords: ["Canada", "marketplace", "buy", "sell", "Canadian", "escrow", "verified sellers", "CAD", "e-commerce"],
   authors: [{ name: "Canada Marketplace" }],
+  category: "e-commerce",
   icons: {
     icon: "/icon.png",
     apple: "/apple-icon.png",
@@ -38,11 +40,40 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "CAMarket",
   },
+  alternates: {
+    canonical: "https://www.canadamarketplace.ca",
+    languages: {
+      en: "https://www.canadamarketplace.ca",
+      fr: "https://www.canadamarketplace.ca/fr",
+    },
+  },
+  verification: {},
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
     title: "Canada Marketplace — Buy & Sell Across Canada",
     description: "Canada's most trusted marketplace with escrow protection and verified sellers.",
     type: "website",
+    siteName: "Canada Marketplace",
+    locale: "en_CA",
+    url: "https://www.canadamarketplace.ca",
     images: ["/logo.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Canada Marketplace — Buy & Sell Across Canada",
+    description: "Canada's most trusted marketplace with escrow protection and verified sellers.",
+    images: ["/logo.png"],
+    creator: "@canadamarket",
   },
   other: {
     "mobile-web-app-capable": "yes",

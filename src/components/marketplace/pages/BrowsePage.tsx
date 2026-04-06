@@ -2,6 +2,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigation, useCart, useAuth, useWishlist } from '@/lib/store'
 import { useTranslation } from '@/lib/i18n'
+import { useSEO } from '@/hooks/useSEO'
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -151,6 +153,24 @@ export default function BrowsePage() {
   ].filter(Boolean).length
 
   const hasActiveFilters = activeFilterCount > 0
+
+  // Dynamic SEO for browse page
+  const categoryName = category ? CATEGORIES.find(c => c.slug === category)?.name : ''
+  useSEO({
+    title: categoryName
+      ? `Shop ${categoryName} in Canada | Canada Marketplace`
+      : search
+        ? `Search Results for "${search}" | Canada Marketplace`
+        : 'Shop Products Across Canada',
+    description: categoryName
+      ? `Browse the best ${categoryName.toLowerCase()} from verified Canadian sellers. Great deals with escrow protection and Canada-wide shipping.`
+      : search
+        ? `Search results for "${search}" on Canada Marketplace. Find products from verified Canadian sellers with secure payments.`
+        : 'Browse thousands of products from verified Canadian sellers. Find electronics, fashion, home & garden, sports gear, and more. Shop safely with escrow protection.',
+    keywords: categoryName
+      ? `${categoryName.toLowerCase()} Canada, buy ${categoryName.toLowerCase()}, ${categoryName.toLowerCase()} online, shop ${categoryName.toLowerCase()} Canada`
+      : undefined,
+  })
 
   const filterContent = (
     <div className="space-y-6">
@@ -327,9 +347,19 @@ export default function BrowsePage() {
 
   return (
     <div className="min-h-screen">
+      {/* H1 for SEO — visible heading */}
+      <BreadcrumbJsonLd items={categoryName ? [
+        { name: 'Home', url: '/' },
+        { name: categoryName, url: `/browse?category=${category}` },
+        { name: 'Browse', url: '/browse' },
+      ] : [
+        { name: 'Home', url: '/' },
+        { name: 'Browse', url: '/browse' },
+      ]} />
       {/* Search Header */}
       <div className="bg-cm-deep border-b border-cm-border-subtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <h1 className="sr-only">{categoryName ? `Shop ${categoryName} in Canada` : search ? `Search Results for "${search}"` : 'Shop Products Across Canada'}</h1>
           <div className="flex gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-cm-faint" />

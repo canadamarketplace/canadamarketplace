@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useNavigation } from '@/lib/store'
 import { useTranslation } from '@/lib/i18n'
+import { FAQJsonLd } from '@/components/seo/JsonLd'
 import { Button } from '@/components/ui/button'
 import {
   ArrowLeft, HelpCircle, ChevronDown, ChevronUp, ArrowRight,
@@ -68,8 +69,15 @@ export default function FaqPage() {
     return matchesCategory && matchesSearch
   })
 
+  // Prepare FAQ items for JSON-LD structured data (always use all items for SEO)
+  const faqStructuredData = faqItems.map((item) => ({
+    question: item.q,
+    answer: item.a,
+  }))
+
   return (
     <div className="min-h-screen bg-cm-bg">
+      <FAQJsonLd faqs={faqStructuredData} />
       {/* Hero */}
       <section className="relative py-24 px-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-purple-900/10 via-transparent to-transparent" />
