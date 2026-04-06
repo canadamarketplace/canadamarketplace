@@ -66,7 +66,7 @@ async function seed() {
 
   // Create Seller Users with Stores
   const sellerData = [
-    { name: "Tunog Kalye Official", email: "sarah@techshop.ca", store: "Tunog Kalye Official", province: "ON", city: "Toronto", desc: "Tunog Kalye Official Store — Street sound culture meets Canadian style. Premium quality T-shirts, mugs, and caps inspired by the rhythm of the streets. All prices in CAD." },
+    { name: "tunogkalye.net", email: "sarah@techshop.ca", store: "tunogkalye.net", province: "ON", city: "Toronto", desc: "tunogkalye.net Store — Street sound culture meets Canadian style. Premium quality T-shirts, mugs, and caps inspired by the rhythm of the streets. All prices in CAD." },
     { name: "Marco Reyes", email: "jp@montrealfashion.ca", store: "Tunog Kalye West", province: "BC", city: "Vancouver", desc: "Tunog Kalye West Coast edition. Bringing street music culture to British Columbia. Premium streetwear and accessories." },
     { name: "Émile Tremblay", email: "mike@homegear.ca", store: "Tunog Kalye Québec", province: "QC", city: "Montréal", desc: "Tunog Kalyé — Le son des rues, le style du Québec. Produits officiels Tunog Kalye pour la communauté québécoise." },
     { name: "Aisha Khan", email: "emily@sportsplus.ca", store: "Tunog Kalye Prairies", province: "AB", city: "Calgary", desc: "Tunog Kalye Prairies — Street sound across Alberta and the Prairies. Official Tunog Kalye merchandise." },
@@ -129,7 +129,7 @@ async function seed() {
 
   // Create Products
   const productTemplates = [
-    // T-Shirts (by Tunog Kalye Official - Seller 0)
+    // T-Shirts (by tunogkalye.net - Seller 0)
     { title: 'Tunog Kalye Classic Logo Tee — Black', cat: "tshirts", seller: 0, price: 32.99, condition: "NEW", desc: "The iconic Tunog Kalye logo on premium 100% cotton. Classic black tee for street music lovers. Comfortable fit, durable print.", images: ["/products/tshirt-classic-black.png", "/products/tshirt-neon-soundwave.png"], isFeatured: true },
     { title: 'Tunog Kalye Classic Logo Tee — White', cat: "tshirts", seller: 0, price: 32.99, condition: "NEW", desc: "The iconic Tunog Kalye logo on crisp white cotton. A clean look for any occasion. Comfortable fit, durable print.", images: ["/products/tshirt-classic-white.png", "/products/tshirt-street-vibes.png"], isFeatured: false },
     { title: 'Tunog Kalye "Street Vibes" Graphic Tee', cat: "tshirts", seller: 0, price: 34.99, condition: "NEW", desc: "Bold graphic design inspired by urban sound culture. Premium cotton blend with vibrant colours that last. Street vibes guaranteed.", images: ["/products/tshirt-street-vibes.png", "/products/tshirt-classic-black.png"], isFeatured: true },
@@ -452,7 +452,7 @@ async function seed() {
   // Create Sample Notifications
   const notificationTemplates = [
     { user: buyers[0], type: "ORDER", title: "Order Shipped", message: "Your Tunog Kalye order has been shipped! Track your package.", link: "orders" },
-    { user: buyers[0], type: "MESSAGE", title: "New Message", message: "Tunog Kalye Official sent you a message about Classic Logo Tee.", link: "messages" },
+    { user: buyers[0], type: "MESSAGE", title: "New Message", message: "tunogkalye.net sent you a message about Classic Logo Tee.", link: "messages" },
     { user: buyers[1], type: "ORDER", title: "Order Delivered", message: "Your Tunog Kalye order has been delivered! Leave a review.", link: "orders" },
     { user: sellers[0], type: "ORDER", title: "New Order", message: "You received a new order for Tunog Kalye merchandise!", link: "my-orders" },
     { user: sellers[0], type: "REVIEW", title: "New Review", message: "Someone left a 5-star review on your Classic Logo Tee!", link: "my-products" },
