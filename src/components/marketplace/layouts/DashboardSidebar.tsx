@@ -44,6 +44,7 @@ const SELLER_MENU: MenuItem[] = [
   { label: 'Products', icon: Package, page: 'my-products' },
   { label: 'Add Product', icon: PlusCircle, page: 'add-product' },
   { label: 'Orders', icon: ShoppingCart, page: 'my-orders' },
+  { label: 'Shipping', icon: Truck, page: 'seller-shipping' },
   { label: 'Store Profile', icon: Store, page: 'my-store' },
   { label: 'Payouts', icon: DollarSign, page: 'my-payouts' },
   { label: 'Transactions', icon: CreditCard, page: 'seller-transactions' },

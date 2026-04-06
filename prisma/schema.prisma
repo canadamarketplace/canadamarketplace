@@ -9,132 +9,138 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  password      String
-  name          String
-  role          String    @default("BUYER")
-  phone         String?
-  avatar        String?
-  province      String?
-  city          String?
-  address       String?
-  postalCode    String?
-  bio           String?
-  isVerified    Boolean   @default(false)
-  isActive      Boolean   @default(true)
-  resetToken    String?
+  id               String    @id @default(cuid())
+  email            String    @unique
+  password         String
+  name             String
+  role             String    @default("BUYER")
+  phone            String?
+  avatar           String?
+  province         String?
+  city             String?
+  address          String?
+  postalCode       String?
+  bio              String?
+  isVerified       Boolean   @default(false)
+  isActive         Boolean   @default(true)
+  resetToken       String?
   resetTokenExpiry DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
-  store         Store?
-  orders        Order[]
-  reviews       Review[]
-  buyerDisputes Dispute[] @relation("DisputeBuyer")
-  sellerDisputes Dispute[] @relation("DisputeSeller")
-  cartItems     CartItem[]
-  sentMessages  Message[]  @relation("MessageSender")
-  conversation1 Conversation[] @relation("ConversationParticipant1")
-  conversation2 Conversation[] @relation("ConversationParticipant2")
+  store          Store?
+  orders         Order[]
+  reviews        Review[]
+  buyerDisputes  Dispute[]      @relation("DisputeBuyer")
+  sellerDisputes Dispute[]      @relation("DisputeSeller")
+  cartItems      CartItem[]
+  sentMessages   Message[]      @relation("MessageSender")
+  conversation1  Conversation[] @relation("ConversationParticipant1")
+  conversation2  Conversation[] @relation("ConversationParticipant2")
   notifications  Notification[]
 }
 
 model Store {
-  id            String    @id @default(cuid())
-  name          String
-  slug          String    @unique
-  description   String?
-  logo          String?
-  banner        String?
-  sellerId      String    @unique
-  isActive      Boolean   @default(true)
-  rating        Float     @default(0)
-  totalSales    Int       @default(0)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  description     String?
+  logo            String?
+  banner          String?
+  sellerId        String   @unique
+  isActive        Boolean  @default(true)
+  rating          Float    @default(0)
+  totalSales      Int      @default(0)
+  facebookUrl     String?
+  twitterUrl      String?
+  instagramUrl    String?
+  websiteUrl      String?
+  vacationMode    Boolean  @default(false)
+  vacationMessage String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  seller        User      @relation(fields: [sellerId], references: [id])
-  products      Product[]
+  seller   User      @relation(fields: [sellerId], references: [id])
+  products Product[]
 }
 
 model Category {
-  id            String    @id @default(cuid())
-  name          String    @unique
-  slug          String    @unique
-  description   String?
-  icon          String?
-  productCount  Int       @default(0)
-  createdAt     DateTime  @default(now())
+  id           String   @id @default(cuid())
+  name         String   @unique
+  slug         String   @unique
+  description  String?
+  icon         String?
+  productCount Int      @default(0)
+  createdAt    DateTime @default(now())
 
-  products      Product[]
+  products Product[]
 }
 
 model Province {
-  id            String    @id @default(cuid())
-  name          String    @unique
-  slug          String    @unique
-  code          String?   @unique
-  listingCount  Int       @default(0)
-  createdAt     DateTime  @default(now())
+  id           String   @id @default(cuid())
+  name         String   @unique
+  slug         String   @unique
+  code         String?  @unique
+  listingCount Int      @default(0)
+  createdAt    DateTime @default(now())
 }
 
 model Product {
-  id            String    @id @default(cuid())
-  title         String
-  slug          String    @unique
-  description   String
-  price         Float
-  comparePrice  Float?
-  condition     String    @default("NEW")
-  categoryId    String
-  storeId       String
-  province      String?
-  city          String?
-  images        String    @default("[]")
-  stock         Int       @default(1)
-  sold          Int       @default(0)
-  status        String    @default("ACTIVE")
-  isFeatured    Boolean   @default(false)
-  views         Int       @default(0)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id           String   @id @default(cuid())
+  title        String
+  slug         String   @unique
+  description  String
+  price        Float
+  comparePrice Float?
+  condition    String   @default("NEW")
+  categoryId   String
+  storeId      String
+  province     String?
+  city         String?
+  images       String   @default("[]")
+  stock        Int      @default(1)
+  sold         Int      @default(0)
+  status       String   @default("ACTIVE")
+  isFeatured   Boolean  @default(false)
+  views        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  category      Category  @relation(fields: [categoryId], references: [id])
-  store         Store     @relation(fields: [storeId], references: [id])
-  orderItems    OrderItem[]
-  reviews       Review[]
-  cartItems     CartItem[]
-  variants      ProductVariant[]
+  category   Category         @relation(fields: [categoryId], references: [id])
+  store      Store            @relation(fields: [storeId], references: [id])
+  orderItems OrderItem[]
+  reviews    Review[]
+  cartItems  CartItem[]
+  variants   ProductVariant[]
 }
 
 model Order {
-  id            String    @id @default(cuid())
-  orderNumber   String    @unique
-  buyerId       String
-  status        String    @default("PENDING")
-  subtotal      Float
-  fee           Float     @default(0)
-  total         Float
-  taxAmount     Float     @default(0)
-  taxRate       Float     @default(0)
-  taxProvince   String?
-  paymentIntentId String?
-  paymentStatus String    @default("PENDING")
-  shippingAddress String
-  shippingCity    String
-  shippingProvince String
+  id                 String    @id @default(cuid())
+  orderNumber        String    @unique
+  buyerId            String
+  status             String    @default("PENDING")
+  subtotal           Float
+  fee                Float     @default(0)
+  total              Float
+  taxAmount          Float     @default(0)
+  taxRate            Float     @default(0)
+  taxProvince        String?
+  paymentIntentId    String?
+  paymentStatus      String    @default("PENDING")
+  shippingAddress    String
+  shippingCity       String
+  shippingProvince   String
   shippingPostalCode String
-  trackingNumber String?
-  notes         String?
-  paidAt        DateTime?
-  shippedAt     DateTime?
-  deliveredAt   DateTime?
-  cancelledAt   DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  trackingNumber     String?
+  notes              String?
+  paidAt             DateTime?
+  shippedAt          DateTime?
+  deliveredAt        DateTime?
+  cancelledAt        DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
-  buyer         User      @relation(fields: [buyerId], references: [id])
+  buyer         User            @relation(fields: [buyerId], references: [id])
   items         OrderItem[]
   disputes      Dispute[]
   reviews       Review[]
@@ -143,158 +149,158 @@ model Order {
 }
 
 model OrderItem {
-  id            String    @id @default(cuid())
-  orderId       String
-  productId     String
-  title         String
-  price         Float
-  quantity      Int       @default(1)
-  image         String?
-  createdAt     DateTime  @default(now())
+  id        String   @id @default(cuid())
+  orderId   String
+  productId String
+  title     String
+  price     Float
+  quantity  Int      @default(1)
+  image     String?
+  createdAt DateTime @default(now())
 
-  order         Order     @relation(fields: [orderId], references: [id])
-  product       Product   @relation(fields: [productId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 }
 
 model Review {
-  id            String    @id @default(cuid())
-  productId     String
-  reviewerId    String
-  orderId       String?
-  rating        Int
-  title         String?
-  comment       String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id         String   @id @default(cuid())
+  productId  String
+  reviewerId String
+  orderId    String?
+  rating     Int
+  title      String?
+  comment    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  product       Product   @relation(fields: [productId], references: [id])
-  reviewer      User      @relation(fields: [reviewerId], references: [id])
-  order         Order?    @relation(fields: [orderId], references: [id])
+  product  Product @relation(fields: [productId], references: [id])
+  reviewer User    @relation(fields: [reviewerId], references: [id])
+  order    Order?  @relation(fields: [orderId], references: [id])
 }
 
 model Dispute {
-  id            String    @id @default(cuid())
-  orderId       String
-  buyerId       String
-  sellerId      String
-  reason        String
-  description   String
-  status        String    @default("OPEN")
-  resolution    String?
-  adminNotes    String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  resolvedAt    DateTime?
+  id          String    @id @default(cuid())
+  orderId     String
+  buyerId     String
+  sellerId    String
+  reason      String
+  description String
+  status      String    @default("OPEN")
+  resolution  String?
+  adminNotes  String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  resolvedAt  DateTime?
 
-  order         Order     @relation(fields: [orderId], references: [id])
-  buyer         User      @relation("DisputeBuyer", fields: [buyerId], references: [id])
-  seller        User      @relation("DisputeSeller", fields: [sellerId], references: [id])
+  order  Order @relation(fields: [orderId], references: [id])
+  buyer  User  @relation("DisputeBuyer", fields: [buyerId], references: [id])
+  seller User  @relation("DisputeSeller", fields: [sellerId], references: [id])
 }
 
 model ProductVariant {
-  id          String   @id @default(cuid())
-  productId   String
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  
-  name        String
-  value       String
-  priceDelta  Float?
-  stock       Int?
-  
-  sku         String?  @unique
-  position    Int      @default(0)
-  
-  createdAt   DateTime @default(now())
-  
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  name       String
+  value      String
+  priceDelta Float?
+  stock      Int?
+
+  sku      String? @unique
+  position Int     @default(0)
+
+  createdAt DateTime @default(now())
+
   @@index([productId])
 }
 
 model CartItem {
-  id            String    @id @default(cuid())
-  userId        String?
-  sessionId     String?
-  productId     String
-  quantity      Int       @default(1)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id        String   @id @default(cuid())
+  userId    String?
+  sessionId String?
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  user          User?     @relation(fields: [userId], references: [id])
-  product       Product   @relation(fields: [productId], references: [id])
+  user    User?   @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 }
 
 model Payout {
-  id            String    @id @default(cuid())
-  sellerId      String
-  amount        Float
-  fee           Float     @default(0)
-  net           Float
-  status        String    @default("PENDING")
-  method        String    @default("BANK_TRANSFER")
-  createdAt     DateTime  @default(now())
-  processedAt   DateTime?
+  id          String    @id @default(cuid())
+  sellerId    String
+  amount      Float
+  fee         Float     @default(0)
+  net         Float
+  status      String    @default("PENDING")
+  method      String    @default("BANK_TRANSFER")
+  createdAt   DateTime  @default(now())
+  processedAt DateTime?
 }
 
 model Conversation {
-  id              String    @id @default(cuid())
-  participant1Id  String
-  participant2Id  String
-  lastMessage     String?
-  lastMessageAt   DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id             String    @id @default(cuid())
+  participant1Id String
+  participant2Id String
+  lastMessage    String?
+  lastMessageAt  DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
-  participant1    User      @relation("ConversationParticipant1", fields: [participant1Id], references: [id])
-  participant2    User      @relation("ConversationParticipant2", fields: [participant2Id], references: [id])
-  messages        Message[]
+  participant1 User      @relation("ConversationParticipant1", fields: [participant1Id], references: [id])
+  participant2 User      @relation("ConversationParticipant2", fields: [participant2Id], references: [id])
+  messages     Message[]
 }
 
 model Message {
-  id              String    @id @default(cuid())
-  conversationId  String
-  senderId        String
-  content         String
-  type            String    @default("TEXT")
-  isRead          Boolean   @default(false)
-  createdAt       DateTime  @default(now())
+  id             String   @id @default(cuid())
+  conversationId String
+  senderId       String
+  content        String
+  type           String   @default("TEXT")
+  isRead         Boolean  @default(false)
+  createdAt      DateTime @default(now())
 
-  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  sender          User      @relation("MessageSender", fields: [senderId], references: [id])
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation("MessageSender", fields: [senderId], references: [id])
 }
 
 model Notification {
-  id            String    @id @default(cuid())
-  userId        String
-  type          String
-  title         String
-  message       String
-  isRead        Boolean   @default(false)
-  link          String?
-  createdAt     DateTime  @default(now())
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
 
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model SiteSetting {
-  id            String    @id @default(cuid())
-  key           String    @unique
-  value         String
-  updatedAt     DateTime  @updatedAt
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
 }
 
 model Coupon {
-  id            String    @id @default(cuid())
-  code          String    @unique
-  type          String    @default("PERCENTAGE") // PERCENTAGE, FIXED
-  value         Float     // percentage value (e.g. 15) or fixed amount (e.g. 10)
-  minOrderAmount Float?   @default(0)
-  maxUses       Int?      // null = unlimited
-  usedCount     Int       @default(0)
-  startsAt      DateTime?
-  expiresAt     DateTime?
-  isActive      Boolean   @default(true)
-  sellerId      String?   // null = platform-wide coupon
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id             String    @id @default(cuid())
+  code           String    @unique
+  type           String    @default("PERCENTAGE") // PERCENTAGE, FIXED
+  value          Float // percentage value (e.g. 15) or fixed amount (e.g. 10)
+  minOrderAmount Float?    @default(0)
+  maxUses        Int? // null = unlimited
+  usedCount      Int       @default(0)
+  startsAt       DateTime?
+  expiresAt      DateTime?
+  isActive       Boolean   @default(true)
+  sellerId       String? // null = platform-wide coupon
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   appliedCoupons AppliedCoupon[]
 }
@@ -308,19 +314,19 @@ model OrderTimeline {
   metadata    String?  @default("{}")
   createdAt   DateTime @default(now())
 
-  order       Order    @relation(fields: [orderId], references: [id])
+  order Order @relation(fields: [orderId], references: [id])
 
   @@index([orderId])
   @@index([createdAt])
 }
 
 model AppliedCoupon {
-  id            String    @id @default(cuid())
-  couponId      String
-  orderId       String    @unique
+  id             String   @id @default(cuid())
+  couponId       String
+  orderId        String   @unique
   discountAmount Float
-  createdAt     DateTime  @default(now())
+  createdAt      DateTime @default(now())
 
-  coupon        Coupon    @relation(fields: [couponId], references: [id])
-  order         Order     @relation(fields: [orderId], references: [id])
+  coupon Coupon @relation(fields: [couponId], references: [id])
+  order  Order  @relation(fields: [orderId], references: [id])
 }

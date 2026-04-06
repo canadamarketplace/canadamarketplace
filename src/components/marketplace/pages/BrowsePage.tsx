@@ -11,7 +11,7 @@ import {
 import { CATEGORIES, PROVINCES } from '@/lib/types'
 import {
   Search, SlidersHorizontal, X, Package, Star, ShoppingCart, MapPin, Heart,
-  ChevronLeft, ChevronRight, ArrowUpDown, ChevronDown
+  ChevronLeft, ChevronRight, ArrowUpDown, ChevronDown, Store
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -64,6 +64,8 @@ export default function BrowsePage() {
   const [showFilters, setShowFilters] = useState(false)
   const [showMoreProvinces, setShowMoreProvinces] = useState(false)
   const [selectedConditions, setSelectedConditions] = useState<string[]>([])
+  const [selectedSeller, setSelectedSeller] = useState('')
+  const [sellers, setSellers] = useState<Array<{ id: string; name: string }>>([])
 
   const topProvinces = PROVINCES.slice(0, 5)
   const moreProvinces = PROVINCES.slice(5)
@@ -84,6 +86,7 @@ export default function BrowsePage() {
       if (minPrice) params.set('minPrice', minPrice)
       if (maxPrice) params.set('maxPrice', maxPrice)
       if (rating && rating !== '0') params.set('rating', rating)
+      if (selectedSeller) params.set('storeId', selectedSeller)
 
       const res = await fetch(`/api/products?${params.toString()}`)
       if (res.ok) {
@@ -94,11 +97,21 @@ export default function BrowsePage() {
       }
     } catch {}
     setLoading(false)
-  }, [category, province, search, sort, page, selectedConditions, minPrice, maxPrice, rating])
+  }, [category, province, search, sort, page, selectedConditions, minPrice, maxPrice, rating, selectedSeller])
 
   useEffect(() => {
     fetchProducts()
   }, [fetchProducts])
+
+  // Fetch sellers list for dropdown
+  useEffect(() => {
+    fetch('/api/stores')
+      .then(r => r.json())
+      .then((data: any[]) => {
+        if (Array.isArray(data)) setSellers(data.map((s: any) => ({ id: s.id, name: s.name })))
+      })
+      .catch(() => {})
+  }, [])
 
   const getImages = (imagesStr: string) => {
     try { return JSON.parse(imagesStr) } catch { return [] }
@@ -123,7 +136,7 @@ export default function BrowsePage() {
   const clearFilters = () => {
     setSearch(''); setCategory(''); setProvince(''); setSort('newest')
     setSelectedConditions([]); setMinPrice(''); setMaxPrice(''); setRating('0')
-    setPage(1)
+    setSelectedSeller(''); setPage(1)
   }
 
   const toggleCondition = (cond: string) => {
@@ -134,7 +147,7 @@ export default function BrowsePage() {
   }
 
   const activeFilterCount = [
-    category, province, search, selectedConditions.length > 0, minPrice, maxPrice, rating !== '0'
+    category, province, search, selectedConditions.length > 0, minPrice, maxPrice, rating !== '0', selectedSeller
   ].filter(Boolean).length
 
   const hasActiveFilters = activeFilterCount > 0
@@ -271,6 +284,22 @@ export default function BrowsePage() {
         </div>
       </div>
 
+      {/* Filter by Seller */}
+      <div>
+        <h3 className="text-xs font-semibold text-cm-muted uppercase tracking-wider mb-3">Filter by Seller</h3>
+        <Select value={selectedSeller} onValueChange={(v) => { setSelectedSeller(v === 'all' ? '' : v); setPage(1) }}>
+          <SelectTrigger className="bg-cm-hover border-cm-border-hover text-cm-secondary h-10 rounded-xl">
+            <SelectValue placeholder="All Sellers" />
+          </SelectTrigger>
+          <SelectContent className="bg-cm-elevated border-cm-border-hover">
+            <SelectItem value="all" className="text-cm-secondary">All Sellers</SelectItem>
+            {sellers.map((s) => (
+              <SelectItem key={s.id} value={s.id} className="text-cm-secondary">{s.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       {/* Sort By */}
       <div>
         <h3 className="text-xs font-semibold text-cm-muted uppercase tracking-wider mb-3">{t('browse.sortBy')}</h3>
@@ -330,6 +359,18 @@ export default function BrowsePage() {
                 </span>
               )}
             </Button>
+            <Select value={selectedSeller || 'all'} onValueChange={(v) => { setSelectedSeller(v === 'all' ? '' : v); setPage(1) }}>
+              <SelectTrigger className="w-48 bg-cm-hover border-cm-border-hover text-cm-secondary h-12 rounded-xl hidden lg:flex">
+                <Store className="w-4 h-4 mr-2 text-cm-dim" />
+                <SelectValue placeholder="All Sellers" />
+              </SelectTrigger>
+              <SelectContent className="bg-cm-elevated border-cm-border-hover">
+                <SelectItem value="all">All Sellers</SelectItem>
+                {sellers.map((s) => (
+                  <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={sort} onValueChange={(v) => { setSort(v); setPage(1) }}>
               <SelectTrigger className="w-48 bg-cm-hover border-cm-border-hover text-cm-secondary h-12 rounded-xl hidden lg:flex">
                 <ArrowUpDown className="w-4 h-4 mr-2 text-cm-dim" />
@@ -381,6 +422,11 @@ export default function BrowsePage() {
               {rating !== '0' && (
                 <Badge variant="secondary" className="bg-cm-hover text-cm-secondary border-cm-border-hover gap-1 cursor-pointer hover:bg-cm-hover-strong" onClick={() => { setRating('0'); setPage(1) }}>
                   {rating}+ ★ <X className="w-3 h-3" />
+                </Badge>
+              )}
+              {selectedSeller && (
+                <Badge variant="secondary" className="bg-cm-hover text-cm-secondary border-cm-border-hover gap-1 cursor-pointer hover:bg-cm-hover-strong" onClick={() => { setSelectedSeller(''); setPage(1) }}>
+                  {sellers.find(s => s.id === selectedSeller)?.name || 'Seller'} <X className="w-3 h-3" />
                 </Badge>
               )}
             </div>

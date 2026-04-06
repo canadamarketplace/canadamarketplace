@@ -76,7 +76,9 @@ export async function ensureDatabaseSeeded(): Promise<{ seeded: boolean; message
 
     const sellerPassword = await bcrypt.hash("Seller123!", 12)
     const sellers: Array<{ id: string; store: { id: string }; province?: string | null; city?: string | null }> = []
-    for (const s of sellerData) {
+    for (let idx = 0; idx < sellerData.length; idx++) {
+      const s = sellerData[idx]
+      const isLast = idx === sellerData.length - 1
       const seller = await db.user.create({
         data: {
           email: s.email,
@@ -93,6 +95,12 @@ export async function ensureDatabaseSeeded(): Promise<{ seeded: boolean; message
               description: s.desc,
               rating: 4 + Math.random() * 0.9,
               totalSales: Math.floor(Math.random() * 500) + 50,
+              facebookUrl: `https://facebook.com/${s.storeSlug}`,
+              twitterUrl: `https://twitter.com/${s.storeSlug}`,
+              instagramUrl: `https://instagram.com/${s.storeSlug}`,
+              websiteUrl: isLast ? 'https://melodymart.ca' : null,
+              vacationMode: isLast,
+              vacationMessage: isLast ? 'We are currently on vacation. We will be back on May 1, 2026. Thank you for your patience!' : null,
             },
           },
         },

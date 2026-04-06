@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Store, Loader2, Save, Eye, Upload, X, ImagePlus } from 'lucide-react'
+import { Switch } from '@/components/ui/switch'
+import { Store, Loader2, Save, Eye, Upload, X, ImagePlus, Globe, Clock, AlertTriangle } from 'lucide-react'
 import { toast } from 'sonner'
 
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -193,6 +194,12 @@ export default function SellerStorePage() {
   const [storeDesc, setStoreDesc] = useState('')
   const [logoUrl, setLogoUrl] = useState('')
   const [bannerUrl, setBannerUrl] = useState('')
+  const [facebookUrl, setFacebookUrl] = useState('')
+  const [twitterUrl, setTwitterUrl] = useState('')
+  const [instagramUrl, setInstagramUrl] = useState('')
+  const [websiteUrl, setWebsiteUrl] = useState('')
+  const [vacationMode, setVacationMode] = useState(false)
+  const [vacationMessage, setVacationMessage] = useState('')
 
   // Hydrate state from user data after mount
   useEffect(() => {
@@ -209,6 +216,12 @@ export default function SellerStorePage() {
               setStoreDesc(store.description || '')
               setLogoUrl(store.logo || '')
               setBannerUrl(store.banner || '')
+              setFacebookUrl(store.facebookUrl || '')
+              setTwitterUrl(store.twitterUrl || '')
+              setInstagramUrl(store.instagramUrl || '')
+              setWebsiteUrl(store.websiteUrl || '')
+              setVacationMode(store.vacationMode || false)
+              setVacationMessage(store.vacationMessage || '')
             }
           })
           .catch(() => {})
@@ -249,6 +262,12 @@ export default function SellerStorePage() {
           description: storeDesc,
           logo: logoUrl,
           banner: bannerUrl,
+          facebookUrl,
+          twitterUrl,
+          instagramUrl,
+          websiteUrl,
+          vacationMode,
+          vacationMessage,
         }),
       })
       if (res.ok) {
@@ -366,6 +385,61 @@ export default function SellerStorePage() {
                   <p className="text-xs text-cm-dim">Store preview</p>
                 </div>
               </div>
+            </div>
+          )}
+        </div>
+
+        {/* Social Media Links */}
+        <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6 space-y-4">
+          <h2 className="text-sm font-semibold text-cm-secondary flex items-center gap-2">
+            <Globe className="w-4 h-4" /> Social Media Links
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Facebook URL</Label>
+              <Input value={facebookUrl} onChange={(e) => setFacebookUrl(e.target.value)} placeholder="https://facebook.com/your-store" className={inputClass} />
+            </div>
+            <div>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Twitter/X URL</Label>
+              <Input value={twitterUrl} onChange={(e) => setTwitterUrl(e.target.value)} placeholder="https://twitter.com/your-store" className={inputClass} />
+            </div>
+            <div>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Instagram URL</Label>
+              <Input value={instagramUrl} onChange={(e) => setInstagramUrl(e.target.value)} placeholder="https://instagram.com/your-store" className={inputClass} />
+            </div>
+            <div>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Website URL</Label>
+              <Input value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} placeholder="https://your-store.ca" className={inputClass} />
+            </div>
+          </div>
+        </div>
+
+        {/* Vacation Mode */}
+        <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-semibold text-cm-secondary flex items-center gap-2">
+                <Clock className="w-4 h-4" /> Vacation Mode
+              </h2>
+              <p className="text-xs text-cm-dim mt-1">Temporarily disable your storefront while you&apos;re away</p>
+            </div>
+            <Switch checked={vacationMode} onCheckedChange={setVacationMode} />
+          </div>
+          {vacationMode && (
+            <div>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Vacation Message</Label>
+              <Textarea
+                value={vacationMessage}
+                onChange={(e) => setVacationMessage(e.target.value)}
+                placeholder="Let customers know when you'll be back..."
+                className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl min-h-[80px]"
+              />
+            </div>
+          )}
+          {vacationMode && (
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-yellow-500/5 border border-yellow-500/20">
+              <AlertTriangle className="w-4 h-4 text-yellow-400 flex-shrink-0" />
+              <p className="text-xs text-yellow-400">Your store is in vacation mode. Products won&apos;t appear in search results.</p>
             </div>
           )}
         </div>

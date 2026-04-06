@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/select'
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/types'
 import { OrderTimeline } from '@/components/marketplace/OrderTimeline'
-import { Package, Truck, Loader2, ChevronDown, ChevronUp, Clock } from 'lucide-react'
+import { Package, Truck, Loader2, ChevronDown, ChevronUp, Clock, FileText, Printer } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface TimelineEvent {
@@ -51,7 +51,7 @@ export default function SellerOrders() {
       if (res.ok) setOrders(await res.json())
     } catch {}
     setLoading(false)
-  }, [user?.id])
+  }, [user])
 
   useEffect(() => {
     fetchOrders()
@@ -94,6 +94,151 @@ export default function SellerOrders() {
       }
     } catch {}
     setUpdatingId(null)
+  }
+
+  const handlePrintInvoice = (order: Order) => {
+    const storeName = user?.storeName || 'Your Store'
+    const storeAddr = user?.storeId ? '123 Market Street, Toronto, ON M5V 2K1' : ''
+    const subtotal = order.total * 0.87 // rough estimate if tax not available
+    const tax = order.total - subtotal
+    const invoiceHtml = `
+      <html><head><title>Invoice ${order.orderNumber}</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; padding: 40px; color: #1a1a1a; max-width: 800px; margin: 0 auto; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #f7f7f7; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .total { font-weight: bold; font-size: 1.1em; }
+        .header { display: flex; justify-content: space-between; margin-bottom: 40px; }
+        .invoice-title { font-size: 28px; font-weight: 800; color: #dc2626; letter-spacing: -0.02em; }
+        .info-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+        .info-value { font-size: 14px; color: #333; margin-bottom: 8px; }
+        .section-title { font-size: 14px; font-weight: 700; margin: 24px 0 8px 0; color: #555; }
+        .totals-table { margin-left: auto; width: 250px; }
+        .totals-table td { padding: 6px 12px; }
+        .totals-table .grand-total td { font-size: 16px; font-weight: 700; border-top: 2px solid #1a1a1a; color: #dc2626; }
+        .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #999; font-size: 12px; }
+        @media print { body { padding: 20px; } }
+      </style></head><body>
+      <div class="header">
+        <div>
+          <div class="invoice-title">INVOICE</div>
+          <div class="info-label">Invoice Number</div>
+          <div class="info-value">${order.orderNumber}</div>
+          <div class="info-label">Date</div>
+          <div class="info-value">${new Date(order.createdAt).toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-weight:700; font-size:16px; margin-bottom:4px;">${storeName}</div>
+          <div style="color:#666; font-size:13px;">${storeAddr}</div>
+          <div style="margin-top:12px;">
+            <span style="display:inline-block; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:600; background:${order.status === 'PAID' ? '#dcfce7' : order.status === 'SHIPPED' ? '#dbeafe' : '#f3f4f6'}; color:${order.status === 'PAID' ? '#166534' : order.status === 'SHIPPED' ? '#1e40af' : '#374151'};">${order.status.toUpperCase()}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Bill To:</div>
+      <div style="color:#333; font-size:14px; margin-bottom:24px;">
+        <strong>${order.buyer?.name || 'N/A'}</strong><br>
+        ${order.shippingAddress}<br>
+        ${order.shippingCity}, ${order.shippingProvince} ${order.shippingPostalCode}
+      </div>
+
+      <table>
+        <thead><tr><th>Item</th><th style="text-align:center">Qty</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th></tr></thead>
+        <tbody>
+          ${order.items.map(item => `<tr><td>${item.title}</td><td style="text-align:center">${item.quantity}</td><td style="text-align:right">$${item.price.toFixed(2)}</td><td style="text-align:right">$${(item.price * item.quantity).toFixed(2)}</td></tr>`).join('')}
+        </tbody>
+      </table>
+
+      <table class="totals-table">
+        <tr><td style="color:#888">Subtotal</td><td style="text-align:right">$${subtotal.toFixed(2)}</td></tr>
+        <tr><td style="color:#888">Tax (GST/HST)</td><td style="text-align:right">$${tax.toFixed(2)}</td></tr>
+        <tr><td style="color:#888">Shipping</td><td style="text-align:right">$${(order.total * 0.08).toFixed(2)}</td></tr>
+        <tr class="grand-total"><td>Total</td><td style="text-align:right">$${order.total.toFixed(2)}</td></tr>
+      </table>
+
+      <div class="footer">
+        <p>Thank you for your purchase from ${storeName} on Canada Marketplace.</p>
+        <p style="margin-top:4px;">Questions about this invoice? Contact the seller directly.</p>
+      </div>
+      </body></html>
+    `
+    const win = window.open('', '_blank')
+    if (win) {
+      win.document.write(invoiceHtml)
+      win.document.close()
+      setTimeout(() => win.print(), 500)
+    }
+  }
+
+  const handlePrintShippingSlip = (order: Order) => {
+    const storeName = user?.storeName || 'Your Store'
+    const storeAddr = user?.storeId ? '123 Market Street, Toronto, ON M5V 2K1' : ''
+    const slipHtml = `
+      <html><head><title>Shipping Slip ${order.orderNumber}</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; padding: 40px; color: #1a1a1a; max-width: 800px; margin: 0 auto; }
+        .shipping-label { border: 2px dashed #333; border-radius: 8px; padding: 30px; margin-bottom: 30px; }
+        .shipping-label h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; margin: 0 0 16px 0; }
+        .shipping-label .address { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .shipping-label .detail { font-size: 15px; color: #555; line-height: 1.6; }
+        .order-info { display: flex; gap: 30px; margin-bottom: 24px; font-size: 13px; }
+        .order-info .label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.05em; }
+        .order-info .value { font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #f7f7f7; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .return-section { margin-top: 30px; padding: 20px; background: #f9f9f9; border-radius: 8px; font-size: 13px; }
+        .return-section h3 { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+        .return-section p { color: #666; margin: 2px 0; }
+        .footer { margin-top: 30px; text-align: center; color: #ccc; font-size: 20px; letter-spacing: 0.3em; }
+        @media print { body { padding: 20px; } }
+      </style></head><body>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px;">
+        <div><h1 style="font-size:24px; font-weight:800; color:#1a1a1a; margin:0;">SHIPPING SLIP</h1></div>
+        <div style="text-align:right; font-size:12px; color:#888;">Order: <strong style="color:#333;">${order.orderNumber}</strong><br/>Date: ${new Date(order.createdAt).toLocaleDateString()}</div>
+      </div>
+
+      <div class="shipping-label">
+        <h2>Ship To</h2>
+        <div class="address">${order.buyer?.name || 'N/A'}</div>
+        <div class="detail">
+          ${order.shippingAddress}<br>
+          ${order.shippingCity}, ${order.shippingProvince} ${order.shippingPostalCode}
+        </div>
+      </div>
+
+      <div class="order-info">
+        <div><div class="label">Order Number</div><div class="value">${order.orderNumber}</div></div>
+        <div><div class="label">Items</div><div class="value">${order.items.length}</div></div>
+        <div><div class="label">Order Total</div><div class="value">$${order.total.toFixed(2)}</div></div>
+        ${order.trackingNumber ? `<div><div class="label">Tracking</div><div class="value" style="color:#7c3aed;">${order.trackingNumber}</div></div>` : ''}
+      </div>
+
+      <h3 style="font-size:14px; font-weight:700; color:#555;">Package Contents</h3>
+      <table>
+        <thead><tr><th>#</th><th>Item</th><th style="text-align:center">Qty</th></tr></thead>
+        <tbody>
+          ${order.items.map((item, idx) => `<tr><td>${idx + 1}</td><td>${item.title}</td><td style="text-align:center">${item.quantity}</td></tr>`).join('')}
+        </tbody>
+      </table>
+
+      <div class="return-section">
+        <h3>Return Address</h3>
+        <p><strong>${storeName}</strong></p>
+        <p>${storeAddr}</p>
+      </div>
+
+      <div class="footer">CANADA MARKETPLACE</div>
+      </body></html>
+    `
+    const win = window.open('', '_blank')
+    if (win) {
+      win.document.write(slipHtml)
+      win.document.close()
+      setTimeout(() => win.print(), 500)
+    }
   }
 
   const handleDeliver = async (orderId: string) => {
@@ -212,6 +357,28 @@ export default function SellerOrders() {
                       compact
                     />
                   )}
+
+                  {/* Invoice & Shipping Slip Actions */}
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePrintInvoice(order)}
+                      className="border-cm-border-hover text-cm-secondary hover:text-cm-primary text-xs h-8 rounded-lg gap-1.5"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      Generate Invoice
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePrintShippingSlip(order)}
+                      className="border-cm-border-hover text-cm-secondary hover:text-cm-primary text-xs h-8 rounded-lg gap-1.5"
+                    >
+                      <Printer className="w-3.5 h-3.5" />
+                      Print Shipping Slip
+                    </Button>
+                  </div>
 
                   {(order.status === 'PAID') && (
                     <div className="p-3 rounded-xl bg-cm-hover border border-cm-border-subtle">

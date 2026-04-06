@@ -33,6 +33,12 @@ export async function GET(req: NextRequest) {
         logo: true,
         rating: true,
         totalSales: true,
+        facebookUrl: true,
+        twitterUrl: true,
+        instagramUrl: true,
+        websiteUrl: true,
+        vacationMode: true,
+        vacationMessage: true,
         seller: {
           select: {
             id: true,
@@ -64,7 +70,7 @@ export async function PUT(req: NextRequest) {
     }
 
     const body = await req.json()
-    const { storeId, name, description, logo, banner } = body
+    const { storeId, name, description, logo, banner, facebookUrl, twitterUrl, instagramUrl, websiteUrl, vacationMode, vacationMessage } = body
 
     if (!storeId) {
       return NextResponse.json({ error: "Store ID is required" }, { status: 400 })
@@ -75,6 +81,12 @@ export async function PUT(req: NextRequest) {
     if (description !== undefined) updateData.description = description
     if (logo !== undefined) updateData.logo = logo
     if (banner !== undefined) updateData.banner = banner
+    if (facebookUrl !== undefined) updateData.facebookUrl = facebookUrl
+    if (twitterUrl !== undefined) updateData.twitterUrl = twitterUrl
+    if (instagramUrl !== undefined) updateData.instagramUrl = instagramUrl
+    if (websiteUrl !== undefined) updateData.websiteUrl = websiteUrl
+    if (vacationMode !== undefined) updateData.vacationMode = vacationMode
+    if (vacationMessage !== undefined) updateData.vacationMessage = vacationMessage
 
     const store = await db.store.update({
       where: { id: storeId },

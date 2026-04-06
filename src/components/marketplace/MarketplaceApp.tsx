@@ -58,6 +58,7 @@ import SellerReviews from './pages/seller/SellerReviews'
 import SellerTransactions from './pages/seller/SellerTransactions'
 import BuyerAddressBook from './pages/buyer/BuyerAddressBook'
 import BuyerReviews from './pages/buyer/BuyerReviews'
+import SellerShipping from './pages/seller/SellerShipping'
 import type { PageView } from '@/lib/store'
 
 function PageRenderer() {
@@ -88,6 +89,7 @@ function PageRenderer() {
     case 'coupons': return <CouponsPage />
     case 'seller-reviews': return <SellerReviews />
     case 'seller-transactions': return <SellerTransactions />
+    case 'seller-shipping': return <SellerShipping />
     case 'address-book': return <BuyerAddressBook />
     case 'buyer-reviews': return <BuyerReviews />
     case 'profile': return <ProfilePage />

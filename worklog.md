@@ -287,3 +287,112 @@ This created an infinite loop:
 - `npm run lint` passes with 0 errors
 - All dependency arrays satisfy the React Compiler's `preserve-manual-memoization` rule
 - Zustand store functions (`navigate`, `user`) are stable references, so they won't cause unnecessary re-fires
+
+---
+## Task ID: 2-a
+Agent: Full-Stack-Developer (Integration)
+Task: DB schema updates, Store API, Sidebar, Store routing integration
+
+Work Log:
+- Updated Prisma schema (`prisma/schema.prisma`): Added 6 new fields to Store model — `facebookUrl`, `twitterUrl`, `instagramUrl`, `websiteUrl` (all optional String), `vacationMode` (Boolean, default false), `vacationMessage` (optional String)
+- Updated auto-seed (`src/lib/auto-seed.ts`): Added all 6 new fields to store creation loop. All 8 stores get social media URLs. Last store (Melody Mart) set to `vacationMode: true` with a vacation message, plus a `websiteUrl` for demo purposes
+- Updated Store API PUT endpoint (`src/app/api/stores/route.ts`): Extended destructuring to accept all 6 new fields and added them to `updateData` object
+- Updated Store API GET endpoint (`src/app/api/stores/route.ts`): Added new fields to the `select` clause so public store listings return all store data
+- Updated DashboardSidebar (`src/components/marketplace/layouts/DashboardSidebar.tsx`): Added "Shipping" menu item with `Truck` icon and `page: 'seller-shipping'` after "Orders" in SELLER_MENU
+- Updated store.ts (`src/lib/store.ts`): Added `seller-shipping` PageView type, URL mapping `/seller/shipping`, and reverse URL-to-page mapping
+- Updated MarketplaceApp (`src/components/marketplace/MarketplaceApp.tsx`): Added import for `SellerShipping` component and switch case for `seller-shipping` page view
+- Ran `npx prisma format` — schema formatted successfully
+- Ran `npm run lint` — 0 new errors (2 pre-existing errors in SellerOrders.tsx and SellerProducts.tsx, unrelated to these changes)
+
+Stage Summary:
+- 7 files modified across schema, API, auto-seed, sidebar, routing, and app renderer
+- Store model now supports social media links and vacation mode
+- Seller sidebar now has 10 menu items including new Shipping entry
+- SellerShipping page import and routing ready for the component to be created by another agent
+- All new fields seeded with demo data (one store in vacation mode)
+
+---
+Task ID: 2-b
+Agent: Full-Stack-Developer (Storefront)
+Task: Enhance StorefrontPage with reviews, social links, contact vendor, vacation mode. Add seller filter to BrowsePage.
+
+Work Log:
+- Updated Store API detail endpoint (`src/app/api/stores/[slug]/route.ts`): Added reviews fetching with reviewer data, computed `averageRating` and `reviewCount` fields in the response
+- Enhanced StorefrontPage (`src/components/marketplace/pages/StorefrontPage.tsx`):
+  - Updated `StoreData` interface with all new fields: `facebookUrl`, `twitterUrl`, `instagramUrl`, `websiteUrl`, `vacationMode`, `vacationMessage`, `reviews`, `averageRating`, `reviewCount`, `createdAt`
+  - Added new Lucide icon imports: `Clock`, `TrendingUp`, `Calendar`, `MessageCircle`, `Facebook`, `Twitter`, `Instagram`, `Globe`
+  - Added `useMemo` import for star distribution calculation
+  - Section A: Vacation Mode Banner — yellow/amber banner shown when `store.vacationMode` is true, displays customizable vacation message
+  - Section B: Store Stats Row — 4-column grid showing Products count, Total Sales, Rating, and store founding year
+  - Section C: Contact Vendor Block — card with "Send Message" button that navigates to messaging page with recipientId
+  - Section D: Reviews & Ratings Section — large average rating display with stars, rating distribution bar chart (5→1 stars), review cards with reviewer avatar initial, name, date, star rating, title, comment; empty state when no reviews
+  - Section E: Social Media Links — Facebook, Twitter, Instagram, Globe icons in the store info section after description, with hover color transitions
+- Enhanced BrowsePage (`src/components/marketplace/pages/BrowsePage.tsx`):
+  - Added `selectedSeller` state (string, default empty) and `sellers` state (array of {id, name})
+  - Added `Store` to Lucide icon imports
+  - Added useEffect to fetch sellers list from `/api/stores` on mount
+  - Added `storeId` query parameter to products API when seller is selected
+  - Added `selectedSeller` to `fetchProducts` useCallback dependency array
+  - Added "Filter by Seller" dropdown in the sidebar filter section
+  - Added "Filter by Seller" dropdown in the desktop search header bar (next to sort dropdown)
+  - Updated `clearFilters` to also clear `selectedSeller`
+  - Updated `activeFilterCount` to include `selectedSeller`
+  - Added seller badge to active filters bar (removable)
+- Ran `npm run lint` — 0 new errors (2 pre-existing errors in SellerOrders.tsx and SellerProducts.tsx, unrelated to these changes)
+
+Stage Summary:
+- 3 files modified: store detail API, StorefrontPage, BrowsePage
+- StorefrontPage now has 5 new feature sections: vacation mode banner, stats row, contact seller, reviews/ratings, social media links
+- BrowsePage now supports filtering products by seller via dropdown in both sidebar and header bar
+- Store API now returns reviews data with computed average rating and review count
+
+---
+## Task ID: 2-c
+Agent: Full-Stack-Developer (Seller Dashboard)
+Task: Create SellerShippingPage, enhance SellerStorePage with social links/vacation mode, add bulk CSV to SellerProducts, add invoice/shipping slip to SellerOrders.
+
+Work Log:
+- **Task 1 — Created SellerShippingPage** (`src/components/marketplace/pages/seller/SellerShipping.tsx`):
+  - Full shipping management page wrapped in DashboardSidebar (role="seller", activeItem="seller-shipping")
+  - 4 summary cards: Active Rates count, Cheapest Rate, Average Delivery estimate, Zones Covered
+  - Zone filter tabs (All, Domestic, Regional, USA, International) with counts
+  - Desktop table and mobile card view for shipping rates with columns: Zone, Carrier, Base Rate, Per KG, Free Shipping Threshold, Est. Days, Status toggle, Edit/Delete actions
+  - 8 mock rates across 4 zones with 5 carriers (Canada Post, Purolator, UPS, FedEx, DHL)
+  - Add/Edit Rate dialog with form fields: Zone (select), Carrier (select), Base Rate, Per KG, Free Shipping Threshold, Estimated Days, Active toggle
+  - Vacation Mode section with Switch toggle, message textarea, and yellow warning banner
+  - All state managed via local useState (no backend yet)
+
+- **Task 2 — Enhanced SellerStorePage** (`src/components/marketplace/pages/seller/SellerStorePage.tsx`):
+  - Added Social Media Links section with 4 URL inputs (Facebook, Twitter/X, Instagram, Website) in a 2-column grid
+  - Added Vacation Mode section with Switch toggle, conditional vacation message textarea, and yellow warning alert
+  - Added imports: Globe, Clock, AlertTriangle from lucide-react; Switch from @/components/ui/switch
+  - Added 6 new state variables: facebookUrl, twitterUrl, instagramUrl, websiteUrl, vacationMode, vacationMessage
+  - State hydrated from store API fetch response (all 6 new fields)
+  - All new fields included in handleSave JSON body (PUT /api/stores)
+
+- **Task 3 — Added Bulk CSV Upload to SellerProducts** (`src/components/marketplace/pages/seller/SellerProducts.tsx`):
+  - Added "Bulk Upload CSV" button next to "Add Product" in the page header
+  - Dialog modal with 3 states: upload zone, preview table, success confirmation
+  - CSV template download button generates a sample CSV blob
+  - Drag-and-drop file upload zone accepting .csv files only
+  - CSV preview table showing headers and first 5 data rows with truncation
+  - Import logic iterates rows and calls POST /api/products for each valid row
+  - CSV format: title, price, category, description, stock, condition, images
+  - Added imports: Upload, FileSpreadsheet, Download, CheckCircle, X, Loader2 from lucide-react; Dialog components
+  - Added parseCSV helper function outside component
+  - Added handleCsvFile (FileReader + parseCSV) and handleImportCsv (batch POST) functions
+
+- **Task 4 — Added Invoice & Shipping Slip to SellerOrders** (`src/components/marketplace/pages/seller/SellerOrders.tsx`):
+  - Added "Generate Invoice" and "Print Shipping Slip" buttons in expanded order details
+  - handlePrintInvoice: Opens print-friendly HTML in new window with full invoice layout — store name/address, order number, date, status badge, billing address, items table with qty/price/total, subtotal/tax/shipping/total breakdown
+  - handlePrintShippingSlip: Opens print-friendly HTML with dashed shipping label (buyer address), order info row, package contents table, return address section
+  - Added FileText, Printer icon imports from lucide-react
+  - Both use styled HTML with inline CSS for clean print rendering
+
+- **Lint Fixes**:
+  - Fixed 2 pre-existing React Compiler `preserve-manual-memoization` errors in SellerOrders.tsx and SellerProducts.tsx by changing useCallback deps from `user?.id`/`user?.storeId` to `user`
+
+Stage Summary:
+- 4 files modified/created (1 new file: SellerShipping.tsx, 3 enhanced: SellerStorePage.tsx, SellerProducts.tsx, SellerOrders.tsx)
+- `npm run lint` passes with 0 errors
+- All 4 tasks complete with dark theme styling (cm-* classes), responsive design, shadcn/ui components

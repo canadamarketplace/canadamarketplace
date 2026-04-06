@@ -62,6 +62,7 @@ export type PageView =
   | "coupons"
   | "seller-transactions"
   | "seller-reviews"
+  | "seller-shipping"
   | "address-book"
   | "buyer-reviews"
 
@@ -108,6 +109,7 @@ function pageToUrlBase(page: PageView, params: Record<string, string>): string {
     "coupons": "/seller/coupons",
     "seller-transactions": "/seller/transactions",
     "seller-reviews": "/seller/reviews",
+    "seller-shipping": "/seller/shipping",
     "address-book": "/address-book",
     "buyer-reviews": "/my-reviews",
     "notifications": "/notifications",
@@ -180,6 +182,7 @@ export function urlToPage(pathname: string, search: string): { page: PageView; p
   if (cleanPath === "/seller/coupons") return { page: "coupons", params: {} }
   if (cleanPath === "/seller/transactions") return { page: "seller-transactions", params: {} }
   if (cleanPath === "/seller/reviews") return { page: "seller-reviews", params: {} }
+  if (cleanPath === "/seller/shipping") return { page: "seller-shipping", params: {} }
   if (cleanPath === "/address-book") return { page: "address-book", params: {} }
   if (cleanPath === "/my-reviews") return { page: "buyer-reviews", params: {} }
   if (cleanPath === "/notifications") return { page: "notifications", params: {} }
