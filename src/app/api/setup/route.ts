@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
 import { ensureDatabaseSeeded } from "@/lib/auto-seed"
 
@@ -44,18 +44,23 @@ async function ensureSchemaSync(): Promise<{ synced: boolean; message: string }>
   }
 }
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
+    // Check for force reseed parameter
+    const { searchParams } = new URL(request.url)
+    const force = searchParams.get('force') === 'true'
+
     // First, ensure schema is in sync
     const schemaResult = await ensureSchemaSync()
     console.log(`Schema sync: ${schemaResult.message}`)
 
-    // Then seed if needed
-    const result = await ensureDatabaseSeeded()
+    // Then seed (with optional force reseed)
+    const result = await ensureDatabaseSeeded(force)
     return NextResponse.json({
       ok: true,
       schemaSync: schemaResult,
       seeded: result.seeded,
+      force,
       message: result.message,
       timestamp: new Date().toISOString(),
     })
@@ -65,6 +70,6 @@ export async function POST() {
   }
 }
 
-export async function GET() {
-  return POST()
+export async function GET(request: NextRequest) {
+  return POST(request)
 }

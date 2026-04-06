@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs"
 
 let seedRunning = false
 
-export async function ensureDatabaseSeeded(): Promise<{ seeded: boolean; message: string }> {
+export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ seeded: boolean; message: string }> {
   // Prevent concurrent seed runs
   if (seedRunning) {
     return { seeded: false, message: "Seed already in progress" }
@@ -12,8 +12,32 @@ export async function ensureDatabaseSeeded(): Promise<{ seeded: boolean; message
   try {
     // Check if database already has data
     const categoryCount = await db.category.count()
-    if (categoryCount > 0) {
+    if (categoryCount > 0 && !force) {
       return { seeded: false, message: `Database already has ${categoryCount} categories` }
+    }
+
+    // If force reseed, clear all existing data first
+    if (force && categoryCount > 0) {
+      console.log("🔄 Force reseed: clearing existing data...")
+      await db.appliedCoupon.deleteMany()
+      await db.coupon.deleteMany()
+      await db.message.deleteMany()
+      await db.conversation.deleteMany()
+      await db.cartItem.deleteMany()
+      await db.dispute.deleteMany()
+      await db.review.deleteMany()
+      await db.orderItem.deleteMany()
+      await db.order.deleteMany()
+      await db.productVariant.deleteMany()
+      await db.product.deleteMany()
+      await db.payout.deleteMany()
+      await db.notification.deleteMany()
+      await db.siteSetting.deleteMany()
+      await db.store.deleteMany()
+      await db.province.deleteMany()
+      await db.category.deleteMany()
+      await db.user.deleteMany()
+      console.log("  ✅ All existing data cleared")
     }
 
     seedRunning = true
@@ -21,14 +45,10 @@ export async function ensureDatabaseSeeded(): Promise<{ seeded: boolean; message
 
     // Create Categories
     const categories = await Promise.all([
-      db.category.create({ data: { name: "Electronics", slug: "electronics", icon: "laptop", productCount: 124 } }),
-      db.category.create({ data: { name: "Fashion", slug: "fashion", icon: "tshirt-crew", productCount: 283 } }),
-      db.category.create({ data: { name: "Home & Garden", slug: "home-garden", icon: "sofa", productCount: 198 } }),
-      db.category.create({ data: { name: "Sports", slug: "sports", icon: "hockey-puck", productCount: 82 } }),
-      db.category.create({ data: { name: "Vehicles", slug: "vehicles", icon: "car", productCount: 56 } }),
-      db.category.create({ data: { name: "Books", slug: "books", icon: "book-open-variant", productCount: 151 } }),
-      db.category.create({ data: { name: "Music", slug: "music", icon: "music-note", productCount: 47 } }),
-      db.category.create({ data: { name: "Outdoor", slug: "outdoor", icon: "pine-tree", productCount: 73 } }),
+      db.category.create({ data: { name: "T-Shirts", slug: "tshirts", icon: "tshirt-crew", productCount: 8 } }),
+      db.category.create({ data: { name: "Mugs", slug: "mugs", icon: "cup", productCount: 5 } }),
+      db.category.create({ data: { name: "Caps", slug: "caps", icon: "hat-fedora", productCount: 5 } }),
+      db.category.create({ data: { name: "Music & Culture", slug: "music-culture", icon: "music-note", productCount: 3 } }),
     ])
 
     // Create Provinces
@@ -64,14 +84,11 @@ export async function ensureDatabaseSeeded(): Promise<{ seeded: boolean; message
 
     // Create Sellers with Stores
     const sellerData = [
-      { name: "Sarah Mitchell", email: "sarah@techshop.ca", store: "TechHub Canada", storeSlug: "techhub-canada", province: "BC", city: "Vancouver", desc: "Your trusted source for quality electronics across Canada. All prices in CAD, all data stays in Canada." },
-      { name: "Jean-Pierre Beaumont", email: "jp@montrealfashion.ca", store: "Style Québec", storeSlug: "style-quebec", province: "QC", city: "Montréal", desc: "Montréal-based fashion retailer featuring premium Canadian and international brands." },
-      { name: "Mike Thompson", email: "mike@homegear.ca", store: "Maple Home Living", storeSlug: "maple-home-living", province: "ON", city: "Toronto", desc: "Quality home furnishings and appliances. Proudly Canadian, serving customers nationwide." },
-      { name: "Emily Chen", email: "emily@sportsplus.ca", store: "Great White North Sports", storeSlug: "great-white-north-sports", province: "AB", city: "Calgary", desc: "Canada's premier sports equipment retailer. Hockey, cycling, camping and more." },
-      { name: "David Williams", email: "david@canread.ca", store: "CanRead Books", storeSlug: "canread-books", province: "NS", city: "Halifax", desc: "Atlantic Canada's favourite bookstore. Canadian authors, international bestsellers, and rare finds." },
-      { name: "Ana Rodrigues", email: "ana@outdoorbc.ca", store: "BC Outdoor Co", storeSlug: "bc-outdoor-co", province: "BC", city: "Victoria", desc: "Pacific Northwest outdoor gear specialists. Tested in BC's rugged wilderness." },
-      { name: "James Wilson", email: "james@autocanada.ca", store: "Auto Canada Direct", storeSlug: "auto-canada-direct", province: "ON", city: "Mississauga", desc: "Quality pre-owned vehicles with full mechanical inspection. Canadian winters approved." },
-      { name: "Lisa Park", email: "lisa@melodymart.ca", store: "Melody Mart", storeSlug: "melody-mart", province: "ON", city: "Ottawa", desc: "Musical instruments and audio equipment for every level. Ottawa's music store since 2018." },
+      { name: "Tunog Kalye Official", email: "sarah@techshop.ca", store: "Tunog Kalye Official", storeSlug: "tunog-kalye-official", province: "ON", city: "Toronto", desc: "Tunog Kalye Official Store — Street sound culture meets Canadian style. Premium quality T-shirts, mugs, and caps inspired by the rhythm of the streets. All prices in CAD." },
+      { name: "Marco Reyes", email: "jp@montrealfashion.ca", store: "Tunog Kalye West", storeSlug: "tunog-kalye-west", province: "BC", city: "Vancouver", desc: "Tunog Kalye West Coast edition. Bringing street music culture to British Columbia. Premium streetwear and accessories." },
+      { name: "Émile Tremblay", email: "mike@homegear.ca", store: "Tunog Kalye Québec", storeSlug: "tunog-kalye-quebec", province: "QC", city: "Montréal", desc: "Tunog Kalyé — Le son des rues, le style du Québec. Produits officiels Tunog Kalye pour la communauté québécoise." },
+      { name: "Aisha Khan", email: "emily@sportsplus.ca", store: "Tunog Kalye Prairies", storeSlug: "tunog-kalye-prairies", province: "AB", city: "Calgary", desc: "Tunog Kalye Prairies — Street sound across Alberta and the Prairies. Official Tunog Kalye merchandise." },
+      { name: "Jordan Williams", email: "david@canread.ca", store: "Tunog Kalye Atlantic", storeSlug: "tunog-kalye-atlantic", province: "NS", city: "Halifax", desc: "Tunog Kalye Atlantic — East Coast vibes, street sound culture. Shipping across the Maritimes." },
     ]
 
     const sellerPassword = await bcrypt.hash("Seller123!", 12)
@@ -98,7 +115,7 @@ export async function ensureDatabaseSeeded(): Promise<{ seeded: boolean; message
               facebookUrl: `https://facebook.com/${s.storeSlug}`,
               twitterUrl: `https://twitter.com/${s.storeSlug}`,
               instagramUrl: `https://instagram.com/${s.storeSlug}`,
-              websiteUrl: isLast ? 'https://melodymart.ca' : null,
+              websiteUrl: isLast ? 'https://tunogkalye-atlantic.ca' : null,
               vacationMode: isLast,
               vacationMessage: isLast ? 'We are currently on vacation. We will be back on May 1, 2026. Thank you for your patience!' : null,
             },
@@ -136,35 +153,27 @@ export async function ensureDatabaseSeeded(): Promise<{ seeded: boolean; message
 
     // Create Products
     const productTemplates = [
-      { title: 'MacBook Pro 14" M3', cat: "electronics", seller: 0, price: 2199, condition: "LIKE_NEW", desc: "Late 2023 model. 16GB RAM, 512GB SSD. Barely used, includes original box and charger. Battery cycles: 23." },
-      { title: "Sony WH-1000XM5 Headphones", cat: "electronics", seller: 0, price: 349, condition: "NEW", desc: "Brand new, sealed in box. Industry-leading noise cancellation with exceptional sound quality. 30-hour battery life." },
-      { title: "iPad Air M2 256GB", cat: "electronics", seller: 0, price: 749, condition: "NEW", desc: "Latest generation iPad Air with M2 chip. 256GB storage, WiFi + Cellular. Space Gray." },
-      { title: "Samsung Galaxy S24 Ultra", cat: "electronics", seller: 0, price: 1299, condition: "LIKE_NEW", desc: "256GB, Titanium Black. Comes with original box, case, and screen protector already applied." },
-      { title: "Nintendo Switch OLED", cat: "electronics", seller: 0, price: 379, condition: "GOOD", desc: "White Joy-Con model. Includes dock, charger, and 3 games (Zelda, Mario Kart, Smash Bros)." },
-      { title: 'Dell UltraSharp 27" 4K Monitor', cat: "electronics", seller: 0, price: 599, condition: "NEW", desc: "USB-C hub, HDR support. Perfect for professionals. Canadian warranty." },
-      { title: "Canada Goose Expedition Parka", cat: "fashion", seller: 1, price: 1695, condition: "NEW", desc: "Authentic Canada Goose, Arctic Tech fabric. Size M, colour: Spirit. Full Canadian warranty." },
-      { title: "Lululemon Define Jacket", cat: "fashion", seller: 1, price: 148, condition: "LIKE_NEW", desc: "Black, Size 6. Worn twice. 4-way stretch Luon fabric with built-in bra." },
-      { title: "Arc'teryx Beta AR Jacket", cat: "fashion", seller: 1, price: 599, condition: "NEW", desc: "Gore-Tex Pro, all-season mountain jacket. Size L, colour: Blackbird. Canadian made." },
-      { title: "Roots Leather Heritage Bag", cat: "fashion", seller: 1, price: 298, condition: "GOOD", desc: "Authentic Roots leather bag, vintage style. Some patina adds character." },
-      { title: "Moose Knuckles Parka", cat: "fashion", seller: 1, price: 895, condition: "LIKE_NEW", desc: "Stirling Parka, Size M. Premium Canadian down. Only worn a few times." },
-      { title: "Dyson V15 Detect Vacuum", cat: "home-garden", seller: 2, price: 799, condition: "NEW", desc: "Laser reveals microscopic dust. LCD screen shows real-time counts. 2-year Canadian warranty." },
-      { title: "KitchenAid Stand Mixer 5qt", cat: "home-garden", seller: 2, price: 479, condition: "LIKE_NEW", desc: "Empire Red, Artisan series. Includes 3 attachments. Only used a handful of times." },
-      { title: "Herman Miller Aeron Chair", cat: "home-garden", seller: 2, price: 1195, condition: "GOOD", desc: "Size B, fully loaded. Graphite colour. Some wear on armrests. 10-year warranty remaining." },
-      { title: "Cast Iron Dutch Oven 6qt", cat: "home-garden", seller: 2, price: 89, condition: "NEW", desc: "Pre-seasoned, perfect for Canadian winters. Soups, stews, bread." },
-      { title: "Bauer Supreme 3S Hockey Stick", cat: "sports", seller: 3, price: 219, condition: "NEW", desc: "Senior, 85 flex, P92 curve. Mid-kick point for powerful shots." },
-      { title: "Mizuno Wave Rider 27 Running Shoes", cat: "sports", seller: 3, price: 164, condition: "NEW", desc: "Men's size 10, colour: Black/White. Neutral running shoe with excellent cushioning." },
-      { title: "Trek Marlin 7 Mountain Bike", cat: "sports", seller: 3, price: 899, condition: "LIKE_NEW", desc: "2024 model, Size L. RockShox suspension, hydraulic disc brakes. Less than 100km ridden." },
-      { title: "Weber Genesis BBQ Grill", cat: "sports", seller: 3, price: 1249, condition: "GOOD", desc: "3-burner propane grill with side burner. Perfect for Canadian summers. Some surface rust." },
-      { title: "Margaret Atwood Collection (5 Books)", cat: "books", seller: 4, price: 45, condition: "GOOD", desc: "Includes Handmaid's Tale, Oryx and Crake, MaddAddam, The Testaments, Alias Grace. Paperbacks." },
-      { title: "Robert Munsch Storybook Bundle", cat: "books", seller: 4, price: 28, condition: "LIKE_NEW", desc: "10 classic Canadian children's stories. Love You Forever, The Paper Bag Princess, and more." },
-      { title: "MSR Hubba Hubba 2P Tent", cat: "outdoor", seller: 5, price: 449, condition: "LIKE_NEW", desc: "Ultralight 2-person tent. 3-season. Used on 2 trips. Includes footprint." },
-      { title: "Osprey Atmos 65L Backpack", cat: "outdoor", seller: 5, price: 279, condition: "GOOD", desc: "Men's, colour: Pine Green. Anti-gravity suspension. Perfect for multi-day hikes." },
-      { title: 'Big Agnes Sleeping Bag -15°C', cat: "outdoor", seller: 5, price: 389, condition: "NEW", desc: "Rated for Canadian winters. Synthetic insulation, stays warm when damp." },
-      { title: "2022 Toyota RAV4 Hybrid XLE", cat: "vehicles", seller: 6, price: 32999, condition: "LIKE_NEW", desc: "48,000 km. One owner. Winter tires included. All maintenance at Toyota dealer." },
-      { title: "2023 Hyundai Kona Electric", cat: "vehicles", seller: 6, price: 35999, condition: "NEW", desc: "Zero km. Ultimate trim, 415km range. Home charger included." },
-      { title: "Yamaha FG800 Acoustic Guitar", cat: "music", seller: 7, price: 299, condition: "NEW", desc: "Solid spruce top. Perfect beginner to intermediate guitar. Includes gig bag." },
-      { title: "Roland FP-30X Digital Piano", cat: "music", seller: 7, price: 749, condition: "LIKE_NEW", desc: "88 weighted keys, Bluetooth MIDI. Includes sustain pedal and headphones." },
-      { title: "Fender Player Stratocaster", cat: "music", seller: 7, price: 899, condition: "GOOD", desc: "Made in Mexico, Polar White. Some cosmetic wear. Plays and sounds incredible." },
+      // T-Shirts (by Tunog Kalye Official - Seller 0)
+      { title: 'Tunog Kalye Classic Logo Tee — Black', cat: "tshirts", seller: 0, price: 32.99, condition: "NEW", desc: "The iconic Tunog Kalye logo on premium 100% cotton. Classic black tee for street music lovers. Comfortable fit, durable print.", images: ["/products/tshirt-classic-black.png", "/products/tshirt-neon-soundwave.png"], isFeatured: true },
+      { title: 'Tunog Kalye Classic Logo Tee — White', cat: "tshirts", seller: 0, price: 32.99, condition: "NEW", desc: "The iconic Tunog Kalye logo on crisp white cotton. A clean look for any occasion. Comfortable fit, durable print.", images: ["/products/tshirt-classic-white.png", "/products/tshirt-street-vibes.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Street Vibes" Graphic Tee', cat: "tshirts", seller: 0, price: 34.99, condition: "NEW", desc: "Bold graphic design inspired by urban sound culture. Premium cotton blend with vibrant colours that last. Street vibes guaranteed.", images: ["/products/tshirt-street-vibes.png", "/products/tshirt-classic-black.png"], isFeatured: true },
+      { title: 'Tunog Kalye "Bass Drop" Music Tee', cat: "tshirts", seller: 0, price: 34.99, condition: "NEW", desc: "Feel the bass drop with this eye-catching music tee. Features a stylised bass waveform graphic. Premium quality print.", images: ["/products/tshirt-bass-drop.png", "/products/tshirt-neon-soundwave.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Pinoy Pride" Heritage Tee', cat: "tshirts", seller: 0, price: 36.99, condition: "NEW", desc: "Celebrate Filipino heritage with Tunog Kalye. This heritage tee combines cultural pride with street sound energy. Premium cotton.", images: ["/products/tshirt-pinoy-pride.png", "/products/tshirt-retro-wave.png"], isFeatured: false },
+      { title: 'Tunog Kalye Retro Wave Tee', cat: "tshirts", seller: 0, price: 34.99, condition: "NEW", desc: "Retro-inspired design meets street culture. The Tunog Kalye Retro Wave tee takes you back to the golden era of sound. Vibrant colours.", images: ["/products/tshirt-retro-wave.png", "/products/tshirt-bass-drop.png"], isFeatured: false },
+      { title: 'Tunog Kalye Neon Soundwave Tee', cat: "tshirts", seller: 0, price: 34.99, condition: "NEW", desc: "Light up the streets with this neon soundwave design. Glowing colours on dark fabric. Premium quality, made to stand out.", images: ["/products/tshirt-neon-soundwave.png", "/products/tshirt-kalye-life.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Kalye Life" Urban Tee', cat: "tshirts", seller: 0, price: 32.99, condition: "NEW", desc: "Live the Kalye life! This urban tee celebrates the everyday rhythm of the streets. Comfortable and stylish, perfect for any day.", images: ["/products/tshirt-kalye-life.png", "/products/tshirt-pinoy-pride.png"], isFeatured: false },
+      // Mugs (by Tunog Kalye West - Seller 1)
+      { title: 'Tunog Kalye Soundwave Ceramic Mug', cat: "mugs", seller: 1, price: 17.99, condition: "NEW", desc: "Start your morning with the sound of Tunog Kalye. Premium ceramic mug with a sleek soundwave design. Microwave and dishwasher safe.", images: ["/products/mug-soundwave.png", "/products/mug-music-lover.png"], isFeatured: true },
+      { title: 'Tunog Kalye Logo Travel Tumbler', cat: "mugs", seller: 1, price: 22.99, condition: "NEW", desc: "Take Tunog Kalye on the go. Insulated stainless steel tumbler with the official logo. Keeps drinks hot or cold for hours.", images: ["/products/mug-travel-tumbler.png", "/products/mug-soundwave.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Morning Beats" Coffee Mug', cat: "mugs", seller: 1, price: 16.99, condition: "NEW", desc: "Every morning needs beats and coffee. This fun ceramic mug features the Morning Beats design. Great gift for music lovers.", images: ["/products/mug-morning-beats.png", "/products/mug-beats-coffee.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Music Lover" Ceramic Mug', cat: "mugs", seller: 1, price: 17.99, condition: "NEW", desc: "Show your love for music with this beautifully designed ceramic mug. Features Tunog Kalye's Music Lover graphic. 11oz capacity.", images: ["/products/mug-music-lover.png", "/products/mug-morning-beats.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Beats & Coffee" Mug', cat: "mugs", seller: 1, price: 19.99, condition: "NEW", desc: "The perfect duo: beats and coffee. This premium ceramic mug features a stylish Beats & Coffee design. A must-have for your desk.", images: ["/products/mug-beats-coffee.png", "/products/mug-travel-tumbler.png"], isFeatured: false },
+      // Caps (by Tunog Kalye Québec - Seller 2)
+      { title: 'Tunog Kalye Classic Snapback — Black', cat: "caps", seller: 2, price: 29.99, condition: "NEW", desc: "The classic Tunog Kalye snapback in black. Embroidered logo, adjustable snap closure. One size fits all. Premium quality.", images: ["/products/cap-snapback-black.png", "/products/cap-trucker.png"], isFeatured: true },
+      { title: 'Tunog Kalye Classic Snapback — Red', cat: "caps", seller: 2, price: 29.99, condition: "NEW", desc: "Stand out with the Tunog Kalye snapback in bold red. Embroidered logo, adjustable snap closure. One size fits all.", images: ["/products/cap-snapback-red.png", "/products/cap-snapback-black.png"], isFeatured: false },
+      { title: 'Tunog Kalye Trucker Hat', cat: "caps", seller: 2, price: 27.99, condition: "NEW", desc: "Classic trucker style with Tunog Kalye flair. Mesh back for breathability, embroidered front logo. Perfect for summer.", images: ["/products/cap-trucker.png", "/products/cap-dad-hat.png"], isFeatured: false },
+      { title: 'Tunog Kalye Dad Hat — Khaki', cat: "caps", seller: 2, price: 26.99, condition: "NEW", desc: "Relaxed dad hat style with Tunog Kalye branding. Soft washed cotton, adjustable brass buckle. Effortlessly cool.", images: ["/products/cap-dad-hat.png", "/products/cap-trucker.png"], isFeatured: false },
+      { title: 'Tunog Kalye "Bass" Embroidered Cap', cat: "caps", seller: 2, price: 31.99, condition: "NEW", desc: "Premium embroidered cap featuring the Tunog Kalye Bass design. Structured crown, curved brim. A statement piece for bass lovers.", images: ["/products/cap-bass-embroidered.png", "/products/cap-snapback-black.png"], isFeatured: false },
     ]
 
     const catMap: Record<string, number> = {}
@@ -180,20 +189,17 @@ export async function ensureDatabaseSeeded(): Promise<{ seeded: boolean; message
           slug: p.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, ""),
           description: p.desc,
           price: p.price,
-          comparePrice: p.condition === "NEW" ? Math.round(p.price * 1.15) : undefined,
+          comparePrice: Math.round(p.price * 1.2),
           condition: p.condition,
           categoryId: categories[catIndex].id,
           storeId: seller.store!.id,
           province: seller.province,
           city: seller.city,
-          images: JSON.stringify([
-            `https://picsum.photos/seed/${p.title.replace(/\s/g, "").toLowerCase()}/600/600`,
-            `https://picsum.photos/seed/${p.title.replace(/\s/g, "").toLowerCase()}2/600/600`,
-          ]),
-          stock: p.condition === "NEW" ? 10 : Math.floor(Math.random() * 5) + 1,
+          images: JSON.stringify(p.images),
+          stock: 10,
           sold: Math.floor(Math.random() * 20),
           status: "ACTIVE",
-          isFeatured: Math.random() > 0.5,
+          isFeatured: p.isFeatured,
           views: Math.floor(Math.random() * 500),
         },
       })
@@ -202,17 +208,75 @@ export async function ensureDatabaseSeeded(): Promise<{ seeded: boolean; message
 
     // Create Product Variants
     const variantData: Record<number, Array<{ name: string; value: string; priceDelta: number; stock: number }>> = {
-      0: [{ name: 'Storage', value: '256GB', priceDelta: 0, stock: 5 }, { name: 'Storage', value: '512GB', priceDelta: 200, stock: 3 }, { name: 'Storage', value: '1TB', priceDelta: 500, stock: 2 }],
-      1: [{ name: 'Color', value: 'Black', priceDelta: 0, stock: 8 }, { name: 'Color', value: 'Silver', priceDelta: 0, stock: 4 }, { name: 'Color', value: 'Blue', priceDelta: 10, stock: 3 }],
-      2: [{ name: 'Storage', value: '128GB', priceDelta: -100, stock: 6 }, { name: 'Storage', value: '256GB', priceDelta: 0, stock: 5 }, { name: 'Storage', value: '512GB', priceDelta: 200, stock: 3 }],
-      3: [{ name: 'Storage', value: '256GB', priceDelta: 0, stock: 4 }, { name: 'Storage', value: '512GB', priceDelta: 150, stock: 3 }, { name: 'Storage', value: '1TB', priceDelta: 350, stock: 2 }],
-      6: [{ name: 'Size', value: 'S', priceDelta: 0, stock: 3 }, { name: 'Size', value: 'M', priceDelta: 0, stock: 5 }, { name: 'Size', value: 'L', priceDelta: 0, stock: 4 }, { name: 'Size', value: 'XL', priceDelta: 20, stock: 2 }],
-      7: [{ name: 'Size', value: '4', priceDelta: 0, stock: 4 }, { name: 'Size', value: '6', priceDelta: 0, stock: 5 }, { name: 'Size', value: '8', priceDelta: 0, stock: 3 }, { name: 'Size', value: '10', priceDelta: 0, stock: 2 }, { name: 'Size', value: '12', priceDelta: 0, stock: 1 }],
-      14: [{ name: 'Flex', value: '75', priceDelta: 0, stock: 5 }, { name: 'Flex', value: '85', priceDelta: 0, stock: 5 }, { name: 'Flex', value: '100', priceDelta: 10, stock: 3 }],
-      15: [{ name: 'Size', value: '9', priceDelta: 0, stock: 3 }, { name: 'Size', value: '10', priceDelta: 0, stock: 5 }, { name: 'Size', value: '11', priceDelta: 0, stock: 4 }, { name: 'Size', value: '12', priceDelta: 0, stock: 2 }],
-      16: [{ name: 'Size', value: 'M', priceDelta: 0, stock: 2 }, { name: 'Size', value: 'L', priceDelta: 0, stock: 3 }, { name: 'Size', value: 'XL', priceDelta: 50, stock: 1 }],
-      23: [{ name: 'Color', value: 'Natural', priceDelta: 0, stock: 4 }, { name: 'Color', value: 'Black', priceDelta: 10, stock: 3 }, { name: 'Color', value: 'Sunburst', priceDelta: 20, stock: 2 }],
-      25: [{ name: 'Color', value: 'Polar White', priceDelta: 0, stock: 2 }, { name: 'Color', value: 'Olympic White', priceDelta: 0, stock: 1 }, { name: 'Color', value: '3-Color Sunburst', priceDelta: 30, stock: 1 }],
+      // T-Shirts - Size variants (products 0-7)
+      0: [
+        { name: 'Size', value: 'S', priceDelta: 0, stock: 8 },
+        { name: 'Size', value: 'M', priceDelta: 0, stock: 12 },
+        { name: 'Size', value: 'L', priceDelta: 0, stock: 10 },
+        { name: 'Size', value: 'XL', priceDelta: 0, stock: 6 },
+        { name: 'Size', value: 'XXL', priceDelta: 3, stock: 4 },
+      ],
+      1: [
+        { name: 'Size', value: 'S', priceDelta: 0, stock: 8 },
+        { name: 'Size', value: 'M', priceDelta: 0, stock: 12 },
+        { name: 'Size', value: 'L', priceDelta: 0, stock: 10 },
+        { name: 'Size', value: 'XL', priceDelta: 0, stock: 6 },
+        { name: 'Size', value: 'XXL', priceDelta: 3, stock: 4 },
+      ],
+      2: [
+        { name: 'Size', value: 'S', priceDelta: 0, stock: 6 },
+        { name: 'Size', value: 'M', priceDelta: 0, stock: 10 },
+        { name: 'Size', value: 'L', priceDelta: 0, stock: 8 },
+        { name: 'Size', value: 'XL', priceDelta: 0, stock: 5 },
+        { name: 'Size', value: 'XXL', priceDelta: 3, stock: 3 },
+      ],
+      3: [
+        { name: 'Size', value: 'S', priceDelta: 0, stock: 6 },
+        { name: 'Size', value: 'M', priceDelta: 0, stock: 10 },
+        { name: 'Size', value: 'L', priceDelta: 0, stock: 8 },
+        { name: 'Size', value: 'XL', priceDelta: 0, stock: 5 },
+      ],
+      4: [
+        { name: 'Size', value: 'S', priceDelta: 0, stock: 5 },
+        { name: 'Size', value: 'M', priceDelta: 0, stock: 8 },
+        { name: 'Size', value: 'L', priceDelta: 0, stock: 6 },
+        { name: 'Size', value: 'XL', priceDelta: 0, stock: 4 },
+      ],
+      5: [
+        { name: 'Size', value: 'S', priceDelta: 0, stock: 6 },
+        { name: 'Size', value: 'M', priceDelta: 0, stock: 10 },
+        { name: 'Size', value: 'L', priceDelta: 0, stock: 8 },
+        { name: 'Size', value: 'XL', priceDelta: 0, stock: 5 },
+      ],
+      6: [
+        { name: 'Size', value: 'S', priceDelta: 0, stock: 6 },
+        { name: 'Size', value: 'M', priceDelta: 0, stock: 10 },
+        { name: 'Size', value: 'L', priceDelta: 0, stock: 8 },
+        { name: 'Size', value: 'XL', priceDelta: 0, stock: 5 },
+      ],
+      7: [
+        { name: 'Size', value: 'S', priceDelta: 0, stock: 8 },
+        { name: 'Size', value: 'M', priceDelta: 0, stock: 12 },
+        { name: 'Size', value: 'L', priceDelta: 0, stock: 10 },
+        { name: 'Size', value: 'XL', priceDelta: 0, stock: 6 },
+      ],
+      // Mugs - No variants needed (products 8-12) — mugs are one-size
+      // Caps - Size variants (products 13-17)
+      13: [
+        { name: 'Size', value: 'One Size', priceDelta: 0, stock: 10 },
+      ],
+      14: [
+        { name: 'Size', value: 'One Size', priceDelta: 0, stock: 10 },
+      ],
+      15: [
+        { name: 'Size', value: 'One Size', priceDelta: 0, stock: 8 },
+      ],
+      16: [
+        { name: 'Size', value: 'One Size', priceDelta: 0, stock: 8 },
+      ],
+      17: [
+        { name: 'Size', value: 'One Size', priceDelta: 0, stock: 6 },
+      ],
     }
 
     for (const [productIndex, variants] of Object.entries(variantData)) {
@@ -356,19 +420,19 @@ export async function ensureDatabaseSeeded(): Promise<{ seeded: boolean; message
     // Create Conversations & Messages
     const sampleConversations = [
       { buyer: buyers[0], seller: sellers[0], messages: [
-        { sender: buyers[0], text: "Hi! Is the MacBook Pro still available?", delay: 0 },
-        { sender: sellers[0], text: "Yes, it's available! Battery health is 98%.", delay: 1 },
-        { sender: buyers[0], text: "Great! Can you do $2000 for it?", delay: 2 },
-        { sender: sellers[0], text: "I can do $2100 since it's practically new.", delay: 3 },
+        { sender: buyers[0], text: "Hi! Is the Classic Logo Tee in black still available in size L?", delay: 0 },
+        { sender: sellers[0], text: "Yes! We have it in stock. Size L is available.", delay: 1 },
+        { sender: buyers[0], text: "Awesome! Do you have any bundle deals if I buy 2 tees?", delay: 2 },
+        { sender: sellers[0], text: "Sure! Use code TUNOG10 for 10% off on orders of 2 or more items.", delay: 3 },
       ]},
-      { buyer: buyers[1], seller: sellers[1], messages: [
-        { sender: buyers[1], text: "Bonjour! J'aimerais savoir si la parka Canada Goose est disponible en taille M?", delay: 0 },
-        { sender: sellers[1], text: "Oui! Nous avons la taille M en stock. Couleur Spirit.", delay: 1 },
-        { sender: buyers[1], text: "Parfait! Est-ce que vous offrez la livraison gratuite au Québec?", delay: 2 },
+      { buyer: buyers[1], seller: sellers[2], messages: [
+        { sender: buyers[1], text: "Bonjour! Le Snapback rouge est-il disponible?", delay: 0 },
+        { sender: sellers[2], text: "Oui! Le Classic Snapback en rouge est en stock. Livraison gratuite au Québec!", delay: 1 },
+        { sender: buyers[1], text: "Parfait! Je vais en prendre un avec le mug Soundwave.", delay: 2 },
       ]},
-      { buyer: buyers[2], seller: sellers[3], messages: [
-        { sender: buyers[2], text: "Is the Trek Marlin 7 still available?", delay: 0 },
-        { sender: sellers[3], text: "Yes! Less than 100km on it. Like new condition.", delay: 1 },
+      { buyer: buyers[2], seller: sellers[1], messages: [
+        { sender: buyers[2], text: "Hey! Do you ship the Travel Tumbler to Calgary?", delay: 0 },
+        { sender: sellers[1], text: "Yes! We ship nationwide. Free shipping on orders over $50.", delay: 1 },
       ]},
     ]
 
@@ -396,14 +460,14 @@ export async function ensureDatabaseSeeded(): Promise<{ seeded: boolean; message
 
     // Create Notifications
     const notificationTemplates = [
-      { userId: buyers[0].id, type: "ORDER", title: "Order Shipped", message: "Your order CM-X2K9 has been shipped! Track your package.", link: "orders" },
-      { userId: buyers[0].id, type: "MESSAGE", title: "New Message", message: "Sarah Mitchell sent you a message about MacBook Pro.", link: "messages" },
-      { userId: buyers[1].id, type: "ORDER", title: "Order Delivered", message: "Your order has been delivered! Leave a review to help other buyers.", link: "orders" },
-      { userId: sellers[0].id, type: "ORDER", title: "New Order", message: "You received a new order! Ship within 2 business days.", link: "my-orders" },
-      { userId: sellers[0].id, type: "REVIEW", title: "New Review", message: "Someone left a 5-star review on your MacBook Pro listing!", link: "my-products" },
-      { userId: sellers[1].id, type: "MESSAGE", title: "New Message", message: "Marie Tremblay sent you a message about Canada Goose Parka.", link: "messages" },
-      { userId: sellers[2].id, type: "PAYOUT", title: "Payout Processed", message: "Your payout of $384.50 has been processed to your bank account.", link: "my-payouts" },
-      { userId: admin.id, type: "DISPUTE", title: "New Dispute Filed", message: "A buyer has filed a dispute on order CM-XXXX. Review required.", link: "admin-disputes" },
+      { userId: buyers[0].id, type: "ORDER", title: "Order Shipped", message: "Your Tunog Kalye order has been shipped! Track your package.", link: "orders" },
+      { userId: buyers[0].id, type: "MESSAGE", title: "New Message", message: "Tunog Kalye Official sent you a message about Classic Logo Tee.", link: "messages" },
+      { userId: buyers[1].id, type: "ORDER", title: "Order Delivered", message: "Your Tunog Kalye order has been delivered! Leave a review.", link: "orders" },
+      { userId: sellers[0].id, type: "ORDER", title: "New Order", message: "You received a new order for Tunog Kalye merchandise!", link: "my-orders" },
+      { userId: sellers[0].id, type: "REVIEW", title: "New Review", message: "Someone left a 5-star review on your Classic Logo Tee!", link: "my-products" },
+      { userId: sellers[1].id, type: "MESSAGE", title: "New Message", message: "A buyer asked about shipping to Calgary.", link: "messages" },
+      { userId: sellers[2].id, type: "PAYOUT", title: "Payout Processed", message: "Your Tunog Kalye payout of $284.50 has been processed.", link: "my-payouts" },
+      { userId: admin.id, type: "DISPUTE", title: "New Dispute Filed", message: "A buyer filed a dispute. Review required.", link: "admin-disputes" },
     ]
     for (let i = 0; i < notificationTemplates.length; i++) {
       await db.notification.create({
@@ -417,12 +481,12 @@ export async function ensureDatabaseSeeded(): Promise<{ seeded: boolean; message
 
     // Create Coupons
     const couponData = [
-      { code: "WELCOME10", type: "PERCENTAGE", value: 10, minOrderAmount: 25, maxUses: 100, sellerId: null, startsAt: new Date("2024-01-01"), expiresAt: null },
-      { code: "SAVE20", type: "FIXED", value: 20, minOrderAmount: 100, maxUses: 50, sellerId: null, startsAt: new Date("2024-01-01"), expiresAt: null },
-      { code: "SELLER15", type: "PERCENTAGE", value: 15, minOrderAmount: 50, maxUses: 30, sellerId: sellers[0].id, startsAt: new Date("2024-01-01"), expiresAt: null },
-      { code: "FREESHIP", type: "FIXED", value: 15, minOrderAmount: 75, maxUses: null, sellerId: null, startsAt: new Date("2024-01-01"), expiresAt: null },
+      { code: "TUNOG10", type: "PERCENTAGE", value: 10, minOrderAmount: 25, maxUses: 100, sellerId: null, startsAt: new Date("2024-01-01"), expiresAt: null },
+      { code: "STREET20", type: "FIXED", value: 20, minOrderAmount: 75, maxUses: 50, sellerId: null, startsAt: new Date("2024-01-01"), expiresAt: null },
+      { code: "KALYE15", type: "PERCENTAGE", value: 15, minOrderAmount: 50, maxUses: 30, sellerId: sellers[0].id, startsAt: new Date("2024-01-01"), expiresAt: null },
+      { code: "BUNDLE", type: "FIXED", value: 10, minOrderAmount: 60, maxUses: null, sellerId: null, startsAt: new Date("2024-01-01"), expiresAt: null },
       { code: "SUMMER25", type: "PERCENTAGE", value: 25, minOrderAmount: 0, maxUses: 200, sellerId: null, startsAt: new Date("2024-06-01"), expiresAt: new Date("2025-09-30") },
-      { code: "LOYAL10", type: "PERCENTAGE", value: 10, minOrderAmount: 30, maxUses: null, sellerId: sellers[1].id, startsAt: new Date("2024-01-01"), expiresAt: null },
+      { code: "WESTCOAST", type: "PERCENTAGE", value: 10, minOrderAmount: 30, maxUses: null, sellerId: sellers[1].id, startsAt: new Date("2024-01-01"), expiresAt: null },
     ]
     for (const c of couponData) {
       await db.coupon.create({

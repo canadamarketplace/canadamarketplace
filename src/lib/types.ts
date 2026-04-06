@@ -54,14 +54,10 @@ export const NAV_PAGES: Record<string, NavPage[]> = {
 }
 
 export const CATEGORIES = [
-  { name: "Electronics", slug: "electronics", icon: "laptop", count: 12400 },
-  { name: "Fashion", slug: "fashion", icon: "tshirt-crew", count: 28300 },
-  { name: "Home & Garden", slug: "home-garden", icon: "sofa", count: 19800 },
-  { name: "Sports", slug: "sports", icon: "hockey-puck", count: 8200 },
-  { name: "Vehicles", slug: "vehicles", icon: "car", count: 5600 },
-  { name: "Books", slug: "books", icon: "book-open-variant", count: 15100 },
-  { name: "Music", slug: "music", icon: "music-note", count: 4700 },
-  { name: "Outdoor", slug: "outdoor", icon: "pine-tree", count: 7300 },
+  { name: "T-Shirts", slug: "tshirts", icon: "tshirt-crew", count: 8 },
+  { name: "Mugs", slug: "mugs", icon: "cup", count: 5 },
+  { name: "Caps", slug: "caps", icon: "hat-fedora", count: 5 },
+  { name: "Music & Culture", slug: "music-culture", icon: "music-note", count: 3 },
 ]
 
 export const PROVINCES = [

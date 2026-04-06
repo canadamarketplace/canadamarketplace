@@ -117,3 +117,47 @@ Integrated SEO across 5 files in the marketplace:
    - All FAQ items are included in structured data regardless of active category filter, ensuring search engines see the full FAQ content
 
 - Verified: `npm run lint` passes with zero errors.
+
+---
+## Task ID: 6 - tunog-kalye-seed-update
+### Work Task
+Replace ALL sample products in both seed files (`prisma/seed.ts` and `src/lib/auto-seed.ts`) with Tunog Kalye inspired merchandise (T-shirts, Mugs, and Caps). Update categories, sellers, products, variants, conversations, notifications, and coupons while preserving admin/buyer accounts, provinces, orders logic, reviews, disputes, payouts, and site settings.
+
+### Work Summary
+Updated both seed files with identical Tunog Kalye data:
+
+**Categories** (8 → 4):
+- T-Shirts, Mugs, Caps, Music & Culture (with new slugs and icons)
+
+**Sellers** (8 → 5):
+- Tunog Kalye Official (ON/Toronto) — kept email sarah@techshop.ca
+- Tunog Kalye West (BC/Vancouver) — kept email jp@montrealfashion.ca
+- Tunog Kalye Québec (QC/Montréal) — kept email mike@homegear.ca
+- Tunog Kalye Prairies (AB/Calgary) — kept email emily@sportsplus.ca
+- Tunog Kalye Atlantic (NS/Halifax) — kept email david@canread.ca
+- Removed 3 old sellers (Ana Rodrigues, James Wilson, Lisa Park)
+
+**Products** (28 → 18):
+- 8 T-Shirts ($32.99–$36.99) by Seller 0 — local `/products/*.png` images
+- 5 Mugs ($16.99–$22.99) by Seller 1 — local images
+- 5 Caps ($26.99–$31.99) by Seller 2 — local images
+- All NEW condition, comparePrice at 1.2x, featured items at indices 0, 2, 8, 13
+
+**Variants**:
+- T-Shirts (0-7): Size S/M/L/XL/XXL variants
+- Mugs (8-12): No variants (one-size)
+- Caps (13-17): One Size variants
+
+**Conversations**: Updated to reference Tunog Kalye products (Classic Logo Tee, Snapback, Travel Tumbler)
+
+**Notifications**: Updated all messages to reference Tunog Kalye brand
+
+**Coupons**: TUNOG10, STREET20, KALYE15, BUNDLE, SUMMER25, WESTCOAST
+
+**Preserved unchanged**: Admin user, 5 buyer accounts, 13 provinces, order/review/dispute/payout logic, site settings, `auto-seed.ts` specific features (social URLs, vacation mode on last seller, paymentStatus field)
+
+**Verified**: `npm run lint` passes with zero errors.
+
+**Files changed**:
+- `prisma/seed.ts` — Full rewrite of categories, sellers, products, variants, conversations, notifications, coupons
+- `src/lib/auto-seed.ts` — Same changes adapted to auto-seed structure
