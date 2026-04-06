@@ -25,7 +25,8 @@ export default function SellerProducts() {
   const fetchProducts = useCallback(async () => {
     setLoading(true)
     try {
-      const storeParam = user?.storeId ? `storeId=${user.storeId}` : ''
+      const storeId = user?.storeId
+      const storeParam = storeId ? `storeId=${storeId}` : ''
       const res = await fetch(`/api/products?limit=50&status=all${storeParam ? `&${storeParam}` : ''}`)
       if (res.ok) {
         const data = await res.json()
@@ -33,7 +34,7 @@ export default function SellerProducts() {
       }
     } catch {}
     setLoading(false)
-  }, [user])
+  }, [user?.storeId])
 
   useEffect(() => {
     fetchProducts()

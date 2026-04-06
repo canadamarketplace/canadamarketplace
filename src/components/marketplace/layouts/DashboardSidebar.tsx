@@ -210,6 +210,10 @@ function SidebarContent({ menuItems, activeItem, onNav, user, roleStyle, role, o
       <ScrollArea className="flex-1 px-3 py-4">
         <nav className="space-y-1">
           {menuItems.map((item) => {
+            // Hide "Become a Seller" if user is already a seller or admin
+            if (item.page === 'become-seller' && user && (user.role === 'SELLER' || user.role === 'ADMIN')) {
+              return null
+            }
             const isActive = activeItem === item.page || (activeItem === 'dashboard' && item.page === 'dashboard' && role === 'seller')
             return (
               <button

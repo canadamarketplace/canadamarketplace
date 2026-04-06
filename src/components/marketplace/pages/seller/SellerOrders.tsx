@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigation, useAuth } from '@/lib/store'
 import { useTranslation } from '@/lib/i18n'
 import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
@@ -44,18 +44,18 @@ export default function SellerOrders() {
   const [updatingId, setUpdatingId] = useState<string | null>(null)
   const [trackingNum, setTrackingNum] = useState('')
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     setLoading(true)
     try {
       const res = await fetch(`/api/orders?sellerId=${user?.id || 'seller'}`)
       if (res.ok) setOrders(await res.json())
     } catch {}
     setLoading(false)
-  }
+  }, [user?.id])
 
   useEffect(() => {
     fetchOrders()
-  }, [statusFilter, fetchOrders])
+  }, [fetchOrders])
 
   // Fetch timeline for expanded order
   const fetchOrderTimeline = async (orderId: string) => {

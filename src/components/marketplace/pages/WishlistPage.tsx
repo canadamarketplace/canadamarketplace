@@ -54,6 +54,7 @@ export default function WishlistPage() {
 
   if (items.length === 0) {
     return (
+      <DashboardSidebar role="buyer" activeItem="wishlist" onNavigate={(page) => navigate(page)}>
       <div className="min-h-[60vh] flex items-center justify-center px-4">
         <div className="text-center max-w-md">
           <div className="w-20 h-20 rounded-full bg-cm-elevated border border-cm-border-subtle flex items-center justify-center mx-auto mb-6">
@@ -70,6 +71,7 @@ export default function WishlistPage() {
           </Button>
         </div>
       </div>
+      </DashboardSidebar>
     )
   }
 

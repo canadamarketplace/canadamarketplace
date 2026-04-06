@@ -8,10 +8,12 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const sellerId = searchParams.get("sellerId")
     const storeId = searchParams.get("storeId")
+    const buyerId = searchParams.get("buyerId")
 
     const where: any = {}
     if (sellerId) where.sellerId = sellerId
     if (storeId) where.storeId = storeId
+    if (buyerId) where.buyerId = buyerId
 
     const orders = await db.order.findMany({
       where,

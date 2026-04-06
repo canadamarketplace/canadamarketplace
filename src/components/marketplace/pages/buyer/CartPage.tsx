@@ -32,6 +32,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
+      <DashboardSidebar role="buyer" activeItem="cart" onNavigate={(page) => navigate(page)}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
         <div className="w-20 h-20 rounded-2xl bg-cm-hover flex items-center justify-center mx-auto mb-6">
           <ShoppingBag className="w-10 h-10 text-cm-faint" />
@@ -42,6 +43,7 @@ export default function CartPage() {
           Browse Products <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       </div>
+      </DashboardSidebar>
     )
   }
 

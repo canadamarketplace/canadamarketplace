@@ -20,6 +20,7 @@ interface AdminOrder {
 }
 
 export default function AdminOrders() {
+  const { navigate } = useNavigation()
   const [orders, setOrders] = useState<AdminOrder[]>([])
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState('all')
@@ -34,7 +35,7 @@ export default function AdminOrders() {
     setLoading(false)
   }, [])
 
-  useEffect(() => { fetchOrders() }, [statusFilter, fetchOrders])
+  useEffect(() => { fetchOrders() }, [fetchOrders])
 
   return (
     <AdminAuthGuard>

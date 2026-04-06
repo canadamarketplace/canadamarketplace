@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigation, useAuth } from '@/lib/store'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -29,22 +29,22 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState('all')
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     if (!user) return
     setLoading(true)
     try {
-      const res = await fetch(`/api/orders?sellerId=${user.id}`)
+      const res = await fetch(`/api/orders?buyerId=${user.id}`)
       if (res.ok) {
         const data = await res.json()
         setOrders(data || [])
       }
     } catch {}
     setLoading(false)
-  }
+  }, [user])
 
   useEffect(() => {
-    if (user) fetchOrders()
-  }, [user, statusFilter, fetchOrders])
+    fetchOrders()
+  }, [fetchOrders])
 
   const getImages = (image?: string) => {
     if (image) return image
