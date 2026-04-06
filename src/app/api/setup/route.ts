@@ -36,7 +36,34 @@ async function ensureSchemaSync(): Promise<{ synced: boolean; message: string }>
       missingColumns.push({ name: 'moderationStatus', type: 'TEXT', default: "DEFAULT 'APPROVED'" })
     }
 
-    if (missingColumns.length === 0) {
+    // Check if Report table exists, create if not
+    const tables = await db.$queryRawUnsafe(
+      `SELECT table_name FROM information_schema.tables WHERE table_name = 'Report' AND table_schema = 'public'`
+    ) as Array<{ table_name: string }>
+
+    if (tables.length === 0) {
+      console.log('🔧 Creating Report table...')
+      await db.$executeRawUnsafe(`
+        CREATE TABLE "Report" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "reporterId" TEXT NOT NULL,
+          "targetType" TEXT NOT NULL,
+          "targetId" TEXT NOT NULL,
+          "reason" TEXT NOT NULL,
+          "description" TEXT NOT NULL,
+          "status" TEXT NOT NULL DEFAULT 'OPEN',
+          "adminNotes" TEXT,
+          "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "updatedAt" TIMESTAMP(3) NOT NULL,
+          CONSTRAINT "Report_reporterId_fkey" FOREIGN KEY ("reporterId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE
+        )
+      `)
+      await db.$executeRawUnsafe(`CREATE INDEX "Report_targetType_targetId_idx" ON "Report"("targetType", "targetId")`)
+      await db.$executeRawUnsafe(`CREATE INDEX "Report_status_idx" ON "Report"("status")`)
+      console.log('  ✅ Created Report table with indexes')
+    }
+
+    if (missingColumns.length === 0 && tables.length > 0) {
       return { synced: false, message: 'Schema already in sync' }
     }
 
@@ -49,7 +76,14 @@ async function ensureSchemaSync(): Promise<{ synced: boolean; message: string }>
       console.log(`  ✅ Added column: ${col.name}`)
     }
 
-    return { synced: true, message: `Added ${missingColumns.length} columns: ${missingColumns.map(c => c.name).join(', ')}` }
+    let msg = ''
+    if (missingColumns.length > 0) {
+      msg += `Added ${missingColumns.length} columns: ${missingColumns.map(c => c.name).join(', ')}`
+    }
+    if (tables.length === 0) {
+      msg += (msg ? '; ' : '') + 'Created Report table'
+    }
+    return { synced: true, message: msg || 'Schema synced' }
   } catch (error) {
     console.error('Schema sync failed:', error)
     return { synced: false, message: `Schema sync failed: ${error instanceof Error ? error.message : String(error)}` }
