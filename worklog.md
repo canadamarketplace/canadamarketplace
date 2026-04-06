@@ -38,3 +38,26 @@ Stage Summary:
 - **Files changed**: `src/app/api/setup/route.ts` (added schema sync logic)
 - **Deployed**: Fix is live on https://www.canadamarketplace.ca/
 - **Note**: The columns turned out to already exist in the database — the Prisma client may have been cached with an outdated schema. The redeployment regenerated the Prisma client.
+
+---
+## Task ID: 3 - bugfix-orders-page
+### Work Task
+Fix the `/orders` page showing "Become a Seller" promotional content instead of the buyer's order history.
+
+### Work Summary
+- **Investigated the architecture**: This is a Zustand-based SPA with client-side routing. The `PageRenderer` in `MarketplaceApp.tsx` correctly maps `currentPage: "orders"` to `<OrdersPage />`. The `urlToPage()` function correctly maps `/orders` URL to `{ page: "orders" }`. The routing was NOT the problem.
+
+- **Root cause identified**: The `OrdersPage` component (`src/components/marketplace/pages/buyer/OrdersPage.tsx`) contained an inline "Become a Seller" promotional banner (lines 82-101) that rendered for ALL users with `user.role === 'BUYER'`. This banner — with the text "Start selling on Canada Marketplace" and "Turn your products into profit..." — appeared prominently above the order list (or empty state), making it appear as though the orders page was showing a seller signup prompt instead of order data.
+
+- **Searched all occurrences**: Found "Become a Seller" content in 5 locations:
+  1. `OrdersPage.tsx` (lines 82-101) — **INAPPROPRIATE** (removed)
+  2. `ProfilePage.tsx` (lines 136-181) — **APPROPRIATE** (kept — profile page is the right place for account upgrade prompts)
+  3. `DashboardSidebar.tsx` (line 64) — **APPROPRIATE** (already hidden for sellers/admins via line 215)
+  4. `BecomeSellerPage.tsx` — **APPROPRIATE** (dedicated landing page)
+  5. `AboutPage.tsx` (line 259) — **APPROPRIATE** (marketing CTA on about page)
+
+- **Fix applied**: Removed the entire "Become a Seller" banner block (21 lines) from `OrdersPage.tsx` and cleaned up the unused icon imports (`Eye`, `Store`, `ArrowRight`).
+
+- **Verified**: `npm run lint` passes with no errors. TypeScript compilation shows only pre-existing warnings unrelated to this change. The orders page now shows only: "My Orders" heading → status filter → loading/empty/order list.
+
+- **File changed**: `src/components/marketplace/pages/buyer/OrdersPage.tsx` (-22 lines, +1 line import cleanup)
