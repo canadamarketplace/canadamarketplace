@@ -435,3 +435,24 @@ Implement 3 customer-facing UI features: Product Comparison Tool, Report/Flag Sy
 - `src/components/marketplace/pages/ComparePage.tsx` — NEW: Product comparison page
 - `src/components/marketplace/CompareFloatingBar.tsx` — NEW: Floating compare bar
 - `src/components/marketplace/MarketplaceApp.tsx` — Wire up ComparePage + CompareFloatingBar
+
+---
+Task ID: 7 - marketplace-gap-features
+Agent: Main Agent + 4 Fullstack Developer Subagents
+Task: Implement all marketplace gap features identified in the feature audit
+
+Work Log:
+- **Phase 1 (Schema + Data + APIs)**: Updated Prisma schema with Store.approvalStatus, Product.moderationStatus, Report model; expanded categories from 4 to 12 Canadian marketplace categories; updated both seed files; created 6 new API routes (admin settings, reports, low-stock) and enhanced 3 existing routes (admin users, admin products, orders)
+- **Phase 2 (Admin UI)**: Rewrote AdminSettings with real API persistence (load/save to SiteSetting table); enhanced AdminUsers with seller approval workflow (PENDING/APPROVED/REJECTED badges + actions); enhanced AdminProducts with product moderation column + bulk operations (select all, bulk approve/reject/remove); created AdminReports page for managing user reports
+- **Phase 3 (Seller UI)**: Added seller refund flow (Dialog with reason textarea, calls PATCH orders API); added low stock alert banner + badges to SellerProducts; added low stock widget card to SellerDashboard; added low stock stat card to AdminDashboard
+- **Phase 4 (Customer UI)**: Created useCompare Zustand store (persisted, max 4); added compare buttons to BrowsePage + ProductDetailPage; created CompareFloatingBar component; created ComparePage (side-by-side table); added Report/Flag dialog to ProductDetailPage + StorefrontPage; added math CAPTCHA to ContactPage + AuthModal (register tabs)
+- **Phase 5 (Deploy)**: Fixed schema sync to create Report table via raw SQL; pushed 2 commits; waited for Vercel deployment; force reseeded production DB; verified categories updated (Apparel, Drinkware, Headwear)
+
+Stage Summary:
+- **31 files changed**, +2442 lines, -492 lines
+- All 8 gap features implemented: Admin panel enhancements, seller refund flow, low stock alerts, product comparison, report/flag system, bulk operations, admin settings persistence, CAPTCHA
+- Categories expanded: 4 → 12 (Apparel, Drinkware, Headwear, Music & Audio, Home & Garden, Sports & Outdoors, Electronics, Beauty & Health, Books & Media, Toys & Games, Automotive, Pet Supplies)
+- 3 new API routes: /api/admin/settings, /api/reports, /api/products/low-stock
+- 2 new UI components: CompareFloatingBar, ComparePage
+- 4 new schema fields/models: Store.approvalStatus, Product.moderationStatus, Report model
+- Production DB reseeded and verified at https://www.canadamarketplace.ca/
