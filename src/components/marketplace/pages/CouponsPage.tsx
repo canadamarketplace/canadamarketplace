@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useAuth, useNavigation } from '@/lib/store'
 import { useTranslation } from '@/lib/i18n'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -286,7 +287,7 @@ export default function CouponsPage() {
   // Not logged in or not seller
   if (!user) {
     return (
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
           <Tag className="w-16 h-16 text-cm-faint mb-4" />
           <h2 className="text-xl font-semibold text-cm-secondary mb-2">Sign in to manage coupons</h2>
@@ -302,7 +303,8 @@ export default function CouponsPage() {
   const inputClass = "bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+    <DashboardSidebar role="seller" activeItem="coupons" onNavigate={(page) => navigate(page)}>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
@@ -761,5 +763,6 @@ export default function CouponsPage() {
         </div>
       )}
     </div>
+    </DashboardSidebar>
   )
 }

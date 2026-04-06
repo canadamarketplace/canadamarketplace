@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigation, useAuth } from '@/lib/store'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -122,6 +123,7 @@ export default function SellerReviews() {
   }
 
   return (
+    <DashboardSidebar role="seller" activeItem="seller-reviews" onNavigate={(page) => navigate(page)}>
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
@@ -323,5 +325,6 @@ export default function SellerReviews() {
         </div>
       )}
     </div>
+    </DashboardSidebar>
   )
 }

@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigation } from '@/lib/store'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -24,7 +24,7 @@ export default function StorefrontPage() {
   const [store, setStore] = useState<StoreData | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const fetchStore = async (slug: string) => {
+  const fetchStore = useCallback(async (slug: string) => {
     setLoading(true)
     try {
       const res = await fetch(`/api/stores/${slug}`)
@@ -36,7 +36,7 @@ export default function StorefrontPage() {
       }
     } catch {}
     setLoading(false)
-  }
+  }, [navigate])
 
   useEffect(() => {
     if (pageParams?.slug) fetchStore(pageParams.slug)

@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useAuth } from '@/lib/store'
+import { useAuth, useNavigation } from '@/lib/store'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { DollarSign, Clock, CheckCircle2, XCircle, TrendingUp } from 'lucide-react'
@@ -43,7 +44,10 @@ export default function SellerPayouts() {
     FAILED: { label: 'Failed', color: 'bg-red-500/10 text-red-400 border-red-500/20', icon: XCircle },
   }
 
+  const { navigate } = useNavigation()
+
   return (
+    <DashboardSidebar role="seller" activeItem="my-payouts" onNavigate={(page) => navigate(page)}>
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-2xl font-bold text-cm-primary mb-8">Payouts</h1>
 
@@ -125,5 +129,6 @@ export default function SellerPayouts() {
         </div>
       </Card>
     </div>
+    </DashboardSidebar>
   )
 }

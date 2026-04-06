@@ -143,7 +143,7 @@ export default function ProductDetailPage() {
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({})
   const [lightboxOpen, setLightboxOpen] = useState(false)
 
-  const fetchProduct = async (id: string) => {
+  const fetchProduct = useCallback(async (id: string) => {
     setLoading(true)
     try {
       const res = await fetch(`/api/products/${id}`)
@@ -162,7 +162,7 @@ export default function ProductDetailPage() {
       }
     } catch {}
     setLoading(false)
-  }
+  }, [navigate])
 
   useEffect(() => {
     if (pageParams.id) {

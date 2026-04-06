@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigation } from '@/lib/store'
 import AdminAuthGuard from './AdminAuthGuard'
 import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
@@ -33,14 +33,14 @@ export default function AdminDisputes() {
   const [adminNotes, setAdminNotes] = useState('')
   const [newStatus, setNewStatus] = useState('')
 
-  const fetchDisputes = async () => {
+  const fetchDisputes = useCallback(async () => {
     setLoading(true)
     try {
       const res = await fetch(`/api/admin/disputes?type=${typeFilter}`)
       if (res.ok) setDisputes(await res.json())
     } catch {}
     setLoading(false)
-  }
+  }, [typeFilter])
 
   useEffect(() => { fetchDisputes() }, [typeFilter, fetchDisputes])
 

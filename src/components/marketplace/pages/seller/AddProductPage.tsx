@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useNavigation, useAuth } from '@/lib/store'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -154,6 +155,7 @@ export default function AddProductPage() {
   const isUploading = images.some(img => img.uploading)
 
   return (
+    <DashboardSidebar role="seller" activeItem={currentPage === 'edit-product' ? 'my-products' : 'add-product'} onNavigate={(page) => navigate(page)}>
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <button onClick={() => navigate('my-products')} className="flex items-center gap-2 text-sm text-cm-dim hover:text-cm-secondary mb-6 group">
         <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -294,5 +296,6 @@ export default function AddProductPage() {
         </div>
       </div>
     </div>
+    </DashboardSidebar>
   )
 }

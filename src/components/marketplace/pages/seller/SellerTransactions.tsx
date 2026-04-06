@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigation, useAuth } from '@/lib/store'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -178,6 +179,7 @@ export default function SellerTransactions() {
   }
 
   return (
+    <DashboardSidebar role="seller" activeItem="seller-transactions" onNavigate={(page) => navigate(page)}>
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
@@ -403,5 +405,6 @@ export default function SellerTransactions() {
         </div>
       </Card>
     </div>
+    </DashboardSidebar>
   )
 }

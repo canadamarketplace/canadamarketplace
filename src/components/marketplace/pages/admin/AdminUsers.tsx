@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigation } from '@/lib/store'
 import AdminAuthGuard from './AdminAuthGuard'
 import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
@@ -32,7 +32,7 @@ export default function AdminUsers() {
   const [updating, setUpdating] = useState(false)
   const { navigate } = useNavigation()
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true)
     try {
       const params = new URLSearchParams({ page: page.toString() })
@@ -47,7 +47,7 @@ export default function AdminUsers() {
       }
     } catch {}
     setLoading(false)
-  }
+  }, [search, roleFilter, statusFilter, page])
 
   useEffect(() => { fetchUsers() }, [search, roleFilter, statusFilter, page, fetchUsers])
 

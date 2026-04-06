@@ -1,6 +1,7 @@
 'use client'
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { useNavigation, useAuth } from '@/lib/store'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -265,6 +266,7 @@ export default function SellerStorePage() {
   const inputClass = "bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint focus:border-red-500/50 focus:ring-red-500/20 rounded-xl h-11"
 
   return (
+    <DashboardSidebar role="seller" activeItem="my-store" onNavigate={(page) => navigate(page)}>
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold text-cm-primary">Store Settings</h1>
@@ -378,5 +380,6 @@ export default function SellerStorePage() {
         </Button>
       </div>
     </div>
+    </DashboardSidebar>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigation, useAuth } from '@/lib/store'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Package, Plus, Edit, Trash2, Eye, MoreHorizontal } from 'lucide-react'
@@ -21,7 +22,7 @@ export default function SellerProducts() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true)
     try {
       const storeParam = user?.storeId ? `storeId=${user.storeId}` : ''
@@ -32,7 +33,7 @@ export default function SellerProducts() {
       }
     } catch {}
     setLoading(false)
-  }
+  }, [user])
 
   useEffect(() => {
     fetchProducts()
@@ -61,6 +62,7 @@ export default function SellerProducts() {
   }
 
   return (
+    <DashboardSidebar role="seller" activeItem="my-products" onNavigate={(page) => navigate(page)}>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -143,5 +145,6 @@ export default function SellerProducts() {
         </div>
       )}
     </div>
+    </DashboardSidebar>
   )
 }

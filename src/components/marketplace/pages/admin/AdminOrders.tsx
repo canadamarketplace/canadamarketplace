@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigation } from '@/lib/store'
 import AdminAuthGuard from './AdminAuthGuard'
 import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
@@ -25,14 +25,14 @@ export default function AdminOrders() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     setLoading(true)
     try {
       const res = await fetch('/api/admin/orders')
       if (res.ok) setOrders(await res.json())
     } catch {}
     setLoading(false)
-  }
+  }, [])
 
   useEffect(() => { fetchOrders() }, [statusFilter, fetchOrders])
 

@@ -196,3 +196,94 @@ Stage Summary:
 - 9 new page components created
 - All 3 dashboards now have vertical sidebar navigation
 - Production site will auto-deploy via Vercel
+
+---
+## Task ID: 8 - Navigation Fix Agent
+### Work Task
+Investigate and fix broken sidebar navigation tabs across all dashboards (admin, seller, buyer). User reported some sidebar navigation tabs were not pointing or unresponsive when clicked.
+
+### Work Summary
+
+**Root Cause Analysis:**
+Performed a comprehensive audit of the entire navigation flow for all 3 roles (29 total menu items), tracing each from sidebar click through `handleNav` → `onNavigate` → `navigate()` → URL update → `PageRenderer` switch.
+
+**Findings:**
+
+1. **ADMIN Dashboard (11 menu items) — ALL CORRECT ✅**
+   - All 11 admin pages (AdminDashboard, AdminUsers, AdminProducts, AdminOrders, AdminDisputes, AdminSettings, AdminTax, AdminPayments, AdminShipping, AdminMarketing, AdminReports) were already properly wrapped with `DashboardSidebar` component.
+   - All `PageView` types exist in `store.ts`, all URL mappings (`urlToPage`, `pageToUrlBase`) are correct, and all `MarketplaceApp` switch cases are present.
+
+2. **BUYER Dashboard (9 menu items) — ALL CORRECT ✅**
+   - All 9 buyer pages (OrdersPage, CartPage, WishlistPage, ProfilePage, BuyerAddressBook, BuyerReviews, MessagingPage, NotificationsPage, BecomeSellerPage) were already properly wrapped with `DashboardSidebar` component.
+   - All navigation chain mappings verified correct.
+
+3. **SELLER Dashboard (9 menu items) — 8 BROKEN ❌, 1 CORRECT ✅**
+   - **ONLY `SellerDashboard.tsx` had the `DashboardSidebar` wrapper.**
+   - The following 8 seller pages were completely MISSING the `DashboardSidebar` wrapper, meaning when navigated to, they rendered without any sidebar navigation. Users would get "stuck" with no way to navigate to other seller pages:
+     - `SellerProducts.tsx` (page: `my-products`)
+     - `AddProductPage.tsx` (page: `add-product` / `edit-product`)
+     - `SellerOrders.tsx` (page: `my-orders`)
+     - `SellerStorePage.tsx` (page: `my-store`)
+     - `SellerPayouts.tsx` (page: `my-payouts`)
+     - `SellerTransactions.tsx` (page: `seller-transactions`)
+     - `SellerReviews.tsx` (page: `seller-reviews`)
+     - `CouponsPage.tsx` (page: `coupons`)
+
+**Fixes Applied (8 files modified):**
+
+For each broken seller page, applied the following changes:
+1. Added `import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'`
+2. Wrapped the page's return JSX with `<DashboardSidebar role="seller" activeItem="<matching-page-id>" onNavigate={(page) => navigate(page)}>...</DashboardSidebar>`
+3. Ensured `useNavigation` hook was available (added import where needed, e.g., SellerPayouts didn't import `useNavigation`)
+4. For `AddProductPage`, used dynamic activeItem: `currentPage === 'edit-product' ? 'my-products' : 'add-product'`
+5. For `CouponsPage`, changed auth guard wrapper from `pt-16` to `py-20` (since DashboardSidebar provides top bar)
+
+**Verification:**
+- Lint check passed (only 3 pre-existing errors in ProductDetailPage, StorefrontPage, SellerProducts — all pre-existing `useCallback` memoization issues, not caused by changes)
+- All PageView types already existed in `store.ts`
+- All URL mappings (`urlToPage`, `pageToUrlBase`) already correct
+- All `MarketplaceApp` switch cases already present
+
+---
+## Task ID: 9 - Fix Agent
+### Work Task
+Investigate and fix product images that "show for 1 second then disappear" across the entire Canada Marketplace site.
+
+### Work Summary
+
+**Root Cause Analysis:**
+Thoroughly investigated all 6 files listed by the user plus additional related pages. The `<img>` tags themselves were correctly rendered with proper `src`, no opacity issues, no CSS hiding classes, and no hover-based visibility toggling. The actual root cause was a **React `useEffect` infinite re-render loop** caused by non-memoized fetch functions used as `useEffect` dependencies.
+
+**The Bug Pattern:**
+In affected files, async fetch functions (e.g., `fetchProducts`, `fetchProduct`, `fetchStore`) were defined as plain `async` functions (not wrapped in `useCallback`), but were listed as dependencies in `useEffect`:
+
+```javascript
+// BUG: fetchProducts is a new reference every render
+const fetchProducts = async () => { ... }
+useEffect(() => { fetchProducts() }, [fetchProducts]) // ← triggers on EVERY render
+```
+
+This created an infinite loop:
+1. Component mounts → `useEffect` fires → fetch data → `setLoading(false)` → products with images shown ✓
+2. New render → `fetchProducts` is a NEW function reference → `useEffect` fires again → `setLoading(true)` → skeleton/empty shown (images disappear ✗)
+3. Fetch completes → products shown again ✓ → go to step 2 → cycle repeats endlessly
+
+**Files Fixed (8 total):**
+
+1. **SellerProducts.tsx** — `fetchProducts` wrapped in `useCallback` with `[user]` deps
+2. **AdminProducts.tsx** — `fetchProducts` wrapped in `useCallback` with `[]` deps
+3. **ProductDetailPage.tsx** — `fetchProduct` wrapped in `useCallback` with `[navigate]` deps
+4. **StorefrontPage.tsx** — `fetchStore` wrapped in `useCallback` with `[navigate]` deps
+5. **AdminDashboard.tsx** — `fetchDashboard` wrapped in `useCallback` with `[]` deps
+6. **AdminOrders.tsx** — `fetchOrders` wrapped in `useCallback` with `[]` deps
+7. **AdminDisputes.tsx** — `fetchDisputes` wrapped in `useCallback` with `[typeFilter]` deps
+8. **AdminUsers.tsx** — `fetchUsers` wrapped in `useCallback` with `[search, roleFilter, statusFilter, page]` deps
+
+**Files Already Correct (no fix needed):**
+- **HomePage.tsx** — `useEffect(() => { fetchFeatured() }, [])` — empty deps, runs once only ✓
+- **BrowsePage.tsx** — `fetchProducts` already wrapped in `useCallback` with proper deps ✓
+
+**Verification:**
+- `npm run lint` passes with 0 errors
+- All dependency arrays satisfy the React Compiler's `preserve-manual-memoization` rule
+- Zustand store functions (`navigate`, `user`) are stable references, so they won't cause unnecessary re-fires

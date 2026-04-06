@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigation, useAuth } from '@/lib/store'
 import { useTranslation } from '@/lib/i18n'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -114,6 +115,7 @@ export default function SellerOrders() {
   }
 
   return (
+    <DashboardSidebar role="seller" activeItem="my-orders" onNavigate={(page) => navigate(page)}>
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -252,5 +254,6 @@ export default function SellerOrders() {
         </div>
       )}
     </div>
+    </DashboardSidebar>
   )
 }

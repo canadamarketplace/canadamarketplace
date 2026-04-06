@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigation } from '@/lib/store'
 import AdminAuthGuard from './AdminAuthGuard'
 import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
@@ -20,14 +20,14 @@ export default function AdminProducts() {
   const [products, setProducts] = useState<ProductRecord[]>([])
   const [loading, setLoading] = useState(true)
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true)
     try {
       const res = await fetch('/api/admin/products')
       if (res.ok) setProducts(await res.json())
     } catch {}
     setLoading(false)
-  }
+  }, [])
 
   useEffect(() => { fetchProducts() }, [fetchProducts])
 
