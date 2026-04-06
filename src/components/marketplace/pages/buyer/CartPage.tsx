@@ -7,6 +7,7 @@ import {
   ShoppingCart, Trash2, Plus, Minus, ArrowRight, ShoppingBag,
   CreditCard, Tag, Store
 } from 'lucide-react'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { toast } from 'sonner'
 
 export default function CartPage() {
@@ -45,6 +46,7 @@ export default function CartPage() {
   }
 
   return (
+    <DashboardSidebar role="buyer" activeItem="cart" onNavigate={(page) => navigate(page)}>
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-2xl font-bold text-cm-primary mb-8">Shopping Cart ({items.length} items)</h1>
 
@@ -131,5 +133,6 @@ export default function CartPage() {
         </div>
       </div>
     </div>
+    </DashboardSidebar>
   )
 }

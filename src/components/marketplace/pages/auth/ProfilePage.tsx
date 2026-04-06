@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select'
 import { PROVINCES } from '@/lib/types'
 import { User, Mail, Phone, MapPin, Loader2, Save, Store, TrendingUp, Shield, ArrowRight } from 'lucide-react'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { toast } from 'sonner'
 
 export default function ProfilePage() {
@@ -63,8 +64,9 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-cm-primary mb-8">My Profile</h1>
+    <DashboardSidebar role="buyer" activeItem="profile" onNavigate={(page) => navigate(page)}>
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h1 className="text-2xl font-bold text-cm-primary mb-8">My Profile</h1>
 
       {/* User Card */}
       <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6 mb-6">
@@ -177,6 +179,7 @@ export default function ProfilePage() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </DashboardSidebar>
   )
 }

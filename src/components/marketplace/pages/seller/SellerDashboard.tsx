@@ -425,7 +425,7 @@ export default function SellerDashboard() {
                   {quickActions.map((action) => (
                     <button
                       key={action.label}
-                      onClick={() => navigate(action.page, action.page === 'storefront' && user?.storeId ? { id: user.storeId } : {})}
+                      onClick={() => navigate(action.page, action.page === 'storefront' && user?.storeSlug ? { slug: user.storeSlug } : {})}
                       className="flex flex-col items-center gap-2 p-3 rounded-xl bg-cm-hover border border-cm-border-subtle hover:bg-cm-hover hover:border-cm-border-hover transition-all group"
                     >
                       <div className="w-9 h-9 rounded-lg bg-cm-hover flex items-center justify-center group-hover:bg-red-500/10 transition-colors">

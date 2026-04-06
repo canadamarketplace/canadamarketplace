@@ -46,3 +46,127 @@ Multiple fixes across the Canada Marketplace project: storefront navigation, Bec
 6. **Updated Admin pages** (AdminDashboard, AdminUsers, AdminProducts, AdminOrders, AdminDisputes, AdminSettings): Each wrapped with `DashboardSidebar` role='admin' with appropriate activeItem. AdminDashboard also removed inline navigation buttons since sidebar handles it.
 
 All changes passed lint check. Committed and pushed to origin/main (abd7443).
+
+---
+## Task ID: 3 - UI Agent
+### Work Task
+Wrap all buyer pages in the DashboardSidebar component to provide consistent vertical sidebar navigation for buyer users.
+
+### Work Summary
+Wrapped 6 buyer-facing pages with the existing `DashboardSidebar` component (role="buyer"):
+
+1. **ProfilePage.tsx** (`pages/auth/ProfilePage.tsx`): Wrapped main content (after `if (!user)` guard) with `<DashboardSidebar role="buyer" activeItem="profile">`. Added import for DashboardSidebar.
+
+2. **OrdersPage.tsx** (`pages/buyer/OrdersPage.tsx`): Wrapped main content (after `if (!user)` guard) with `<DashboardSidebar role="buyer" activeItem="orders">`. Added import for DashboardSidebar.
+
+3. **CartPage.tsx** (`pages/buyer/CartPage.tsx`): Wrapped main content (after `if (items.length === 0)` empty cart guard) with `<DashboardSidebar role="buyer" activeItem="cart">`. Added import for DashboardSidebar.
+
+4. **WishlistPage.tsx** (`pages/WishlistPage.tsx`): Wrapped main content (after `if (items.length === 0)` empty wishlist guard) with `<DashboardSidebar role="buyer" activeItem="wishlist">`. Added import for DashboardSidebar.
+
+5. **NotificationsPage.tsx** (`pages/NotificationsPage.tsx`): Wrapped main content (after `if (!user)` guard) with `<DashboardSidebar role="buyer" activeItem="notifications">`. Removed redundant `min-h-screen bg-cm-bg` wrapper since DashboardSidebar provides that. Added import for DashboardSidebar.
+
+6. **MessagingPage.tsx** (`components/marketplace/MessagingPage.tsx`): Wrapped main content (after `if (!user)` guard) with `<DashboardSidebar role="buyer" activeItem="messaging">`. Changed container from `pt-16 pb-8` to `py-8` since DashboardSidebar handles the top bar. Added import for DashboardSidebar.
+
+All auth checks and empty state renders remain outside the DashboardSidebar wrapper. All pages now have consistent sidebar navigation matching the buyer menu items (My Orders, Shopping Cart, Wishlist, My Profile, Messages, Notifications, Become a Seller). Lint check passed with no errors.
+
+---
+## Task ID: 4 - Feature Agent
+### Work Task
+Expand the Admin Dashboard sidebar with 5 new management sections (Tax Rules, Payments, Shipping, Marketing, Reports) including full page components and navigation integration.
+
+### Work Summary
+1. **Updated DashboardSidebar.tsx** (`layouts/DashboardSidebar.tsx`):
+   - Added 5 new Lucide icon imports: `Receipt, CreditCard, Truck, Megaphone, BarChart3`
+   - Expanded ADMIN_MENU from 6 items to 11 items: Dashboard, Users, Products, Orders, Disputes, Tax Rules, Payments, Shipping, Marketing, Reports, Settings
+
+2. **Updated store.ts** (`src/lib/store.ts`):
+   - Added 5 new PageView types: `admin-tax`, `admin-payments`, `admin-shipping`, `admin-marketing`, `admin-reports`
+   - Added 5 new URL mappings in `pageToUrlBase` (e.g., `/admin/tax`, `/admin/payments`)
+   - Added 5 new reverse URL-to-page mappings in `urlToPage` admin section
+
+3. **Created AdminTax.tsx** (`pages/admin/AdminTax.tsx`):
+   - Tax rules management with all 13 Canadian provinces/territories
+   - GST, PST, HST, QST rates per province with realistic Canadian tax rates
+   - Summary cards (provinces count, highest/lowest rates, HST provinces)
+   - Inline editing of tax rates with save functionality
+   - Info banner about CRA compliance
+
+4. **Created AdminPayments.tsx** (`pages/admin/AdminPayments.tsx`):
+   - 5 payment methods: Stripe, PayPal, Interac e-Transfer, Apple Pay, Google Pay
+   - Toggle enable/disable for each method with detailed configuration
+   - Marketplace fee settings (standard 8%, Gold seller 5%)
+   - Payout configuration (min amount, frequency, speed)
+
+5. **Created AdminShipping.tsx** (`pages/admin/AdminShipping.tsx`):
+   - 4 shipping zones: Domestic, Regional, USA, International
+   - 5 carriers: Canada Post, Purolator, UPS, FedEx, DHL
+   - 8 shipping rates across zones with base rate, per-KG, free threshold
+   - Free shipping threshold and weight unit settings
+
+6. **Created AdminMarketing.tsx** (`pages/admin/AdminMarketing.tsx`):
+   - Tabbed interface: Coupons, Promotions, Featured Products
+   - 5 demo coupons with usage tracking and progress bars
+   - 5 promotional campaigns with metrics (views, conversions, revenue)
+   - 5 featured products with click tracking
+   - Summary KPI cards for active coupons, redemptions, promo views, promo revenue
+
+7. **Created AdminReports.tsx** (`pages/admin/AdminReports.tsx`):
+   - KPI summary cards with trend indicators (revenue, orders, customers, AOV)
+   - Revenue by Province horizontal bar chart (recharts)
+   - Order Trends area chart (recharts)
+   - Customer Growth dual-line chart (recharts)
+   - Sales by Category pie chart (recharts)
+   - Bestsellers and Top Viewed Products tables
+   - CSV export buttons on all report sections
+
+8. **Updated MarketplaceApp.tsx** (`MarketplaceApp.tsx`):
+   - Added imports for all 5 new admin page components
+   - Added switch cases for all 5 new page views
+
+All 8 files modified/created. Lint check passed with no errors.
+
+---
+## Task ID: 5 - Feature Agent
+### Work Task
+Add Address Book and My Reviews pages to the Buyer Dashboard sidebar navigation.
+
+### Work Summary
+1. **Updated DashboardSidebar.tsx** (`layouts/DashboardSidebar.tsx`):
+   - Added `MapPin` to Lucide icon imports (Star was already imported)
+   - Expanded BUYER_MENU from 7 items to 9 items: My Orders, Shopping Cart, Wishlist, My Profile, Address Book, My Reviews, Messages, Notifications, Become a Seller
+
+2. **Updated store.ts** (`src/lib/store.ts`):
+   - Added 2 new PageView types: `address-book`, `buyer-reviews`
+   - Added URL mappings: `/address-book` → `address-book`, `/my-reviews` → `buyer-reviews`
+   - Added reverse URL-to-page mappings for both new routes
+
+3. **Created BuyerAddressBook.tsx** (`pages/buyer/BuyerAddressBook.tsx`):
+   - Address book management page with CRUD functionality
+   - Address cards with label (home/work/other), full name, street, city, province, postal code, phone
+   - Default address badge with red ring highlight
+   - Add/Edit address via Dialog modal with form fields and province dropdown (all 13 Canadian provinces)
+   - Delete with confirmation dialog
+   - Set-as-default action on hover
+   - localStorage persistence (key: `cm-addresses`)
+   - Mock data fallback (2 addresses: Toronto and Vancouver)
+   - Empty state with illustration and CTA
+   - Responsive grid (1 column mobile, 2 columns desktop)
+   - Auth guard with sign-in prompt
+
+4. **Created BuyerReviews.tsx** (`pages/buyer/BuyerReviews.tsx`):
+   - "My Product Reviews" page with full review management
+   - Stats section: Average Rating (large number + stars), Rating Distribution (bar chart with clickable filters)
+   - Filter by star rating (1-5) and sort (newest, oldest, highest, lowest rated)
+   - Review cards with product thumbnail, product title, store name, star rating, review title, comment, date
+   - Edit review via Dialog modal (rating picker, title, comment fields)
+   - Delete with confirmation dialog
+   - Fetches from `/api/reviews` with mock data fallback (3 reviews)
+   - Empty state with appropriate messaging for both no reviews and filtered-no-results
+   - Hover reveal for edit/delete action buttons
+   - Auth guard with sign-in prompt
+
+5. **Updated MarketplaceApp.tsx** (`MarketplaceApp.tsx`):
+   - Added imports for `BuyerAddressBook` and `BuyerReviews`
+   - Added switch cases for `address-book` and `buyer-reviews` page views
+
+All 5 files modified/created. Lint check passed with no errors.

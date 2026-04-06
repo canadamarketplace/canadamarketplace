@@ -3,6 +3,7 @@ import { useNavigation, useCart, useAuth, useWishlist } from '@/lib/store'
 import { useTranslation } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import { Heart, ShoppingCart, Trash2, ArrowLeft, Store } from 'lucide-react'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { toast } from 'sonner'
 
 export default function WishlistPage() {
@@ -73,6 +74,7 @@ export default function WishlistPage() {
   }
 
   return (
+    <DashboardSidebar role="buyer" activeItem="wishlist" onNavigate={(page) => navigate(page)}>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
@@ -159,5 +161,6 @@ export default function WishlistPage() {
         ))}
       </div>
     </div>
+    </DashboardSidebar>
   )
 }

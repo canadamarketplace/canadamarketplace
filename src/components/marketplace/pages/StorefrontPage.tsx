@@ -39,8 +39,16 @@ export default function StorefrontPage() {
   }
 
   useEffect(() => {
-    if (pageParams.slug) fetchStore(pageParams.slug)
-  }, [pageParams.slug, fetchStore])
+    if (pageParams?.slug) fetchStore(pageParams.slug)
+    else if (pageParams?.id) {
+      // Fallback: try to find store by looking up from stores list
+      fetch(`/api/stores`).then(r => r.json()).then((stores: any[]) => {
+        const store = stores.find((s: any) => s.id === pageParams.id)
+        if (store?.slug) navigate('storefront', { slug: store.slug })
+        else navigate('browse')
+      }).catch(() => navigate('browse'))
+    }
+  }, [pageParams?.slug, pageParams?.id, fetchStore])
 
   const getImages = (imagesStr: string) => {
     try { return JSON.parse(imagesStr) } catch { return [] }

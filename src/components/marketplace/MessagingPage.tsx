@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { Send, MessageCircle, Search, ArrowLeft, User, Wifi, WifiOff, Loader2 } from 'lucide-react'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { toast } from 'sonner'
 import { useSocket, useConversationSocket } from '@/hooks/use-socket'
 
@@ -366,7 +367,8 @@ export default function MessagingPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+    <DashboardSidebar role="buyer" activeItem="messaging" onNavigate={(page) => navigate(page)}>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Page Header */}
       <div className="flex items-center gap-3 mb-6">
         <h1 className="text-2xl font-bold text-cm-primary">{t('messaging.title')}</h1>
@@ -661,5 +663,6 @@ export default function MessagingPage() {
         </div>
       </div>
     </div>
+    </DashboardSidebar>
   )
 }

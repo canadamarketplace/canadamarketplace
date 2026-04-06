@@ -32,6 +32,11 @@ import AdminProducts from './pages/admin/AdminProducts'
 import AdminOrders from './pages/admin/AdminOrders'
 import AdminDisputes from './pages/admin/AdminDisputes'
 import AdminSettings from './pages/admin/AdminSettings'
+import AdminTax from './pages/admin/AdminTax'
+import AdminPayments from './pages/admin/AdminPayments'
+import AdminShipping from './pages/admin/AdminShipping'
+import AdminMarketing from './pages/admin/AdminMarketing'
+import AdminReports from './pages/admin/AdminReports'
 import TermsPage from './pages/legal/TermsPage'
 import PrivacyPage from './pages/legal/PrivacyPage'
 import CookiesPage from './pages/legal/CookiesPage'
@@ -49,6 +54,10 @@ import NotificationsPage from './pages/NotificationsPage'
 import MessagingPage from './MessagingPage'
 import CouponsPage from './pages/CouponsPage'
 import WishlistPage from './pages/WishlistPage'
+import SellerReviews from './pages/seller/SellerReviews'
+import SellerTransactions from './pages/seller/SellerTransactions'
+import BuyerAddressBook from './pages/buyer/BuyerAddressBook'
+import BuyerReviews from './pages/buyer/BuyerReviews'
 import type { PageView } from '@/lib/store'
 
 function PageRenderer() {
@@ -77,6 +86,10 @@ function PageRenderer() {
     case 'messaging': return <MessagingPage />
     case 'wishlist': return <WishlistPage />
     case 'coupons': return <CouponsPage />
+    case 'seller-reviews': return <SellerReviews />
+    case 'seller-transactions': return <SellerTransactions />
+    case 'address-book': return <BuyerAddressBook />
+    case 'buyer-reviews': return <BuyerReviews />
     case 'profile': return <ProfilePage />
     case 'forgot-password': return <ForgotPasswordPage />
     case 'dashboard': return <SellerDashboard />
@@ -92,6 +105,11 @@ function PageRenderer() {
     case 'admin-orders': return <AdminOrders />
     case 'admin-disputes': return <AdminDisputes />
     case 'admin-settings': return <AdminSettings />
+    case 'admin-tax': return <AdminTax />
+    case 'admin-payments': return <AdminPayments />
+    case 'admin-shipping': return <AdminShipping />
+    case 'admin-marketing': return <AdminMarketing />
+    case 'admin-reports': return <AdminReports />
     case 'terms': return <TermsPage />
     case 'privacy': return <PrivacyPage />
     case 'cookies': return <CookiesPage />

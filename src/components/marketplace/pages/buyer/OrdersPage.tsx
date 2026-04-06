@@ -10,6 +10,7 @@ import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/types'
 import {
   Package, ChevronRight, Clock, MapPin, ShoppingBag, Eye, Store, ArrowRight
 } from 'lucide-react'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { toast } from 'sonner'
 
 interface Order {
@@ -61,6 +62,7 @@ export default function OrdersPage() {
   }
 
   return (
+    <DashboardSidebar role="buyer" activeItem="orders" onNavigate={(page) => navigate(page)}>
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold text-cm-primary">My Orders</h1>
@@ -160,5 +162,6 @@ export default function OrdersPage() {
         </div>
       )}
     </div>
+    </DashboardSidebar>
   )
 }

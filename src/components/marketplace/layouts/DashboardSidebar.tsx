@@ -7,7 +7,8 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   LayoutDashboard, Users, Package, ShoppingCart, AlertTriangle, Settings,
   Store, PlusCircle, DollarSign, Tag, ExternalLink, Heart, User,
-  MessageCircle, Bell, Menu, X, ChevronLeft, ShoppingBag
+  MessageCircle, Bell, Menu, X, ChevronLeft, ShoppingBag, Star, CreditCard,
+  Receipt, Truck, Megaphone, BarChart3, MapPin
 } from 'lucide-react'
 
 interface DashboardSidebarProps {
@@ -30,6 +31,11 @@ const ADMIN_MENU: MenuItem[] = [
   { label: 'Products', icon: Package, page: 'admin-products' },
   { label: 'Orders', icon: ShoppingCart, page: 'admin-orders' },
   { label: 'Disputes', icon: AlertTriangle, page: 'admin-disputes' },
+  { label: 'Tax Rules', icon: Receipt, page: 'admin-tax' },
+  { label: 'Payments', icon: CreditCard, page: 'admin-payments' },
+  { label: 'Shipping', icon: Truck, page: 'admin-shipping' },
+  { label: 'Marketing', icon: Megaphone, page: 'admin-marketing' },
+  { label: 'Reports', icon: BarChart3, page: 'admin-reports' },
   { label: 'Settings', icon: Settings, page: 'admin-settings' },
 ]
 
@@ -38,8 +44,10 @@ const SELLER_MENU: MenuItem[] = [
   { label: 'Products', icon: Package, page: 'my-products' },
   { label: 'Add Product', icon: PlusCircle, page: 'add-product' },
   { label: 'Orders', icon: ShoppingCart, page: 'my-orders' },
-  { label: 'My Store', icon: Store, page: 'my-store' },
+  { label: 'Store Profile', icon: Store, page: 'my-store' },
   { label: 'Payouts', icon: DollarSign, page: 'my-payouts' },
+  { label: 'Transactions', icon: CreditCard, page: 'seller-transactions' },
+  { label: 'Reviews', icon: Star, page: 'seller-reviews' },
   { label: 'Coupons', icon: Tag, page: 'coupons' },
 ]
 
@@ -48,6 +56,8 @@ const BUYER_MENU: MenuItem[] = [
   { label: 'Shopping Cart', icon: ShoppingBag, page: 'cart' },
   { label: 'Wishlist', icon: Heart, page: 'wishlist' },
   { label: 'My Profile', icon: User, page: 'profile' },
+  { label: 'Address Book', icon: MapPin, page: 'address-book' },
+  { label: 'My Reviews', icon: Star, page: 'buyer-reviews' },
   { label: 'Messages', icon: MessageCircle, page: 'messaging' },
   { label: 'Notifications', icon: Bell, page: 'notifications' },
   { label: 'Become a Seller', icon: Store, page: 'become-seller' },

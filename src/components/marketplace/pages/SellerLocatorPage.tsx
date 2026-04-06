@@ -284,6 +284,7 @@ export default function SellerLocatorPage() {
   }, [])
 
   const goToStorefront = (seller: SellerPin) => {
+    if (!seller.slug) return
     navigate('storefront', { slug: seller.slug })
   }
 

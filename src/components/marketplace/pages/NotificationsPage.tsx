@@ -17,6 +17,7 @@ import {
   Loader2,
   ChevronLeft,
 } from 'lucide-react'
+import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 
 interface Notification {
   id: string
@@ -258,7 +259,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cm-bg">
+    <DashboardSidebar role="buyer" activeItem="notifications" onNavigate={(page) => navigate(page)}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Button */}
         <button
@@ -466,6 +467,6 @@ export default function NotificationsPage() {
           </div>
         )}
       </div>
-    </div>
+    </DashboardSidebar>
   )
 }

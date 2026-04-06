@@ -49,12 +49,21 @@ export type PageView =
   | "admin-orders"
   | "admin-disputes"
   | "admin-settings"
+  | "admin-tax"
+  | "admin-payments"
+  | "admin-shipping"
+  | "admin-marketing"
+  | "admin-reports"
   | "admin-user-detail"
   | "admin-product-detail"
   | "admin-order-detail"
   | "admin-dispute-detail"
   | "wishlist"
   | "coupons"
+  | "seller-transactions"
+  | "seller-reviews"
+  | "address-book"
+  | "buyer-reviews"
 
 interface NavigationState {
   currentPage: PageView
@@ -97,6 +106,10 @@ function pageToUrlBase(page: PageView, params: Record<string, string>): string {
     "faq": "/faq",
     "wishlist": "/wishlist",
     "coupons": "/seller/coupons",
+    "seller-transactions": "/seller/transactions",
+    "seller-reviews": "/seller/reviews",
+    "address-book": "/address-book",
+    "buyer-reviews": "/my-reviews",
     "notifications": "/notifications",
     "messaging": "/messages",
     "profile": "/profile",
@@ -114,6 +127,11 @@ function pageToUrlBase(page: PageView, params: Record<string, string>): string {
     "admin-orders": "/admin/orders",
     "admin-disputes": "/admin/disputes",
     "admin-settings": "/admin/settings",
+    "admin-tax": "/admin/tax",
+    "admin-payments": "/admin/payments",
+    "admin-shipping": "/admin/shipping",
+    "admin-marketing": "/admin/marketing",
+    "admin-reports": "/admin/reports",
     "terms": "/terms",
     "privacy": "/privacy",
     "cookies": "/cookies",
@@ -160,6 +178,10 @@ export function urlToPage(pathname: string, search: string): { page: PageView; p
   if (cleanPath === "/faq") return { page: "faq", params: {} }
   if (cleanPath === "/wishlist") return { page: "wishlist", params: {} }
   if (cleanPath === "/seller/coupons") return { page: "coupons", params: {} }
+  if (cleanPath === "/seller/transactions") return { page: "seller-transactions", params: {} }
+  if (cleanPath === "/seller/reviews") return { page: "seller-reviews", params: {} }
+  if (cleanPath === "/address-book") return { page: "address-book", params: {} }
+  if (cleanPath === "/my-reviews") return { page: "buyer-reviews", params: {} }
   if (cleanPath === "/notifications") return { page: "notifications", params: {} }
   if (cleanPath === "/messages") return { page: "messaging", params: {} }
   if (cleanPath === "/profile") return { page: "profile", params: {} }
@@ -175,7 +197,9 @@ export function urlToPage(pathname: string, search: string): { page: PageView; p
     const sub = cleanPath.replace("/admin/", "").replace("/admin", "")
     const pageMap: Record<string, PageView> = {
       "": "admin-dashboard", "users": "admin-users", "products": "admin-products",
-      "orders": "admin-orders", "disputes": "admin-disputes", "settings": "admin-settings"
+      "orders": "admin-orders", "disputes": "admin-disputes", "settings": "admin-settings",
+      "tax": "admin-tax", "payments": "admin-payments", "shipping": "admin-shipping",
+      "marketing": "admin-marketing", "reports": "admin-reports"
     }
     return { page: pageMap[sub] || "admin-dashboard", params: {} }
   }
