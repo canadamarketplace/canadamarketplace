@@ -94,7 +94,9 @@
     "useDemo": "Use Demo",
     "storeName": "Store Name",
     "storeDescription": "Store Description",
-    "select": "Select"
+    "select": "Select",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithFacebook": "Continue with Facebook"
   },
   "home": {
     "heroTitle": "Buy & Sell Across",

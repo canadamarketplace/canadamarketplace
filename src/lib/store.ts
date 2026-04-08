@@ -69,6 +69,12 @@ export type PageView =
   | "address-book"
   | "buyer-reviews"
   | "compare"
+  | "my-rewards"
+  | "my-quotes"
+  | "seller-quotes"
+  | "seller-affiliate"
+  | "admin-brands"
+  | "admin-quotes"
 
 interface NavigationState {
   currentPage: PageView
@@ -116,8 +122,14 @@ function pageToUrlBase(page: PageView, params: Record<string, string>): string {
     "seller-reviews": "/seller/reviews",
     "seller-shipping": "/seller/shipping",
     "seller-returns": "/seller/returns",
+    "seller-quotes": "/seller/quotes",
+    "seller-affiliate": "/seller/affiliate",
     "admin-returns": "/admin/returns",
+    "admin-brands": "/admin/brands",
+    "admin-quotes": "/admin/quotes",
     "my-returns": "/my-returns",
+    "my-rewards": "/my-rewards",
+    "my-quotes": "/my-quotes",
     "address-book": "/address-book",
     "buyer-reviews": "/my-reviews",
     "notifications": "/notifications",
@@ -193,9 +205,13 @@ export function urlToPage(pathname: string, search: string): { page: PageView; p
   if (cleanPath === "/seller/reviews") return { page: "seller-reviews", params: {} }
   if (cleanPath === "/seller/shipping") return { page: "seller-shipping", params: {} }
   if (cleanPath === "/seller/returns") return { page: "seller-returns", params: {} }
+  if (cleanPath === "/seller/quotes") return { page: "seller-quotes", params: {} }
+  if (cleanPath === "/seller/affiliate") return { page: "seller-affiliate", params: {} }
   if (cleanPath === "/my-returns") return { page: "my-returns", params: {} }
   if (cleanPath === "/address-book") return { page: "address-book", params: {} }
   if (cleanPath === "/my-reviews") return { page: "buyer-reviews", params: {} }
+  if (cleanPath === "/my-rewards") return { page: "my-rewards", params: {} }
+  if (cleanPath === "/my-quotes") return { page: "my-quotes", params: {} }
   if (cleanPath === "/notifications") return { page: "notifications", params: {} }
   if (cleanPath === "/messages") return { page: "messaging", params: {} }
   if (cleanPath === "/profile") return { page: "profile", params: {} }
@@ -211,7 +227,7 @@ export function urlToPage(pathname: string, search: string): { page: PageView; p
     const sub = cleanPath.replace("/admin/", "").replace("/admin", "")
     const pageMap: Record<string, PageView> = {
       "": "admin-dashboard", "users": "admin-users", "products": "admin-products",
-      "orders": "admin-orders", "disputes": "admin-disputes", "returns": "admin-returns", "settings": "admin-settings",
+      "orders": "admin-orders", "disputes": "admin-disputes", "returns": "admin-returns", "brands": "admin-brands", "quotes": "admin-quotes", "settings": "admin-settings",
       "tax": "admin-tax", "payments": "admin-payments", "shipping": "admin-shipping",
       "marketing": "admin-marketing", "reports": "admin-reports"
     }

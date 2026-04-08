@@ -9,7 +9,8 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select'
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/types'
-import { Package, ChevronDown, ChevronUp } from 'lucide-react'
+import { Package, ChevronDown, ChevronUp, Star, Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface AdminOrder {
   id: string; orderNumber: string; status: string; total: number
@@ -25,6 +26,7 @@ export default function AdminOrders() {
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [sendingReminders, setSendingReminders] = useState(false)
 
   const fetchOrders = useCallback(async () => {
     setLoading(true)
@@ -37,6 +39,27 @@ export default function AdminOrders() {
 
   useEffect(() => { fetchOrders() }, [fetchOrders])
 
+  const handleSendReviewReminders = async () => {
+    setSendingReminders(true)
+    try {
+      const res = await fetch('/api/reviews/reminder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ daysAfterDelivery: 7 }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        toast.success(`Review reminders sent: ${data.sent} sent, ${data.skipped} skipped`)
+      } else {
+        const data = await res.json()
+        toast.error(data.error || 'Failed to send reminders')
+      }
+    } catch {
+      toast.error('Failed to send review reminders')
+    }
+    setSendingReminders(false)
+  }
+
   return (
     <AdminAuthGuard>
     <DashboardSidebar role="admin" activeItem="admin-orders" onNavigate={(page) => navigate(page)}>
@@ -46,7 +69,21 @@ export default function AdminOrders() {
           <h1 className="text-2xl font-bold text-cm-primary">Order Management</h1>
           <p className="text-sm text-cm-dim mt-1">{orders.length} total orders</p>
         </div>
-        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v === "all" ? "" : v)}>
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={handleSendReviewReminders}
+            disabled={sendingReminders}
+            variant="outline"
+            className="h-10 rounded-xl border-cm-border-hover bg-cm-hover text-cm-secondary hover:bg-cm-hover-strong hover:text-cm-primary gap-2"
+          >
+            {sendingReminders ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Star className="w-4 h-4" />
+            )}
+            Send Review Reminders
+          </Button>
+          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v === "all" ? "" : v)}>
           <SelectTrigger className="w-48 bg-cm-hover border-cm-border-hover text-cm-secondary h-10 rounded-xl">
             <SelectValue placeholder="All Status" />
           </SelectTrigger>
@@ -56,7 +93,8 @@ export default function AdminOrders() {
               <SelectItem key={key} value={key} className="text-cm-secondary">{label}</SelectItem>
             ))}
           </SelectContent>
-        </Select>
+          </Select>
+        </div>
       </div>
 
       <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle overflow-hidden">

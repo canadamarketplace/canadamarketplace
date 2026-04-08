@@ -1,14 +1,31 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigation } from '@/lib/store'
 import AdminAuthGuard from './AdminAuthGuard'
 import DashboardSidebar from '@/components/marketplace/layouts/DashboardSidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import { Megaphone, Save, Loader2, Plus, Trash2, Star, Tag, Percent, Clock, Users, TrendingUp, Eye, Copy } from 'lucide-react'
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
+} from '@/components/ui/dialog'
+import { Megaphone, Save, Loader2, Plus, Trash2, Star, Tag, Percent, Clock, Users, TrendingUp, Eye, Copy, Flame
+} from 'lucide-react'
 import { toast } from 'sonner'
+
+interface Deal {
+  id: string
+  productId: string
+  dealPrice: number
+  startsAt: string
+  endsAt: string
+  maxQty: number | null
+  soldQty: number
+  isActive: boolean
+  product: { id: string; title: string; price: number; images: string } | null
+}
 
 interface Coupon {
   id: string
@@ -72,8 +89,37 @@ export default function AdminMarketing() {
   const [coupons] = useState<Coupon[]>(INITIAL_COUPONS)
   const [promotions] = useState<Promotion[]>(INITIAL_PROMOTIONS)
   const [featured] = useState<FeaturedProduct[]>(INITIAL_FEATURED)
-  const [activeTab, setActiveTab] = useState<'coupons' | 'promotions' | 'featured'>('coupons')
+  const [deals, setDeals] = useState<Deal[]>([])
+  const [dealsLoading, setDealsLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<'coupons' | 'promotions' | 'featured' | 'deals'>('deals')
   const [saving, setSaving] = useState(false)
+
+  // Create deal dialog
+  const [dealDialogOpen, setDealDialogOpen] = useState(false)
+  const [dealForm, setDealForm] = useState({
+    productId: '',
+    dealPrice: '',
+    startsAt: new Date().toISOString().split('T')[0],
+    endsAt: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
+    maxQty: '50',
+    isActive: true,
+  })
+  const [dealSaving, setDealSaving] = useState(false)
+
+  // Fetch deals on mount
+  useEffect(() => {
+    const fetchDeals = async () => {
+      try {
+        const res = await fetch('/api/deals')
+        if (res.ok) {
+          const data = await res.json()
+          setDeals(data.deals || [])
+        }
+      } catch {}
+      setDealsLoading(false)
+    }
+    fetchDeals()
+  }, [])
 
   const handleSave = async () => {
     setSaving(true)
@@ -82,7 +128,55 @@ export default function AdminMarketing() {
     setSaving(false)
   }
 
+  const handleCreateDeal = async () => {
+    if (!dealForm.productId || !dealForm.dealPrice) {
+      toast.error('Product ID and deal price are required')
+      return
+    }
+    setDealSaving(true)
+    try {
+      const res = await fetch('/api/deals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: dealForm.productId,
+          dealPrice: parseFloat(dealForm.dealPrice),
+          startsAt: dealForm.startsAt,
+          endsAt: dealForm.endsAt,
+          maxQty: dealForm.maxQty ? parseInt(dealForm.maxQty) : null,
+          isActive: dealForm.isActive,
+        }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setDeals(prev => [...prev, data.deal])
+        setDealDialogOpen(false)
+        setDealForm({ productId: '', dealPrice: '', startsAt: new Date().toISOString().split('T')[0], endsAt: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0], maxQty: '50', isActive: true })
+        toast.success('Deal created successfully!')
+      } else {
+        const data = await res.json()
+        toast.error(data.error || 'Failed to create deal')
+      }
+    } catch {
+      toast.error('Failed to create deal')
+    }
+    setDealSaving(false)
+  }
+
+  const handleDeleteDeal = async (dealId: string) => {
+    try {
+      const res = await fetch(`/api/deals/${dealId}?id=${dealId}`, { method: 'DELETE' })
+      if (res.ok) {
+        setDeals(prev => prev.filter(d => d.id !== dealId))
+        toast.success('Deal deleted')
+      }
+    } catch {
+      toast.error('Failed to delete deal')
+    }
+  }
+
   const tabs = [
+    { id: 'deals' as const, label: 'Daily Deals', icon: Flame, count: deals.filter(d => d.isActive).length },
     { id: 'coupons' as const, label: 'Coupons', icon: Tag, count: coupons.filter(c => c.status === 'active').length },
     { id: 'promotions' as const, label: 'Promotions', icon: TrendingUp, count: promotions.filter(p => p.status === 'active').length },
     { id: 'featured' as const, label: 'Featured Products', icon: Star, count: featured.length },
@@ -94,6 +188,7 @@ export default function AdminMarketing() {
     paused: 'bg-yellow-500/10 border-yellow-500/20 text-yellow-400',
     scheduled: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
     ended: 'bg-cm-hover border-cm-border-hover text-cm-faint',
+    inactive: 'bg-cm-hover border-cm-border-hover text-cm-faint',
   }
 
   return (
@@ -119,7 +214,16 @@ export default function AdminMarketing() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-6">
+          <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Flame className="w-4 h-4 text-orange-400" />
+                <p className="text-[10px] text-cm-dim uppercase font-semibold">Active Deals</p>
+              </div>
+              <p className="text-xl font-bold text-cm-primary">{deals.filter(d => d.isActive).length}</p>
+            </CardContent>
+          </Card>
           <Card className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
@@ -133,7 +237,7 @@ export default function AdminMarketing() {
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Percent className="w-4 h-4 text-blue-400" />
-                <p className="text-[10px] text-cm-dim uppercase font-semibold">Total Redemptions</p>
+                <p className="text-[10px] text-cm-dim uppercase font-semibold">Redemptions</p>
               </div>
               <p className="text-xl font-bold text-cm-primary">{coupons.reduce((s, c) => s + c.usedCount, 0).toLocaleString()}</p>
             </CardContent>
@@ -151,7 +255,7 @@ export default function AdminMarketing() {
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="w-4 h-4 text-green-400" />
-                <p className="text-[10px] text-cm-dim uppercase font-semibold">Promo Revenue</p>
+                <p className="text-[10px] text-cm-dim uppercase font-semibold">Revenue</p>
               </div>
               <p className="text-xl font-bold text-cm-primary">${promotions.reduce((s, p) => s + p.metrics.revenue, 0).toLocaleString()}</p>
             </CardContent>
@@ -159,12 +263,12 @@ export default function AdminMarketing() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 p-1 bg-cm-elevated border border-cm-border-subtle rounded-xl mb-6">
+        <div className="flex gap-1 p-1 bg-cm-elevated border border-cm-border-subtle rounded-xl mb-6 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-medium transition-all ${
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'bg-red-500/10 text-red-400'
                   : 'text-cm-dim hover:bg-cm-hover hover:text-cm-secondary'
@@ -176,6 +280,93 @@ export default function AdminMarketing() {
             </button>
           ))}
         </div>
+
+        {/* Daily Deals Tab */}
+        {activeTab === 'deals' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-semibold text-cm-secondary">Daily Deals Management</h2>
+              <Button onClick={() => setDealDialogOpen(true)} className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white rounded-xl h-9 px-4 text-xs">
+                <Plus className="w-3.5 h-3.5 mr-1.5" /> New Deal
+              </Button>
+            </div>
+            {dealsLoading ? (
+              <div className="flex items-center gap-2 text-cm-dim py-12 justify-center">
+                <Loader2 className="w-5 h-5 animate-spin" /> Loading deals...
+              </div>
+            ) : deals.length === 0 ? (
+              <div className="text-center py-12 rounded-2xl bg-cm-elevated border border-cm-border-subtle">
+                <Flame className="w-12 h-12 text-cm-faint mx-auto mb-3" />
+                <p className="text-cm-dim">No deals created yet</p>
+                <Button onClick={() => setDealDialogOpen(true)} className="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl h-9 px-4 text-xs mt-4">
+                  <Plus className="w-3.5 h-3.5 mr-1.5" /> Create First Deal
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {deals.map((deal) => {
+                  const now = new Date()
+                  const ends = new Date(deal.endsAt)
+                  const starts = new Date(deal.startsAt)
+                  const isExpired = ends < now
+                  const isUpcoming = starts > now
+                  const status = isExpired ? 'expired' : isUpcoming ? 'scheduled' : deal.isActive ? 'active' : 'inactive'
+                  const discount = deal.product ? Math.round(((deal.product.price - deal.dealPrice) / deal.product.price) * 100) : 0
+
+                  return (
+                    <Card key={deal.id} className="bg-cm-elevated border-cm-border-subtle rounded-2xl">
+                      <CardContent className="p-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-5">
+                          <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-orange-500/10 to-red-500/5 border border-orange-500/20 flex flex-col items-center justify-center flex-shrink-0">
+                            <span className="text-lg">🔥</span>
+                            <span className="text-xs font-bold text-orange-400">-{discount}%</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h3 className="text-sm font-semibold text-cm-secondary truncate">
+                                {deal.product?.title || `Product ${deal.productId.slice(0, 8)}`}
+                              </h3>
+                              <Badge className={`${statusColor[status] || statusColor.expired} text-[10px] border`}>{status}</Badge>
+                            </div>
+                            <div className="flex flex-wrap gap-3 mt-2">
+                              <span className="text-[10px] text-cm-dim">
+                                Deal: <span className="text-orange-400 font-semibold">${deal.dealPrice.toFixed(2)}</span>
+                                {deal.product && <span className="line-through ml-1">${deal.product.price.toFixed(2)}</span>}
+                              </span>
+                              <span className="text-[10px] text-cm-dim flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {new Date(deal.startsAt).toLocaleDateString()} → {new Date(deal.endsAt).toLocaleDateString()}
+                              </span>
+                              {deal.maxQty && (
+                                <span className="text-[10px] text-cm-dim">
+                                  Sold: {deal.soldQty}/{deal.maxQty}
+                                </span>
+                              )}
+                            </div>
+                            {/* Sold progress */}
+                            {deal.maxQty && (
+                              <div className="mt-2 h-1.5 bg-cm-hover rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-gradient-to-r from-orange-500 to-red-500 rounded-full transition-all"
+                                  style={{ width: `${Math.min((deal.soldQty / deal.maxQty) * 100, 100)}%` }}
+                                />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex gap-1">
+                            <Button variant="ghost" size="sm" className="text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg h-8">
+                              <Trash2 className="w-3.5 h-3.5" onClick={() => handleDeleteDeal(deal.id)} />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Coupons Tab */}
         {activeTab === 'coupons' && (
@@ -212,7 +403,6 @@ export default function AdminMarketing() {
                           <span className="text-[10px] text-cm-dim">Used: {coupon.usedCount}/{coupon.usageLimit}</span>
                           <span className="text-[10px] text-cm-dim flex items-center gap-1"><Clock className="w-3 h-3" />{coupon.startDate} → {coupon.endDate}</span>
                         </div>
-                        {/* Usage bar */}
                         <div className="mt-2 h-1.5 bg-cm-hover rounded-full overflow-hidden">
                           <div
                             className="h-full bg-gradient-to-r from-red-500 to-red-600 rounded-full transition-all"
@@ -324,6 +514,77 @@ export default function AdminMarketing() {
           </div>
         )}
       </div>
+
+      {/* Create Deal Dialog */}
+      <Dialog open={dealDialogOpen} onOpenChange={setDealDialogOpen}>
+        <DialogContent className="sm:max-w-md bg-cm-elevated border-cm-border-hover">
+          <DialogHeader>
+            <DialogTitle className="text-cm-primary">Create Daily Deal</DialogTitle>
+            <DialogDescription className="text-cm-dim">Set up a time-limited deal for a product.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Product ID *</Label>
+              <Input
+                value={dealForm.productId}
+                onChange={(e) => setDealForm({ ...dealForm, productId: e.target.value })}
+                placeholder="Enter product ID"
+                className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl"
+              />
+            </div>
+            <div>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Deal Price (CAD) *</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={dealForm.dealPrice}
+                onChange={(e) => setDealForm({ ...dealForm, dealPrice: e.target.value })}
+                placeholder="19.99"
+                className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-cm-secondary text-xs mb-1.5 block">Start Date</Label>
+                <Input
+                  type="date"
+                  value={dealForm.startsAt}
+                  onChange={(e) => setDealForm({ ...dealForm, startsAt: e.target.value })}
+                  className="bg-cm-hover border-cm-border-hover text-cm-secondary rounded-xl"
+                />
+              </div>
+              <div>
+                <Label className="text-cm-secondary text-xs mb-1.5 block">End Date</Label>
+                <Input
+                  type="date"
+                  value={dealForm.endsAt}
+                  onChange={(e) => setDealForm({ ...dealForm, endsAt: e.target.value })}
+                  className="bg-cm-hover border-cm-border-hover text-cm-secondary rounded-xl"
+                />
+              </div>
+            </div>
+            <div>
+              <Label className="text-cm-secondary text-xs mb-1.5 block">Max Quantity (optional)</Label>
+              <Input
+                type="number"
+                value={dealForm.maxQty}
+                onChange={(e) => setDealForm({ ...dealForm, maxQty: e.target.value })}
+                placeholder="50"
+                className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl"
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setDealDialogOpen(false)} className="border-cm-border-hover text-cm-primary hover:bg-cm-hover rounded-xl">
+              Cancel
+            </Button>
+            <Button onClick={handleCreateDeal} disabled={dealSaving} className="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl">
+              {dealSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Flame className="w-4 h-4 mr-2" />}
+              Create Deal
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardSidebar>
     </AdminAuthGuard>
   )

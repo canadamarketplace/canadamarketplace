@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import { useNavigation, urlToPage } from '@/lib/store'
+import { useNavigation, useAuth, urlToPage } from '@/lib/store'
 import { useLocale } from '@/lib/i18n'
 import { useSEO } from '@/hooks/useSEO'
 import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/seo/JsonLd'
@@ -67,6 +67,12 @@ import AdminReturns from './pages/admin/AdminReturns'
 import MyReturnsPage from './pages/buyer/MyReturnsPage'
 import ComparePage from './pages/ComparePage'
 import CompareFloatingBar from './CompareFloatingBar'
+import MyRewardsPage from './pages/buyer/MyRewardsPage'
+import MyQuotesPage from './pages/buyer/MyQuotesPage'
+import SellerQuotes from './pages/seller/SellerQuotes'
+import SellerAffiliate from './pages/seller/SellerAffiliate'
+import AdminBrands from './pages/admin/AdminBrands'
+import AdminQuotes from './pages/admin/AdminQuotes'
 import type { PageView } from '@/lib/store'
 
 function PageRenderer() {
@@ -99,8 +105,12 @@ function PageRenderer() {
     case 'seller-transactions': return <SellerTransactions />
     case 'seller-shipping': return <SellerShipping />
     case 'seller-returns': return <SellerReturns />
+    case 'seller-quotes': return <SellerQuotes />
+    case 'seller-affiliate': return <SellerAffiliate />
     case 'admin-returns': return <AdminReturns />
     case 'my-returns': return <MyReturnsPage />
+    case 'my-rewards': return <MyRewardsPage />
+    case 'my-quotes': return <MyQuotesPage />
     case 'address-book': return <BuyerAddressBook />
     case 'buyer-reviews': return <BuyerReviews />
     case 'compare': return <ComparePage />
@@ -124,6 +134,8 @@ function PageRenderer() {
     case 'admin-shipping': return <AdminShipping />
     case 'admin-marketing': return <AdminMarketing />
     case 'admin-reports': return <AdminReports />
+    case 'admin-brands': return <AdminBrands />
+    case 'admin-quotes': return <AdminQuotes />
     case 'terms': return <TermsPage />
     case 'privacy': return <PrivacyPage />
     case 'cookies': return <CookiesPage />
@@ -165,6 +177,7 @@ export default function MarketplaceApp() {
   }, [])
 
   // Sync URL on page load (handle direct links / refresh)
+  // Also handle OAuth social login callback (?social=1)
   useEffect(() => {
     // Detect locale from URL and set it
     const pathname = window.location.pathname
@@ -177,6 +190,26 @@ export default function MarketplaceApp() {
     const { page, params } = urlToPage(window.location.pathname, window.location.search)
     if (page !== "home" || window.location.pathname !== "/") {
       navigate(page, params)
+    }
+
+    // Handle OAuth social login callback
+    const searchParams = new URLSearchParams(window.location.search)
+    if (searchParams.get('social') === '1') {
+      const { setUser } = useAuth.getState()
+      fetch('/api/auth/social-callback')
+        .then((res) => {
+          if (res.ok) return res.json()
+          throw new Error('Social login callback failed')
+        })
+        .then((user) => {
+          setUser(user)
+          // Clean the URL parameter
+          window.history.replaceState({}, '', window.location.pathname)
+        })
+        .catch(() => {
+          // Clean the URL parameter even on error
+          window.history.replaceState({}, '', window.location.pathname)
+        })
     }
   }, [])
 

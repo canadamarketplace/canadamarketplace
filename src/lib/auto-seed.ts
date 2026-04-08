@@ -38,6 +38,16 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
       await db.store.deleteMany()
       await db.province.deleteMany()
       await db.category.deleteMany()
+      await db.brand.deleteMany()
+      await db.giftCard.deleteMany()
+      await db.rewardPoints.deleteMany()
+      await db.storeCredit.deleteMany()
+      await db.affiliate.deleteMany()
+      await db.extraFee.deleteMany()
+      await db.quoteRequest.deleteMany()
+      await db.dailyDeal.deleteMany()
+      await db.shippingRate.deleteMany()
+      await db.pickupLocation.deleteMany()
       await db.user.deleteMany()
       console.log("  ✅ All existing data cleared")
     }
@@ -59,6 +69,18 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
       db.category.create({ data: { name: "Toys & Games", slug: "toys-games", icon: "gamepad-2", productCount: 0 } }),
       db.category.create({ data: { name: "Automotive", slug: "automotive", icon: "car", productCount: 0 } }),
       db.category.create({ data: { name: "Pet Supplies", slug: "pet-supplies", icon: "paw-print", productCount: 0 } }),
+    ])
+
+    // Create Brands
+    const brands = await Promise.all([
+      db.brand.create({ data: { name: "Nike", slug: "nike", description: "World-renowned athletic footwear, apparel, and equipment.", website: "https://www.nike.com" } }),
+      db.brand.create({ data: { name: "Adidas", slug: "adidas", description: "German sportswear brand known for iconic sneakers and athletic gear.", website: "https://www.adidas.com" } }),
+      db.brand.create({ data: { name: "Canada Goose", slug: "canada-goose", description: "Premium Canadian outerwear known for extreme weather performance.", website: "https://www.canadagoose.com" } }),
+      db.brand.create({ data: { name: "Lululemon", slug: "lululemon", description: "Vancouver-based athletic apparel company.", website: "https://shop.lululemon.com" } }),
+      db.brand.create({ data: { name: "Arc'teryx", slug: "arcteryx", description: "Canadian high-performance outdoor clothing.", website: "https://arcteryx.com" } }),
+      db.brand.create({ data: { name: "Roots", slug: "roots", description: "Iconic Canadian lifestyle brand.", website: "https://www.roots.com" } }),
+      db.brand.create({ data: { name: "Columbia", slug: "columbia", description: "American outdoor apparel company.", website: "https://www.columbia.com" } }),
+      db.brand.create({ data: { name: "Puma", slug: "puma", description: "German multinational sportswear brand.", website: "https://www.puma.com" } }),
     ])
 
     // Create Provinces
@@ -212,6 +234,7 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
           status: "ACTIVE",
           isFeatured: p.isFeatured,
           views: Math.floor(Math.random() * 500),
+          brandId: brands[Math.floor(Math.random() * brands.length)].id,
         },
       })
       products.push(product)
@@ -535,6 +558,43 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
       })
     }
 
+    // Create Pickup Locations
+    await Promise.all([
+      db.pickupLocation.create({ data: { sellerId: sellers[0].id, storeId: sellers[0].store!.id, name: 'Toronto Downtown Store', address: '123 Yonge St', city: 'Toronto', province: 'ON', postalCode: 'M5C 1W4', phone: '(416) 555-0101', hours: 'Mon-Sat 9am-8pm, Sun 10am-6pm' } }),
+      db.pickupLocation.create({ data: { sellerId: sellers[1].id, storeId: sellers[1].store!.id, name: 'Vancouver Main Store', address: '456 Granville St', city: 'Vancouver', province: 'BC', postalCode: 'V6C 1T2', phone: '(604) 555-0202', hours: 'Mon-Sat 10am-7pm, Sun 11am-5pm' } }),
+      db.pickupLocation.create({ data: { sellerId: sellers[2].id, storeId: sellers[2].store!.id, name: 'Montréal Storefront', address: '789 Rue Sainte-Catherine', city: 'Montréal', province: 'QC', postalCode: 'H3B 1A3', phone: '(514) 555-0303', hours: 'Mon-Sat 10am-9pm, Sun Closed' } }),
+      db.pickupLocation.create({ data: { sellerId: sellers[3].id, storeId: sellers[3].store!.id, name: 'Calgary Warehouse', address: '321 17th Ave SW', city: 'Calgary', province: 'AB', postalCode: 'T2S 0A1', phone: '(403) 555-0404', hours: 'Mon-Fri 9am-6pm, Sat 10am-4pm' } }),
+    ])
+
+    // Create Shipping Rates
+    await db.shippingRate.createMany({
+      data: [
+        { sellerId: null, zone: 'DOMESTIC', baseRate: 8.00, perKgRate: 1.50, freeAbove: 75.00, isActive: true },
+        { sellerId: null, zone: 'REGIONAL', baseRate: 12.00, perKgRate: 2.00, freeAbove: null, isActive: true },
+        { sellerId: null, zone: 'USA', baseRate: 18.00, perKgRate: 3.00, freeAbove: null, isActive: true },
+        { sellerId: null, zone: 'INTERNATIONAL', baseRate: 25.00, perKgRate: 5.00, freeAbove: null, isActive: true },
+      ],
+    })
+
+    // Create Daily Deals
+    const now = new Date()
+    const dealProducts = [products[0], products[2], products[8], products[13], products[1]]
+    for (let i = 0; i < dealProducts.length; i++) {
+      const p = dealProducts[i]
+      if (!p) continue
+      await db.dailyDeal.create({
+        data: {
+          productId: p.id,
+          dealPrice: Math.round(p.price * 0.6 * 100) / 100,
+          startsAt: now,
+          endsAt: new Date(now.getTime() + (i + 1) * 24 * 86400000),
+          maxQty: 50,
+          soldQty: Math.floor(Math.random() * 20),
+          isActive: true,
+        },
+      })
+    }
+
     console.log("✅ Canada Marketplace auto-seed complete!")
     return { seeded: true, message: "Database seeded successfully with demo data" }
   } catch (error) {
@@ -544,3 +604,4 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
     seedRunning = false
   }
 }
+

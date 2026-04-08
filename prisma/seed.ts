@@ -24,6 +24,16 @@ async function seed() {
   await db.store.deleteMany()
   await db.province.deleteMany()
   await db.category.deleteMany()
+  await db.brand.deleteMany()
+  await db.giftCard.deleteMany()
+  await db.rewardPoints.deleteMany()
+  await db.storeCredit.deleteMany()
+  await db.affiliate.deleteMany()
+  await db.extraFee.deleteMany()
+  await db.quoteRequest.deleteMany()
+  await db.dailyDeal.deleteMany()
+  await db.shippingRate.deleteMany()
+  await db.pickupLocation.deleteMany()
   await db.user.deleteMany()
 
   // Create Categories
@@ -42,6 +52,19 @@ async function seed() {
     db.category.create({ data: { name: "Pet Supplies", slug: "pet-supplies", icon: "paw-print", productCount: 0 } }),
   ])
   console.log(`  ✅ ${categories.length} categories`)
+
+  // Create Brands
+  const brands = await Promise.all([
+    db.brand.create({ data: { name: "Nike", slug: "nike", description: "World-renowned athletic footwear, apparel, and equipment.", website: "https://www.nike.com" } }),
+    db.brand.create({ data: { name: "Adidas", slug: "adidas", description: "German sportswear brand known for iconic sneakers and athletic gear.", website: "https://www.adidas.com" } }),
+    db.brand.create({ data: { name: "Canada Goose", slug: "canada-goose", description: "Premium Canadian outerwear known for extreme weather performance.", website: "https://www.canadagoose.com" } }),
+    db.brand.create({ data: { name: "Lululemon", slug: "lululemon", description: "Vancouver-based athletic apparel company specializing in yoga and running wear.", website: "https://shop.lululemon.com" } }),
+    db.brand.create({ data: { name: "Arc'teryx", slug: "arcteryx", description: "Canadian high-performance outdoor clothing and sporting goods company.", website: "https://arcteryx.com" } }),
+    db.brand.create({ data: { name: "Roots", slug: "roots", description: "Iconic Canadian lifestyle brand offering apparel, leather goods, and accessories.", website: "https://www.roots.com" } }),
+    db.brand.create({ data: { name: "Columbia", slug: "columbia", description: "American outdoor apparel company with strong Canadian presence.", website: "https://www.columbia.com" } }),
+    db.brand.create({ data: { name: "Puma", slug: "puma", description: "German multinational sportswear brand known for sneakers and athletic wear.", website: "https://www.puma.com" } }),
+  ])
+  console.log(`  ✅ ${brands.length} brands`)
 
   // Create Provinces
   const provinces = await Promise.all([
@@ -189,6 +212,7 @@ async function seed() {
         status: "ACTIVE",
         isFeatured: p.isFeatured,
         views: Math.floor(Math.random() * 500),
+        brandId: brands[Math.floor(Math.random() * brands.length)].id,
       },
     })
     products.push(product)
@@ -498,6 +522,7 @@ async function seed() {
     { user: sellers[1], type: "MESSAGE", title: "New Message", message: "A buyer asked about shipping to Calgary.", link: "messages" },
     { user: sellers[2], type: "PAYOUT", title: "Payout Processed", message: "Your Canada Marketplace payout of $284.50 has been processed.", link: "my-payouts" },
     { user: admin, type: "DISPUTE", title: "New Dispute Filed", message: "A buyer filed a dispute. Review required.", link: "admin-disputes" },
+    { user: buyers[0], type: "REVIEW_REMINDER", title: "Leave a Review", message: "How was your recent order CM-DEMO001? Your feedback helps other buyers!", link: "orders" },
   ]
 
   for (let i = 0; i < notificationTemplates.length; i++) {
@@ -545,6 +570,108 @@ async function seed() {
     coupons.push(coupon)
   }
   console.log(`  ✅ ${coupons.length} coupons`)
+
+  // Create Gift Cards
+  await db.giftCard.createMany({
+    data: [
+      { code: "GIFT-CM-" + Math.random().toString(36).substring(2, 8).toUpperCase(), balance: 50.00, initialAmount: 50.00, purchasedById: buyers[0].id, recipientName: "Marie Tremblay", recipientEmail: "marie@hotmail.com", message: "Happy birthday! Enjoy shopping on Canada Marketplace." },
+      { code: "GIFT-CM-" + Math.random().toString(36).substring(2, 8).toUpperCase(), balance: 100.00, initialAmount: 100.00, purchasedById: buyers[1].id, recipientName: "Chris Brown", recipientEmail: "chris@outlook.com", message: "Thanks for your help with the move!" },
+    ],
+  })
+  console.log(`  ✅ Gift cards created`)
+
+  // Create Extra Fees
+  await db.extraFee.createMany({
+    data: [
+      { sellerId: null, name: "Handling Fee", type: "FIXED", amount: 2.50, minOrder: null, isActive: true },
+      { sellerId: sellers[0].id, name: "Packaging", type: "FIXED", amount: 1.50, minOrder: null, isActive: true },
+      { sellerId: null, name: "Shipping Insurance", type: "PERCENTAGE", amount: 1.5, minOrder: 100.00, isActive: true },
+    ],
+  })
+  console.log(`  ✅ Extra fees created`)
+
+  // Create Reward Points for buyers
+  await db.rewardPoints.createMany({
+    data: [
+      { userId: buyers[0].id, points: 100, type: "EARN_SIGNUP", description: "Welcome bonus for signing up!" },
+      { userId: buyers[0].id, points: 35, type: "EARN_PURCHASE", description: "Points earned from order CM-001", orderId: orders[0]?.id },
+      { userId: buyers[1].id, points: 100, type: "EARN_SIGNUP", description: "Welcome bonus for signing up!" },
+      { userId: buyers[1].id, points: 18, type: "EARN_REVIEW", description: "Points earned for leaving a review" },
+      { userId: buyers[2].id, points: 100, type: "EARN_SIGNUP", description: "Welcome bonus for signing up!" },
+    ],
+  })
+  console.log(`  ✅ Reward points created`)
+
+  // Create Store Credits for buyers
+  await db.storeCredit.createMany({
+    data: [
+      { userId: buyers[0].id, amount: 5.00, type: "REFUND", description: "Refund for returned order" },
+      { userId: buyers[1].id, amount: 2.00, type: "REWARD_REDEMPTION", description: "Redeemed 200 reward points for $2.00 credit" },
+      { userId: buyers[2].id, amount: 10.00, type: "ADMIN_ADJUSTMENT", description: "Goodwill credit for shipping delay" },
+    ],
+  })
+  console.log(`  ✅ Store credits created`)
+
+  // Create Affiliate records for sellers
+  await db.affiliate.createMany({
+    data: sellers.map((s, i) => ({
+      userId: s.id,
+      referralCode: `REF${s.name.substring(0, 3).toUpperCase()}${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+      totalEarnings: Math.floor(Math.random() * 200),
+      totalReferrals: Math.floor(Math.random() * 10),
+    })),
+  })
+  console.log(`  ✅ Affiliate records created`)
+
+  // Create Pickup Locations
+  const pickupLocations = await Promise.all([
+    db.pickupLocation.create({ data: { sellerId: sellers[0].id, storeId: sellers[0].store!.id, name: 'Toronto Downtown Store', address: '123 Yonge St', city: 'Toronto', province: 'ON', postalCode: 'M5C 1W4', phone: '(416) 555-0101', hours: 'Mon-Sat 9am-8pm, Sun 10am-6pm' } }),
+    db.pickupLocation.create({ data: { sellerId: sellers[1].id, storeId: sellers[1].store!.id, name: 'Vancouver Main Store', address: '456 Granville St', city: 'Vancouver', province: 'BC', postalCode: 'V6C 1T2', phone: '(604) 555-0202', hours: 'Mon-Sat 10am-7pm, Sun 11am-5pm' } }),
+    db.pickupLocation.create({ data: { sellerId: sellers[2].id, storeId: sellers[2].store!.id, name: 'Montréal Storefront', address: '789 Rue Sainte-Catherine', city: 'Montréal', province: 'QC', postalCode: 'H3B 1A3', phone: '(514) 555-0303', hours: 'Mon-Sat 10am-9pm, Sun Closed' } }),
+    db.pickupLocation.create({ data: { sellerId: sellers[3].id, storeId: sellers[3].store!.id, name: 'Calgary Warehouse', address: '321 17th Ave SW', city: 'Calgary', province: 'AB', postalCode: 'T2S 0A1', phone: '(403) 555-0404', hours: 'Mon-Fri 9am-6pm, Sat 10am-4pm' } }),
+  ])
+  console.log(`  ✅ ${pickupLocations.length} pickup locations`)
+
+  // Create Shipping Rates
+  await db.shippingRate.createMany({
+    data: [
+      { sellerId: null, zone: 'DOMESTIC', baseRate: 8.00, perKgRate: 1.50, freeAbove: 75.00, isActive: true },
+      { sellerId: null, zone: 'REGIONAL', baseRate: 12.00, perKgRate: 2.00, freeAbove: null, isActive: true },
+      { sellerId: null, zone: 'USA', baseRate: 18.00, perKgRate: 3.00, freeAbove: null, isActive: true },
+      { sellerId: null, zone: 'INTERNATIONAL', baseRate: 25.00, perKgRate: 5.00, freeAbove: null, isActive: true },
+    ],
+  })
+  console.log('  ✅ Shipping rates created')
+
+  // Create Daily Deals
+  const now = new Date()
+  const tomorrow = new Date(now.getTime() + 24 * 86400000)
+  const dealProducts = [products[0], products[2], products[8], products[13], products[1]]
+  for (let i = 0; i < dealProducts.length; i++) {
+    const p = dealProducts[i]
+    if (!p) continue
+    await db.dailyDeal.create({
+      data: {
+        productId: p.id,
+        dealPrice: Math.round(p.price * 0.6 * 100) / 100,
+        startsAt: now,
+        endsAt: new Date(now.getTime() + (i + 1) * 24 * 86400000),
+        maxQty: 50,
+        soldQty: Math.floor(Math.random() * 20),
+        isActive: true,
+      },
+    })
+  }
+  console.log('  ✅ Daily deals created')
+
+  // Create Quote Requests
+  await db.quoteRequest.createMany({
+    data: [
+      { buyerId: buyers[0].id, productId: products[0]?.id, sellerId: sellers[0].id, message: "I need 50 pieces of the Classic Logo Tee for a corporate event. Can you offer a bulk discount?", quantity: 50, targetPrice: 20.00, status: "PENDING" },
+      { buyerId: buyers[1].id, productId: products[13]?.id, sellerId: sellers[2].id, message: "Would like 20 snapbacks for my team. What's the best price you can offer?", quantity: 20, targetPrice: 22.00, status: "RESPONDED", response: "We can do $24 each for 20+ units.", quotePrice: 24.00 },
+    ],
+  })
+  console.log(`  ✅ Quote requests created`)
 
   console.log("\n🍁 Canada Marketplace seeded successfully!")
   console.log("\n📋 Test Accounts:")

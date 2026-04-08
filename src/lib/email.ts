@@ -263,3 +263,44 @@ export async function sendOrderStatusUpdateEmail(
     htmlBody: html,
   })
 }
+
+/**
+ * Review reminder email sent to buyer after order delivery.
+ */
+export async function sendReviewReminder(
+  userEmail: string,
+  userName: string,
+  orderNumber: string,
+  productTitles: string[],
+) {
+  const productListHtml = productTitles
+    .map((title) => `<li style="margin:4px 0;color:#a8a29e;">• ${title}</li>`)
+    .join('')
+
+  const html = brandedHtml(`
+    <h1>How was your order? ⭐</h1>
+    <p>
+      Hi <span class="highlight">${userName}</span>, your order
+      <span class="highlight">#${orderNumber}</span> has been delivered!
+      We'd love to hear about your experience.
+    </p>
+    <p>
+      Your review helps other Canadian buyers make informed decisions
+      and helps sellers improve their service.
+    </p>
+    <p style="margin-bottom:4px;"><strong style="color:#f5f5f4;">Items in your order:</strong></p>
+    <ul style="margin:0 0 16px;padding-left:20px;">
+      ${productListHtml}
+    </ul>
+    <a href="${siteUrl}/orders" class="btn">Leave a Review</a>
+    <p class="muted">
+      Thank you for shopping on Canada Marketplace! Your feedback means a lot to our community.
+    </p>
+  `)
+
+  return sendEmail({
+    to: userEmail,
+    subject: `How was your order #${orderNumber}? Leave a review! ⭐`,
+    htmlBody: html,
+  })
+}

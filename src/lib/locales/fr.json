@@ -93,7 +93,9 @@
     "useDemo": "Essayer",
     "storeName": "Nom de la boutique",
     "storeDescription": "Description de la boutique",
-    "select": "Sélectionner"
+    "select": "Sélectionner",
+    "continueWithGoogle": "Continuer avec Google",
+    "continueWithFacebook": "Continuer avec Facebook"
   },
   "home": {
     "heroTitle": "Achetez et vendez partout",

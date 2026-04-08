@@ -18,6 +18,7 @@ const PUBLIC_ROUTES = [
   "/api/auth/register-seller",
   "/api/auth/logout",
   "/api/auth/[...nextauth]",
+  "/api/auth/social-callback",
   "/api/forgot-password",
   "/api/reset-password",
   "/api/products",

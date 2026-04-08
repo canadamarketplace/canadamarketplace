@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("STORAGE_DATABASE_URL_UNPOOLED")
-  directUrl = env("STORAGE_POSTGRES_PRISMA_URL")
+  provider  = "sqlite"
+  url       = env("DATABASE_URL")
 }
 
 model User {
@@ -41,6 +40,17 @@ model User {
   conversation2  Conversation[] @relation("ConversationParticipant2")
   notifications  Notification[]
   reports        Report[]
+  pointsBalance      Int            @default(0)
+  purchasedGiftCards GiftCard[] @relation("GiftCardPurchaser")
+  redeemedGiftCards GiftCard[] @relation("GiftCardRedeemer")
+  rewardPoints   RewardPoints[]
+  storeCredits   StoreCredit[]
+  affiliate      Affiliate?
+  extraFees      ExtraFee[]
+  quoteRequests    QuoteRequest[] @relation("QuoteBuyer")
+  sellerQuotes     QuoteRequest[] @relation("QuoteSeller")
+  pickupLocations  PickupLocation[]
+  shippingRates    ShippingRate[]
 }
 
 model Store {
@@ -63,9 +73,10 @@ model Store {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  seller   User      @relation(fields: [sellerId], references: [id])
-  products Product[]
-  approvalStatus String   @default("APPROVED")  // PENDING, APPROVED, REJECTED
+  seller           User             @relation(fields: [sellerId], references: [id])
+  products         Product[]
+  pickupLocations  PickupLocation[]
+  approvalStatus   String           @default("APPROVED")  // PENDING, APPROVED, REJECTED
 }
 
 model Category {
@@ -108,15 +119,20 @@ model Product {
   isFeatured       Boolean  @default(false)
   views            Int      @default(0)
   moderationStatus String   @default("APPROVED")  // PENDING_REVIEW, APPROVED, REJECTED
+  attachments      String   @default("[]")
+  brandId     String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   category   Category         @relation(fields: [categoryId], references: [id])
   store      Store            @relation(fields: [storeId], references: [id])
+  brand      Brand?           @relation(fields: [brandId], references: [id])
   orderItems OrderItem[]
   reviews    Review[]
   cartItems  CartItem[]
   variants   ProductVariant[]
+  quoteRequests  QuoteRequest[]
+  dailyDeal      DailyDeal?
 }
 
 model Order {
@@ -138,6 +154,10 @@ model Order {
   shippingPostalCode String
   trackingNumber     String?
   notes              String?
+  deliveryDate       DateTime?
+  deliveryTimeSlot   String?
+  deliveryMethod     String    @default("SHIPPING")
+  pickupLocationId   String?
   paidAt             DateTime?
   shippedAt          DateTime?
   deliveredAt        DateTime?
@@ -145,13 +165,14 @@ model Order {
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 
-  buyer         User            @relation(fields: [buyerId], references: [id])
-  items         OrderItem[]
-  disputes      Dispute[]
-  reviews       Review[]
-  appliedCoupon AppliedCoupon?
-  timeline      OrderTimeline[]
-  returns       Return[]
+  buyer           User            @relation(fields: [buyerId], references: [id])
+  items           OrderItem[]
+  disputes        Dispute[]
+  reviews         Review[]
+  appliedCoupon   AppliedCoupon?
+  timeline        OrderTimeline[]
+  returns         Return[]
+  pickupLocation  PickupLocation?  @relation(fields: [pickupLocationId], references: [id])
 }
 
 model OrderItem {
@@ -387,4 +408,170 @@ model AppliedCoupon {
 
   coupon Coupon @relation(fields: [couponId], references: [id])
   order  Order  @relation(fields: [orderId], references: [id])
+}
+
+model Brand {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  logo        String?
+  description String?
+  website     String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  products Product[]
+}
+
+model GiftCard {
+  id              String    @id @default(cuid())
+  code            String    @unique
+  balance         Float
+  initialAmount   Float
+  currency        String    @default("CAD")
+  senderId        String?
+  recipientName   String?
+  recipientEmail  String?
+  message         String?
+  isActive        Boolean   @default(true)
+  expiresAt       DateTime?
+  purchasedById   String?
+  redeemedById    String?
+  redeemedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  purchasedBy User? @relation("GiftCardPurchaser", fields: [purchasedById], references: [id])
+  redeemedBy  User? @relation("GiftCardRedeemer", fields: [redeemedById], references: [id])
+}
+
+model RewardPoints {
+  id          String   @id @default(cuid())
+  userId      String
+  points      Int
+  type        String
+  description String
+  orderId     String?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model StoreCredit {
+  id          String   @id @default(cuid())
+  userId      String
+  amount      Float
+  type        String
+  description String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Affiliate {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  referralCode   String   @unique
+  referredBy     String?
+  totalEarnings  Float    @default(0)
+  totalReferrals Int      @default(0)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model ExtraFee {
+  id        String   @id @default(cuid())
+  sellerId  String?
+  name      String
+  type      String
+  amount    Float
+  minOrder  Float?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  seller User? @relation(fields: [sellerId], references: [id])
+}
+
+model PickupLocation {
+  id          String   @id @default(cuid())
+  sellerId    String
+  storeId     String
+  name        String
+  address     String
+  city        String
+  province    String
+  postalCode  String
+  phone       String?
+  hours       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  seller  User     @relation(fields: [sellerId], references: [id])
+  store   Store    @relation(fields: [storeId], references: [id])
+  orders  Order[]
+
+  @@index([sellerId])
+  @@index([storeId])
+}
+
+model ShippingRate {
+  id           String   @id @default(cuid())
+  sellerId     String?
+  zone         String
+  baseRate     Float
+  perKgRate    Float    @default(0)
+  freeAbove    Float?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  seller  User?    @relation(fields: [sellerId], references: [id])
+}
+
+model DailyDeal {
+  id          String   @id @default(cuid())
+  productId   String   @unique
+  dealPrice   Float
+  startsAt    DateTime
+  endsAt      DateTime
+  maxQty      Int?
+  soldQty     Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  product  Product  @relation(fields: [productId], references: [id])
+
+  @@index([endsAt])
+  @@index([isActive])
+}
+
+model QuoteRequest {
+  id          String    @id @default(cuid())
+  buyerId     String
+  productId   String?
+  sellerId    String?
+  message     String
+  quantity    Int?
+  targetPrice Float?
+  status      String    @default("PENDING")
+  response    String?
+  quotePrice  Float?
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  buyer   User     @relation("QuoteBuyer", fields: [buyerId], references: [id])
+  seller  User?    @relation("QuoteSeller", fields: [sellerId], references: [id])
+  product Product? @relation(fields: [productId], references: [id])
+
+  @@index([buyerId])
+  @@index([sellerId])
+  @@index([status])
 }

@@ -11,7 +11,7 @@ import {
   Search, ArrowRight, Star, ShoppingCart, ChevronRight, Users, Package,
   TrendingUp, Lock, Eye, Zap, Globe, CreditCard, Store, Truck, ThumbsUp,
   Timer, Sparkles, Quote, Award, Map, MapPinned, Shirt, CupSoda, Crown,
-  Music, Home, Trophy, Monitor, BookOpen, Gamepad2, Car, PawPrint
+  Music, Home, Trophy, Monitor, BookOpen, Gamepad2, Car, PawPrint, Clock
 } from 'lucide-react'
 
 interface Product {
@@ -31,6 +31,7 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
   const { navigate, openAuthModal } = useNavigation()
   const { t } = useTranslation()
   const [featured, setFeatured] = useState<Product[]>([])
+  const [deals, setDeals] = useState<Array<any>>([])
   const [loading, setLoading] = useState(true)
   const [animateStats, setAnimateStats] = useState(false)
   const categoriesRef = useRef<HTMLDivElement>(null)
@@ -70,6 +71,45 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
     } catch {}
     setLoading(false)
   }
+
+  const [dealCountdowns, setDealCountdowns] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    const fetchDeals = async () => {
+      try {
+        const res = await fetch('/api/deals')
+        if (res.ok) {
+          const data = await res.json()
+          setDeals(data.deals || [])
+        }
+      } catch {}
+    }
+    fetchDeals()
+  }, [])
+
+  useEffect(() => {
+    const updateCountdowns = () => {
+      const now = new Date().getTime()
+      const updated: Record<string, string> = {}
+      for (const deal of deals) {
+        const end = new Date(deal.endsAt).getTime()
+        const diff = end - now
+        if (diff <= 0) { updated[deal.id] = 'Ended'; continue }
+        const hours = Math.floor(diff / 3600000)
+        const minutes = Math.floor((diff % 3600000) / 60000)
+        const seconds = Math.floor((diff % 60000) / 1000)
+        if (hours > 24) {
+          updated[deal.id] = `${Math.floor(hours / 24)}d ${hours % 24}h`
+        } else {
+          updated[deal.id] = `${hours}h ${minutes}m ${seconds}s`
+        }
+      }
+      setDealCountdowns(updated)
+    }
+    updateCountdowns()
+    const timer = setInterval(updateCountdowns, 1000)
+    return () => clearInterval(timer)
+  }, [deals])
 
   const getImages = (imagesStr: string) => {
     try { return JSON.parse(imagesStr) } catch { return [] }
@@ -358,6 +398,69 @@ export default function HomePage({ scrollTo }: { scrollTo?: string }) {
           </div>
         </div>
       </section>
+
+      {/* Daily Deals */}
+      {deals.length > 0 && (
+        <section className="py-20 lg:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <h2 className="text-3xl sm:text-4xl font-bold">
+                    <span className="bg-gradient-to-r from-orange-400 via-red-400 to-red-500 bg-clip-text text-transparent">
+                      🔥 Daily Deals
+                    </span>
+                  </h2>
+                </div>
+                <p className="text-cm-muted">Limited time offers — grab them before they&apos;re gone!</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {deals.map((deal: any) => {
+                const images = getImages(deal.product.images)
+                const discount = Math.round(((deal.product.price - deal.dealPrice) / deal.product.price) * 100)
+                return (
+                  <button
+                    key={deal.id}
+                    onClick={() => navigate('product-detail', { id: deal.product.id })}
+                    className="group rounded-2xl bg-cm-elevated backdrop-blur-xl border border-orange-500/20 hover:border-orange-500/40 overflow-hidden transition-all text-left hover:-translate-y-1"
+                  >
+                    <div className="aspect-square bg-cm-input relative overflow-hidden">
+                      {images.length > 0 ? (
+                        <img src={images[0]} alt={deal.product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-cm-faint"><Package className="w-12 h-12" /></div>
+                      )}
+                      <Badge className="absolute top-3 left-3 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] px-2 py-0.5 rounded-lg font-bold">
+                        DEAL -{discount}%
+                      </Badge>
+                      <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                        <div className="flex items-center gap-1 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1">
+                          <Clock className="w-3 h-3 text-orange-300" />
+                          <span className="text-[10px] font-mono text-white font-medium">{dealCountdowns[deal.id] || '...'}</span>
+                        </div>
+                        {deal.maxQty && (
+                          <div className="bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1">
+                            <span className="text-[10px] text-cm-faint">{deal.maxQty - deal.soldQty} left</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-sm font-medium text-cm-secondary truncate group-hover:text-cm-primary transition-colors">{deal.product.title}</h3>
+                      <p className="text-xs text-cm-faint mt-0.5 truncate">{deal.product.store.name}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="text-base font-bold text-red-400">${deal.dealPrice.toFixed(2)}</span>
+                        <span className="text-xs text-cm-faint line-through">${deal.product.price.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Regions */}
       <section ref={regionsRef} id="regions" className="py-20 lg:py-24 bg-cm-deep">

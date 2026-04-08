@@ -154,6 +154,52 @@ export default function ProductDetailPage() {
   const [relatedProducts, setRelatedProducts] = useState<any[]>([])
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({})
   const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [activeDeal, setActiveDeal] = useState<any>(null)
+  const [dealCountdown, setDealCountdown] = useState('')
+
+  // Fetch active deal for this product
+  useEffect(() => {
+    if (!pageParams.id) return
+    const fetchDeal = async () => {
+      try {
+        const res = await fetch(`/api/deals?productId=${pageParams.id}`)
+        if (res.ok) {
+          const data = await res.json()
+          if (data.deal) {
+            const now = new Date()
+            const starts = new Date(data.deal.startsAt)
+            const ends = new Date(data.deal.endsAt)
+            if (data.deal.isActive && starts <= now && ends >= now) {
+              setActiveDeal(data.deal)
+            }
+          }
+        }
+      } catch {}
+    }
+    fetchDeal()
+  }, [pageParams.id])
+
+  // Deal countdown timer
+  useEffect(() => {
+    if (!activeDeal) return
+    const updateCountdown = () => {
+      const now = new Date().getTime()
+      const end = new Date(activeDeal.endsAt).getTime()
+      const diff = end - now
+      if (diff <= 0) { setDealCountdown('Deal ended'); return }
+      const hours = Math.floor(diff / 3600000)
+      const minutes = Math.floor((diff % 3600000) / 60000)
+      const seconds = Math.floor((diff % 60000) / 1000)
+      if (hours > 24) {
+        setDealCountdown(`${Math.floor(hours / 24)}d ${hours % 24}h ${minutes}m`)
+      } else {
+        setDealCountdown(`${hours}h ${minutes}m ${seconds}s`)
+      }
+    }
+    updateCountdown()
+    const timer = setInterval(updateCountdown, 1000)
+    return () => clearInterval(timer)
+  }, [activeDeal])
 
   const fetchProduct = useCallback(async (id: string) => {
     setLoading(true)
@@ -449,17 +495,50 @@ export default function ProductDetailPage() {
               {product.category.name} · {product.sold} sold · {product.views} views
             </p>
 
+            {/* Deal Banner */}
+            {activeDeal && (
+              <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-orange-500/10 via-red-500/10 to-orange-500/5 border border-orange-500/20">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🔥</span>
+                    <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-3 py-1 rounded-lg">
+                      DAILY DEAL
+                    </Badge>
+                    <span className="text-sm text-orange-300 font-semibold">
+                      Save {Math.round(((product.price - activeDeal.dealPrice) / product.price) * 100)}%
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-black/30 rounded-lg px-3 py-1.5">
+                    <Clock className="w-4 h-4 text-orange-300" />
+                    <span className="text-sm font-mono text-orange-200 font-medium">{dealCountdown}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="flex items-baseline gap-3 mb-4">
-              <span className="text-3xl font-bold text-red-400">${effectivePrice.toFixed(2)}</span>
-              {currentPriceDelta !== 0 && (
-                <span className="text-sm text-cm-faint">Base: ${product.price.toFixed(2)}</span>
-              )}
-              {hasDiscount && (
+              {activeDeal ? (
                 <>
-                  <span className="text-lg text-cm-faint line-through">${(product.comparePrice! + currentPriceDelta).toFixed(2)}</span>
-                  <Badge className="bg-red-500 text-white text-xs">
-                    Save {Math.round(((product.comparePrice! - product.price) / product.comparePrice!) * 100)}%
+                  <span className="text-3xl font-bold text-orange-400">${activeDeal.dealPrice.toFixed(2)}</span>
+                  <span className="text-lg text-cm-faint line-through">${product.price.toFixed(2)}</span>
+                  <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold">
+                    Save {Math.round(((product.price - activeDeal.dealPrice) / product.price) * 100)}%
                   </Badge>
+                </>
+              ) : (
+                <>
+                  <span className="text-3xl font-bold text-red-400">${effectivePrice.toFixed(2)}</span>
+                  {currentPriceDelta !== 0 && (
+                    <span className="text-sm text-cm-faint">Base: ${product.price.toFixed(2)}</span>
+                  )}
+                  {hasDiscount && (
+                    <>
+                      <span className="text-lg text-cm-faint line-through">${(product.comparePrice! + currentPriceDelta).toFixed(2)}</span>
+                      <Badge className="bg-red-500 text-white text-xs">
+                        Save {Math.round(((product.comparePrice! - product.price) / product.comparePrice!) * 100)}%
+                      </Badge>
+                    </>
+                  )}
                 </>
               )}
               <span className="text-sm text-cm-faint">CAD</span>

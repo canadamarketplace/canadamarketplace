@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useNavigation, useCart, useAuth, useCoupon } from '@/lib/store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,9 +11,14 @@ import { PROVINCES } from '@/lib/types'
 import { calculateTax, getProvinceCode, type TaxResult } from '@/lib/canadian-tax'
 import {
   CreditCard, MapPin, Loader2, CheckCircle2, ArrowRight, Shield, ShoppingBag, Percent,
-  Tag, X, ChevronDown, ChevronUp, Gift
+  Tag, X, ChevronDown, ChevronUp, Gift, Truck, Store, Calendar, Clock
 } from 'lucide-react'
 import { toast } from 'sonner'
+
+interface PickupLocation {
+  id: string; name: string; address: string; city: string; province: string;
+  postalCode: string; phone?: string; hours?: string;
+}
 
 export default function CheckoutPage() {
   const { navigate } = useNavigation()
@@ -25,10 +30,28 @@ export default function CheckoutPage() {
   const [orderPlaced, setOrderPlaced] = useState(false)
   const [orderId, setOrderId] = useState('')
 
+  // Delivery method: SHIPPING or PICKUP
+  const [deliveryMethod, setDeliveryMethod] = useState<'SHIPPING' | 'PICKUP'>('SHIPPING')
+
+  // Shipping fields
   const [address, setAddress] = useState(user?.name || '')
   const [city, setCity] = useState(user?.storeName || '')
   const [province, setProvince] = useState('')
   const [postalCode, setPostalCode] = useState('')
+
+  // Delivery date/time (optional for shipping)
+  const [deliveryDate, setDeliveryDate] = useState('')
+  const [deliveryTimeSlot, setDeliveryTimeSlot] = useState('')
+
+  // Pickup fields
+  const [pickupLocations, setPickupLocations] = useState<PickupLocation[]>([])
+  const [selectedPickupId, setSelectedPickupId] = useState('')
+  const [pickupLocationsLoading, setPickupLocationsLoading] = useState(false)
+
+  // Shipping cost
+  const [shippingCost, setShippingCost] = useState<number | null>(null)
+  const [shippingLoading, setShippingLoading] = useState(false)
+
   const [notes, setNotes] = useState('')
 
   // Coupon state
@@ -37,8 +60,56 @@ export default function CheckoutPage() {
   const [couponLoading, setCouponLoading] = useState(false)
   const [couponError, setCouponError] = useState('')
 
+  const fetchPickupLocations = useCallback(async () => {
+    setPickupLocationsLoading(true)
+    try {
+      const sellerIds = [...new Set(items.map(i => i.storeId))].filter(Boolean)
+      const allLocations: PickupLocation[] = []
+      for (const storeId of sellerIds) {
+        const res = await fetch(`/api/pickup-locations?storeId=${storeId}`)
+        if (res.ok) {
+          const data = await res.json()
+          allLocations.push(...(data.locations || []))
+        }
+      }
+      setPickupLocations(allLocations)
+      if (allLocations.length > 0 && !selectedPickupId) {
+        setSelectedPickupId(allLocations[0].id)
+      }
+    } catch {}
+    setPickupLocationsLoading(false)
+  }, [items, selectedPickupId])
+
   const subtotal = total()
   const fee = Math.round(subtotal * 0.08 * 100) / 100
+
+  const calculateShipping = useCallback(async () => {
+    setShippingLoading(true)
+    try {
+      const res = await fetch(`/api/shipping/calculate?province=${province}&amount=${subtotal}&items=${items.length}`)
+      if (res.ok) {
+        const data = await res.json()
+        setShippingCost(data.cost)
+      }
+    } catch {}
+    setShippingLoading(false)
+  }, [province, subtotal, items.length])
+
+  // Fetch pickup locations when switching to pickup
+  useEffect(() => {
+    if (deliveryMethod === 'PICKUP') {
+      fetchPickupLocations()
+    }
+  }, [deliveryMethod, fetchPickupLocations])
+
+  // Calculate shipping cost when province changes
+  useEffect(() => {
+    if (deliveryMethod === 'SHIPPING' && province) {
+      calculateShipping()
+    } else {
+      setShippingCost(null)
+    }
+  }, [deliveryMethod, province, calculateShipping])
 
   // Calculate tax based on selected province
   const taxResult: TaxResult | null = useMemo(() => {
@@ -50,9 +121,17 @@ export default function CheckoutPage() {
 
   const discount = appliedCoupon?.discount || 0
   const taxAmount = taxResult?.tax.totalTax || 0
-  const cartTotal = Math.max(0, subtotal + fee + taxAmount - discount)
+  const effectiveShippingCost = deliveryMethod === 'PICKUP' ? 0 : (shippingCost ?? 0)
+  const cartTotal = Math.max(0, subtotal + fee + taxAmount + effectiveShippingCost - discount)
 
-  // Get the selected province's display info
+  // Get min date for delivery (tomorrow)
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const minDateStr = tomorrow.toISOString().split('T')[0]
+
+  // Selected pickup location details
+  const selectedPickup = pickupLocations.find(l => l.id === selectedPickupId)
+
   const selectedProvince = PROVINCES.find(p => p.slug === province)
 
   const handleApplyCoupon = async () => {
@@ -105,8 +184,14 @@ export default function CheckoutPage() {
       toast.error('Cart is empty')
       return
     }
-    if (!address || !city || !province || !postalCode) {
+
+    if (deliveryMethod === 'SHIPPING' && (!address || !city || !province || !postalCode)) {
       toast.error('Please fill all shipping fields')
+      return
+    }
+
+    if (deliveryMethod === 'PICKUP' && !selectedPickupId) {
+      toast.error('Please select a pickup location')
       return
     }
 
@@ -121,10 +206,14 @@ export default function CheckoutPage() {
           quantity: item.quantity,
           image: item.image,
         })),
-        shippingAddress: address,
-        shippingCity: city,
-        shippingProvince: province,
-        shippingPostalCode: postalCode,
+        shippingAddress: deliveryMethod === 'PICKUP' ? (selectedPickup?.address || '') : address,
+        shippingCity: deliveryMethod === 'PICKUP' ? (selectedPickup?.city || '') : city,
+        shippingProvince: deliveryMethod === 'PICKUP' ? (selectedPickup?.province || '') : province,
+        shippingPostalCode: deliveryMethod === 'PICKUP' ? (selectedPickup?.postalCode || '') : postalCode,
+        deliveryMethod,
+        pickupLocationId: deliveryMethod === 'PICKUP' ? selectedPickupId : undefined,
+        deliveryDate: deliveryDate ? new Date(deliveryDate).toISOString() : undefined,
+        deliveryTimeSlot: deliveryTimeSlot || undefined,
         notes,
       }
 
@@ -212,59 +301,194 @@ export default function CheckoutPage() {
       <h1 className="text-2xl font-bold text-cm-primary mb-8">Checkout</h1>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        {/* Shipping Form */}
+        {/* Delivery Section */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Delivery Method Toggle */}
           <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6">
             <h2 className="text-lg font-semibold text-cm-primary mb-4 flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-red-400" /> Shipping Address
+              <Truck className="w-5 h-5 text-red-400" /> Delivery Method
             </h2>
-            <div className="space-y-4">
-              <div>
-                <Label className="text-cm-secondary text-xs mb-1.5 block">Street Address *</Label>
-                <Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Main St" className={inputClass} required />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-cm-secondary text-xs mb-1.5 block">City *</Label>
-                  <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Toronto" className={inputClass} required />
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setDeliveryMethod('SHIPPING')}
+                className={`p-4 rounded-xl border-2 text-left transition-all ${
+                  deliveryMethod === 'SHIPPING'
+                    ? 'border-red-500/40 bg-red-500/5'
+                    : 'border-cm-border-hover hover:border-cm-border-hover bg-cm-hover'
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-lg">🚚</span>
+                  <span className={`text-sm font-semibold ${deliveryMethod === 'SHIPPING' ? 'text-red-300' : 'text-cm-secondary'}`}>Shipping</span>
                 </div>
+                <p className="text-[11px] text-cm-dim">Deliver to your address</p>
+              </button>
+              <button
+                onClick={() => setDeliveryMethod('PICKUP')}
+                className={`p-4 rounded-xl border-2 text-left transition-all ${
+                  deliveryMethod === 'PICKUP'
+                    ? 'border-red-500/40 bg-red-500/5'
+                    : 'border-cm-border-hover hover:border-cm-border-hover bg-cm-hover'
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-lg">🏪</span>
+                  <span className={`text-sm font-semibold ${deliveryMethod === 'PICKUP' ? 'text-red-300' : 'text-cm-secondary'}`}>Store Pickup</span>
+                </div>
+                <p className="text-[11px] text-cm-dim">Pick up at seller&apos;s store</p>
+              </button>
+            </div>
+          </div>
+
+          {/* Shipping Address (shown when SHIPPING) */}
+          {deliveryMethod === 'SHIPPING' && (
+            <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6">
+              <h2 className="text-lg font-semibold text-cm-primary mb-4 flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-red-400" /> Shipping Address
+              </h2>
+              <div className="space-y-4">
                 <div>
-                  <Label className="text-cm-secondary text-xs mb-1.5 block">Province *</Label>
-                  <div className="relative">
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">Street Address *</Label>
+                  <Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Main St" className={inputClass} required />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-cm-secondary text-xs mb-1.5 block">City *</Label>
+                    <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Toronto" className={inputClass} required />
+                  </div>
+                  <div>
+                    <Label className="text-cm-secondary text-xs mb-1.5 block">Province *</Label>
+                    <div className="relative">
+                      <select
+                        value={province}
+                        onChange={(e) => setProvince(e.target.value)}
+                        className={`w-full ${inputClass} appearance-none bg-cm-hover`}
+                        required
+                      >
+                        <option value="" className="bg-cm-elevated">Select Province</option>
+                        {PROVINCES.map((p) => (
+                          <option key={p.slug} value={p.slug} className="bg-cm-elevated">
+                            {p.name} ({p.code})
+                          </option>
+                        ))}
+                      </select>
+                      {selectedProvince && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                          <Percent className="w-3 h-3 text-red-300" />
+                          <span className="text-[10px] text-red-300 font-medium">
+                            {taxResult ? `${taxResult.tax.totalRate}%` : ''}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="w-1/2">
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">Postal Code *</Label>
+                  <Input value={postalCode} onChange={(e) => setPostalCode(e.target.value)} placeholder="M5V 3L9" className={inputClass} required />
+                </div>
+
+                {/* Preferred Delivery Date (Optional) */}
+                <div className="pt-2">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Calendar className="w-4 h-4 text-cm-dim" />
+                    <span className="text-xs font-medium text-cm-secondary uppercase tracking-wider">Preferred Delivery Date (optional)</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-cm-secondary text-xs mb-1.5 block">Date</Label>
+                      <Input
+                        type="date"
+                        value={deliveryDate}
+                        onChange={(e) => setDeliveryDate(e.target.value)}
+                        min={minDateStr}
+                        className={inputClass}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-cm-secondary text-xs mb-1.5 block">Time Slot</Label>
+                      <select
+                        value={deliveryTimeSlot}
+                        onChange={(e) => setDeliveryTimeSlot(e.target.value)}
+                        className={`w-full ${inputClass} appearance-none bg-cm-hover`}
+                      >
+                        <option value="" className="bg-cm-elevated">Standard delivery</option>
+                        <option value="Morning (8am-12pm)" className="bg-cm-elevated">Morning (8am-12pm)</option>
+                        <option value="Afternoon (12pm-5pm)" className="bg-cm-elevated">Afternoon (12pm-5pm)</option>
+                        <option value="Evening (5pm-9pm)" className="bg-cm-elevated">Evening (5pm-9pm)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-cm-secondary text-xs mb-1.5 block">Notes (optional)</Label>
+                  <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Any special delivery instructions" className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl min-h-[80px]" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Store Pickup (shown when PICKUP) */}
+          {deliveryMethod === 'PICKUP' && (
+            <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6">
+              <h2 className="text-lg font-semibold text-cm-primary mb-4 flex items-center gap-2">
+                <Store className="w-5 h-5 text-red-400" /> Pickup Location
+              </h2>
+              {pickupLocationsLoading ? (
+                <div className="flex items-center gap-2 text-cm-dim py-4">
+                  <Loader2 className="w-4 h-4 animate-spin" /> Loading pickup locations...
+                </div>
+              ) : pickupLocations.length === 0 ? (
+                <div className="text-center py-8 rounded-xl bg-cm-hover">
+                  <Store className="w-8 h-8 text-cm-faint mx-auto mb-2" />
+                  <p className="text-sm text-cm-dim">No pickup locations available for items in your cart.</p>
+                  <Button variant="ghost" onClick={() => setDeliveryMethod('SHIPPING')} className="text-red-400 mt-2 text-xs">
+                    Switch to shipping instead
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-cm-secondary text-xs mb-1.5 block">Select Pickup Location *</Label>
                     <select
-                      value={province}
-                      onChange={(e) => setProvince(e.target.value)}
+                      value={selectedPickupId}
+                      onChange={(e) => setSelectedPickupId(e.target.value)}
                       className={`w-full ${inputClass} appearance-none bg-cm-hover`}
-                      required
                     >
-                      <option value="" className="bg-cm-elevated">Select Province</option>
-                      {PROVINCES.map((p) => (
-                        <option key={p.slug} value={p.slug} className="bg-cm-elevated">
-                          {p.name} ({p.code})
+                      {pickupLocations.map((loc) => (
+                        <option key={loc.id} value={loc.id} className="bg-cm-elevated">
+                          {loc.name} — {loc.city}, {loc.province}
                         </option>
                       ))}
                     </select>
-                    {selectedProvince && (
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                        <Percent className="w-3 h-3 text-red-300" />
-                        <span className="text-[10px] text-red-300 font-medium">
-                          {taxResult ? `${taxResult.tax.totalRate}%` : ''}
-                        </span>
+                  </div>
+                  {selectedPickup && (
+                    <div className="p-4 rounded-xl bg-cm-hover border border-cm-border-subtle space-y-2">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-red-400" />
+                        <span className="text-sm font-medium text-cm-primary">{selectedPickup.name}</span>
                       </div>
-                    )}
+                      <p className="text-xs text-cm-dim">{selectedPickup.address}, {selectedPickup.city}, {selectedPickup.province} {selectedPickup.postalCode}</p>
+                      {selectedPickup.phone && (
+                        <p className="text-xs text-cm-dim">📞 {selectedPickup.phone}</p>
+                      )}
+                      {selectedPickup.hours && (
+                        <div className="flex items-center gap-1.5 text-xs text-cm-dim">
+                          <Clock className="w-3 h-3" />
+                          {selectedPickup.hours}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div>
+                    <Label className="text-cm-secondary text-xs mb-1.5 block">Notes (optional)</Label>
+                    <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Any special pickup instructions" className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl min-h-[80px]" />
                   </div>
                 </div>
-              </div>
-              <div className="w-1/2">
-                <Label className="text-cm-secondary text-xs mb-1.5 block">Postal Code *</Label>
-                <Input value={postalCode} onChange={(e) => setPostalCode(e.target.value)} placeholder="M5V 3L9" className={inputClass} required />
-              </div>
-              <div>
-                <Label className="text-cm-secondary text-xs mb-1.5 block">Notes (optional)</Label>
-                <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Any special delivery instructions" className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint rounded-xl min-h-[80px]" />
-              </div>
+              )}
             </div>
-          </div>
+          )}
 
           {/* Payment Info */}
           <div className="rounded-2xl bg-cm-elevated border border-cm-border-subtle p-6">
@@ -358,7 +582,6 @@ export default function CheckoutPage() {
                 )}
               </div>
             ) : (
-              /* Applied Coupon Badge */
               <div className="mb-4 rounded-xl bg-green-500/5 border border-green-500/10 p-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -401,6 +624,41 @@ export default function CheckoutPage() {
                   </span>
                   <span className="text-green-400 font-medium">-${discount.toFixed(2)}</span>
                 </div>
+              )}
+
+              {/* Shipping cost */}
+              <div className="flex justify-between text-sm">
+                <span className="text-cm-dim flex items-center gap-1">
+                  {deliveryMethod === 'PICKUP' ? (
+                    <>
+                      <Store className="w-3.5 h-3.5" /> Store Pickup
+                    </>
+                  ) : (
+                    <>
+                      <Truck className="w-3.5 h-3.5" /> Shipping
+                    </>
+                  )}
+                </span>
+                <span className="text-cm-secondary">
+                  {shippingLoading ? (
+                    <Loader2 className="w-3 h-3 animate-spin inline" />
+                  ) : deliveryMethod === 'PICKUP' ? (
+                    <span className="text-green-400 font-medium">Free</span>
+                  ) : shippingCost !== null ? (
+                    shippingCost === 0 ? (
+                      <span className="text-green-400 font-medium">Free</span>
+                    ) : (
+                      `$${shippingCost.toFixed(2)}`
+                    )
+                  ) : province ? (
+                    '...'
+                  ) : (
+                    <span className="text-cm-faint">—</span>
+                  )}
+                </span>
+              </div>
+              {deliveryMethod === 'SHIPPING' && shippingCost === 0 && province && (
+                <p className="text-[10px] text-green-400">🎉 Free shipping on orders over $75!</p>
               )}
 
               {/* Tax breakdown */}
@@ -461,9 +719,28 @@ export default function CheckoutPage() {
               </div>
             </div>
 
+            {/* Delivery date/time summary */}
+            {deliveryMethod === 'SHIPPING' && deliveryDate && (
+              <div className="mt-4 p-3 rounded-xl bg-cm-hover border border-cm-border-subtle">
+                <div className="flex items-center gap-2 text-xs text-cm-dim">
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span>Preferred: {new Date(deliveryDate).toLocaleDateString('en-CA', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+                  {deliveryTimeSlot && <span>· {deliveryTimeSlot}</span>}
+                </div>
+              </div>
+            )}
+            {deliveryMethod === 'PICKUP' && selectedPickup && (
+              <div className="mt-4 p-3 rounded-xl bg-cm-hover border border-cm-border-subtle">
+                <div className="flex items-center gap-2 text-xs text-cm-dim">
+                  <Store className="w-3.5 h-3.5" />
+                  <span>Pickup: {selectedPickup.name}</span>
+                </div>
+              </div>
+            )}
+
             <Button
               onClick={handlePlaceOrder}
-              disabled={loading || !province}
+              disabled={loading || (deliveryMethod === 'SHIPPING' && !province) || (deliveryMethod === 'PICKUP' && !selectedPickupId)}
               className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl h-12 mt-6"
             >
               {loading ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <CreditCard className="w-5 h-5 mr-2" />}
