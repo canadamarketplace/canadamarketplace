@@ -62,6 +62,9 @@ import SellerTransactions from './pages/seller/SellerTransactions'
 import BuyerAddressBook from './pages/buyer/BuyerAddressBook'
 import BuyerReviews from './pages/buyer/BuyerReviews'
 import SellerShipping from './pages/seller/SellerShipping'
+import SellerReturns from './pages/seller/SellerReturns'
+import AdminReturns from './pages/admin/AdminReturns'
+import MyReturnsPage from './pages/buyer/MyReturnsPage'
 import ComparePage from './pages/ComparePage'
 import CompareFloatingBar from './CompareFloatingBar'
 import type { PageView } from '@/lib/store'
@@ -95,6 +98,9 @@ function PageRenderer() {
     case 'seller-reviews': return <SellerReviews />
     case 'seller-transactions': return <SellerTransactions />
     case 'seller-shipping': return <SellerShipping />
+    case 'seller-returns': return <SellerReturns />
+    case 'admin-returns': return <AdminReturns />
+    case 'my-returns': return <MyReturnsPage />
     case 'address-book': return <BuyerAddressBook />
     case 'buyer-reviews': return <BuyerReviews />
     case 'compare': return <ComparePage />

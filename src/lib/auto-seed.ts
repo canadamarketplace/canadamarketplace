@@ -25,6 +25,7 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
       await db.conversation.deleteMany()
       await db.cartItem.deleteMany()
       await db.report.deleteMany()
+      await db.return.deleteMany()
       await db.dispute.deleteMany()
       await db.review.deleteMany()
       await db.orderItem.deleteMany()
@@ -47,7 +48,7 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
     // Create Categories
     const categories = await Promise.all([
       db.category.create({ data: { name: "Apparel", slug: "apparel", icon: "shirt", productCount: 8 } }),
-      db.category.create({ data: { name: "Drinkware", slug: "drinkware", icon: "cup-soda", productCount: 5 } }),
+      db.category.create({ data: { name: "Drinkware", slug: "drinkware", icon: "cup-soda", productCount: 6 } }),
       db.category.create({ data: { name: "Headwear", slug: "headwear", icon: "crown", productCount: 5 } }),
       db.category.create({ data: { name: "Music & Audio", slug: "music-audio", icon: "music", productCount: 0 } }),
       db.category.create({ data: { name: "Home & Garden", slug: "home-garden", icon: "home", productCount: 0 } }),
@@ -177,6 +178,7 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
       { title: 'Tunog Kalye "Morning Beats" Coffee Mug', cat: "drinkware", seller: 1, price: 16.99, condition: "NEW", desc: "Every morning needs beats and coffee. This fun ceramic mug features the Morning Beats design. Great gift for music lovers.", images: ["/products/mug-morning-beats.png", "/products/mug-beats-coffee.png"], isFeatured: false },
       { title: 'Tunog Kalye "Music Lover" Ceramic Mug', cat: "drinkware", seller: 1, price: 17.99, condition: "NEW", desc: "Show your love for music with this beautifully designed ceramic mug. Features Tunog Kalye's Music Lover graphic. 11oz capacity.", images: ["/products/mug-music-lover.png", "/products/mug-morning-beats.png"], isFeatured: false },
       { title: 'Tunog Kalye "Beats & Coffee" Mug', cat: "drinkware", seller: 1, price: 19.99, condition: "NEW", desc: "The perfect duo: beats and coffee. This premium ceramic mug features a stylish Beats & Coffee design. A must-have for your desk.", images: ["/products/mug-beats-coffee.png", "/products/mug-travel-tumbler.png"], isFeatured: false },
+      { title: 'Tunog Kalye Insulated Tumbler — 20oz', cat: "drinkware", seller: 1, price: 24.99, condition: "NEW", desc: "Premium insulated tumbler with the Tunog Kalye logo. Double-wall vacuum insulation keeps beverages hot for 6 hours or cold for 12 hours. BPA-free, spill-proof lid. Perfect for commute, office, or outdoor adventures.", images: ["/products/mug-travel-tumbler.png", "/products/merch-mugs-bg.png"], isFeatured: false },
       // Caps (by Tunog Kalye Québec - Seller 2) → Headwear
       { title: 'Tunog Kalye Classic Snapback — Black', cat: "headwear", seller: 2, price: 29.99, condition: "NEW", desc: "The classic Tunog Kalye snapback in black. Embroidered logo, adjustable snap closure. One size fits all. Premium quality.", images: ["/products/merch-collection.png", "/products/cap-snapback-black.png"], isFeatured: true },
       { title: 'Tunog Kalye Classic Snapback — Red', cat: "headwear", seller: 2, price: 29.99, condition: "NEW", desc: "Stand out with the Tunog Kalye snapback in bold red. Embroidered logo, adjustable snap closure. One size fits all.", images: ["/products/cap-snapback-red.png", "/products/cap-snapback-black.png"], isFeatured: false },
@@ -388,6 +390,31 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
           },
         })
       }
+    }
+
+    // Create Sample Returns
+    const returnData = [
+      { order: orders[0], buyer: orders[0].buyerId, seller: sellers[0].id, reason: "WRONG_SIZE", description: "Ordered size L but received XL. The label says XL.", status: "REQUESTED" },
+      { order: orders[1], buyer: orders[1].buyerId, seller: sellers[1].id, reason: "DEFECTIVE", description: "Mug arrived with a crack on the handle.", status: "APPROVED" },
+      { order: orders[2], buyer: orders[2].buyerId, seller: sellers[0].id, reason: "NOT_AS_DESCRIBED", description: "Colour is different from the listing photos.", status: "REFUNDED" },
+    ]
+    for (const r of returnData) {
+      await db.return.create({
+        data: {
+          rmaNumber: `RMA-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+          orderId: r.order.id,
+          buyerId: r.buyer,
+          sellerId: r.seller,
+          reason: r.reason,
+          description: r.description,
+          status: r.status,
+          refundAmount: r.status === "REFUNDED" ? r.order.subtotal : null,
+          refundMethod: r.status === "REFUNDED" ? "ORIGINAL" : null,
+          approvedAt: ["APPROVED", "REFUNDED"].includes(r.status) ? new Date(Date.now() - 3 * 86400000) : null,
+          receivedAt: r.status === "REFUNDED" ? new Date(Date.now() - 2 * 86400000) : null,
+          refundedAt: r.status === "REFUNDED" ? new Date(Date.now() - 86400000) : null,
+        },
+      })
     }
 
     // Create Payouts

@@ -63,6 +63,9 @@ export type PageView =
   | "seller-transactions"
   | "seller-reviews"
   | "seller-shipping"
+  | "seller-returns"
+  | "admin-returns"
+  | "my-returns"
   | "address-book"
   | "buyer-reviews"
   | "compare"
@@ -112,6 +115,9 @@ function pageToUrlBase(page: PageView, params: Record<string, string>): string {
     "seller-transactions": "/seller/transactions",
     "seller-reviews": "/seller/reviews",
     "seller-shipping": "/seller/shipping",
+    "seller-returns": "/seller/returns",
+    "admin-returns": "/admin/returns",
+    "my-returns": "/my-returns",
     "address-book": "/address-book",
     "buyer-reviews": "/my-reviews",
     "notifications": "/notifications",
@@ -186,6 +192,8 @@ export function urlToPage(pathname: string, search: string): { page: PageView; p
   if (cleanPath === "/seller/transactions") return { page: "seller-transactions", params: {} }
   if (cleanPath === "/seller/reviews") return { page: "seller-reviews", params: {} }
   if (cleanPath === "/seller/shipping") return { page: "seller-shipping", params: {} }
+  if (cleanPath === "/seller/returns") return { page: "seller-returns", params: {} }
+  if (cleanPath === "/my-returns") return { page: "my-returns", params: {} }
   if (cleanPath === "/address-book") return { page: "address-book", params: {} }
   if (cleanPath === "/my-reviews") return { page: "buyer-reviews", params: {} }
   if (cleanPath === "/notifications") return { page: "notifications", params: {} }
@@ -203,7 +211,7 @@ export function urlToPage(pathname: string, search: string): { page: PageView; p
     const sub = cleanPath.replace("/admin/", "").replace("/admin", "")
     const pageMap: Record<string, PageView> = {
       "": "admin-dashboard", "users": "admin-users", "products": "admin-products",
-      "orders": "admin-orders", "disputes": "admin-disputes", "settings": "admin-settings",
+      "orders": "admin-orders", "disputes": "admin-disputes", "returns": "admin-returns", "settings": "admin-settings",
       "tax": "admin-tax", "payments": "admin-payments", "shipping": "admin-shipping",
       "marketing": "admin-marketing", "reports": "admin-reports"
     }

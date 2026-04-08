@@ -104,6 +104,41 @@ export const ORDER_STATUS_COLORS: Record<OrderStatus, string> = {
   REFUNDED: "bg-stone-500/10 text-stone-400 border-stone-500/20",
 }
 
+export type ReturnStatus = "REQUESTED" | "APPROVED" | "REJECTED" | "RETURN_RECEIVED" | "INSPECTING" | "REFUNDED" | "PARTIAL_REFUND" | "CLOSED"
+export type ReturnReason = "DEFECTIVE" | "WRONG_ITEM" | "NOT_AS_DESCRIBED" | "DAMAGED" | "WRONG_SIZE" | "CHANGE_OF_MIND" | "OTHER"
+
+export const RETURN_STATUS_LABELS: Record<ReturnStatus, string> = {
+  REQUESTED: "Requested",
+  APPROVED: "Approved",
+  REJECTED: "Rejected",
+  RETURN_RECEIVED: "Return Received",
+  INSPECTING: "Inspecting",
+  REFUNDED: "Refunded",
+  PARTIAL_REFUND: "Partial Refund",
+  CLOSED: "Closed",
+}
+
+export const RETURN_STATUS_COLORS: Record<ReturnStatus, string> = {
+  REQUESTED: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
+  APPROVED: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+  REJECTED: "bg-red-500/10 text-red-400 border-red-500/20",
+  RETURN_RECEIVED: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+  INSPECTING: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+  REFUNDED: "bg-green-500/10 text-green-400 border-green-500/20",
+  PARTIAL_REFUND: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  CLOSED: "bg-stone-500/10 text-cm-muted border-stone-500/20",
+}
+
+export const RETURN_REASON_LABELS: Record<ReturnReason, string> = {
+  DEFECTIVE: "Defective Product",
+  WRONG_ITEM: "Wrong Item Received",
+  NOT_AS_DESCRIBED: "Not as Described",
+  DAMAGED: "Damaged in Transit",
+  WRONG_SIZE: "Wrong Size/Fit",
+  CHANGE_OF_MIND: "Change of Mind",
+  OTHER: "Other",
+}
+
 export type CouponType = "PERCENTAGE" | "FIXED"
 
 export interface Coupon {

@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Users, Package, ShoppingCart, AlertTriangle, Settings,
   Store, PlusCircle, DollarSign, Tag, ExternalLink, Heart, User,
   MessageCircle, Bell, Menu, X, ChevronLeft, ShoppingBag, Star, CreditCard,
-  Receipt, Truck, Megaphone, BarChart3, MapPin
+  Receipt, Truck, Megaphone, BarChart3, MapPin, RotateCcw
 } from 'lucide-react'
 
 interface DashboardSidebarProps {
@@ -31,6 +31,7 @@ const ADMIN_MENU: MenuItem[] = [
   { label: 'Products', icon: Package, page: 'admin-products' },
   { label: 'Orders', icon: ShoppingCart, page: 'admin-orders' },
   { label: 'Disputes', icon: AlertTriangle, page: 'admin-disputes' },
+  { label: 'Returns/RMA', icon: RotateCcw, page: 'admin-returns' },
   { label: 'Reports', icon: BarChart3, page: 'admin-reports' },
   { label: 'Tax Rules', icon: Receipt, page: 'admin-tax' },
   { label: 'Payments', icon: CreditCard, page: 'admin-payments' },
@@ -44,6 +45,7 @@ const SELLER_MENU: MenuItem[] = [
   { label: 'Products', icon: Package, page: 'my-products' },
   { label: 'Add Product', icon: PlusCircle, page: 'add-product' },
   { label: 'Orders', icon: ShoppingCart, page: 'my-orders' },
+  { label: 'Returns/RMA', icon: RotateCcw, page: 'seller-returns' },
   { label: 'Shipping', icon: Truck, page: 'seller-shipping' },
   { label: 'Store Profile', icon: Store, page: 'my-store' },
   { label: 'Payouts', icon: DollarSign, page: 'my-payouts' },
@@ -54,6 +56,7 @@ const SELLER_MENU: MenuItem[] = [
 
 const BUYER_MENU: MenuItem[] = [
   { label: 'My Orders', icon: ShoppingCart, page: 'orders' },
+  { label: 'My Returns', icon: RotateCcw, page: 'my-returns' },
   { label: 'Shopping Cart', icon: ShoppingBag, page: 'cart' },
   { label: 'Wishlist', icon: Heart, page: 'wishlist' },
   { label: 'My Profile', icon: User, page: 'profile' },

@@ -13,6 +13,10 @@ import {
   ChevronLeft, Package, Clock, MapPin, Truck, CheckCircle2,
   AlertTriangle, CreditCard, Calendar, Ban, RotateCcw, Scale, CircleDot
 } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { RETURN_REASON_LABELS, type ReturnReason } from '@/lib/types'
 import { toast } from 'sonner'
 
 interface OrderItem {
@@ -105,6 +109,11 @@ export default function OrderDetailPage() {
   const [loading, setLoading] = useState(true)
   const [trackingInput, setTrackingInput] = useState('')
   const [savingTracking, setSavingTracking] = useState(false)
+  const [returnDialogOpen, setReturnDialogOpen] = useState(false)
+  const [returnReason, setReturnReason] = useState('')
+  const [returnDescription, setReturnDescription] = useState('')
+  const [submittingReturn, setSubmittingReturn] = useState(false)
+  const [existingReturns, setExistingReturns] = useState<any[]>([])
 
   const fetchOrder = async (id: string) => {
     setLoading(true)
@@ -152,6 +161,19 @@ export default function OrderDetailPage() {
   const isBuyer = order?.buyer?.id === user?.id
   const estimatedDelivery = getEstimatedDelivery(order?.shippedAt)
 
+  // Fetch existing returns for this order
+  useEffect(() => {
+    if (order?.id) {
+      fetch(`/api/returns?buyerId=${user?.id || ''}`)
+        .then(res => res.ok ? res.json() : [])
+        .then(data => setExistingReturns(data.filter((r: any) => r.order?.id === order.id)))
+        .catch(() => {})
+    }
+  }, [order?.id, user?.id])
+
+  const hasOpenReturn = existingReturns.some((r: any) => ["REQUESTED", "APPROVED", "RETURN_RECEIVED", "INSPECTING"].includes(r.status))
+  const canRequestReturn = isBuyer && (order.status === 'DELIVERED' || order.status === 'PAID' || order.status === 'SHIPPED') && !hasOpenReturn
+
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-pulse">
@@ -165,6 +187,33 @@ export default function OrderDetailPage() {
   if (!order) return null
 
   const canDispute = order.status === 'DELIVERED' && !order.disputes.some(d => d.status === 'OPEN' || d.status === 'UNDER_REVIEW')
+
+  const handleSubmitReturn = async () => {
+    if (!returnReason || !returnDescription.trim()) {
+      toast.error('Please select a reason and provide a description')
+      return
+    }
+    setSubmittingReturn(true)
+    try {
+      const res = await fetch('/api/returns', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: order.id, reason: returnReason, description: returnDescription.trim() }),
+      })
+      if (res.ok) {
+        toast.success('Return request submitted successfully!')
+        setReturnDialogOpen(false)
+        setReturnReason('')
+        setReturnDescription('')
+      } else {
+        const data = await res.json()
+        toast.error(data.error || 'Failed to submit return request')
+      }
+    } catch {
+      toast.error('Failed to submit return request')
+    }
+    setSubmittingReturn(false)
+  }
   const showTrackingInput = isSeller && (order.status === 'PAID' || order.status === 'SHIPPED')
   const isBranchOrder = ['CANCELLED', 'DISPUTED', 'REFUNDED'].includes(order.status)
 
@@ -537,15 +586,99 @@ export default function OrderDetailPage() {
       </div>
 
       {/* Actions */}
-      {canDispute && (
-        <Button
-          onClick={() => navigate('file-dispute', { orderId: order.id })}
-          variant="outline"
-          className="border-red-500/20 text-red-400 hover:bg-red-500/10 rounded-xl"
-        >
-          <AlertTriangle className="w-4 h-4 mr-2" /> {t('orders.fileDispute')}
-        </Button>
+      <div className="flex flex-wrap gap-3">
+        {canRequestReturn && (
+          <Button
+            onClick={() => setReturnDialogOpen(true)}
+            variant="outline"
+            className="border-purple-500/20 text-purple-400 hover:bg-purple-500/10 rounded-xl"
+          >
+            <RotateCcw className="w-4 h-4 mr-2" /> Request Return
+          </Button>
+        )}
+        {canDispute && (
+          <Button
+            onClick={() => navigate('file-dispute', { orderId: order.id })}
+            variant="outline"
+            className="border-red-500/20 text-red-400 hover:bg-red-500/10 rounded-xl"
+          >
+            <AlertTriangle className="w-4 h-4 mr-2" /> {t('orders.fileDispute')}
+          </Button>
+        )}
+      </div>
+
+      {/* Existing Returns Info */}
+      {existingReturns.length > 0 && (
+        <div className="mt-4 p-4 rounded-xl bg-purple-500/5 border border-purple-500/10">
+          <p className="text-sm text-cm-secondary flex items-center gap-2">
+            <RotateCcw className="w-4 h-4 text-purple-400" />
+            {existingReturns.length} return{existingReturns.length > 1 ? 's' : ''} for this order
+          </p>
+          {existingReturns.map((r: any) => (
+            <button
+              key={r.id}
+              onClick={() => navigate('my-returns')}
+              className="block text-xs text-purple-300 hover:text-purple-200 mt-1 ml-6"
+            >
+              {r.rmaNumber} — {r.status}
+            </button>
+          ))}
+        </div>
       )}
+
+      {/* Return Request Dialog */}
+      <Dialog open={returnDialogOpen} onOpenChange={(open) => { if (!open) { setReturnDialogOpen(false); setReturnReason(''); setReturnDescription('') } }}>
+        <DialogContent className="bg-cm-elevated border-cm-border-hover rounded-2xl max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-cm-primary">Request Return</DialogTitle>
+            <DialogDescription className="text-cm-dim">
+              Submit a return request for order {order.orderNumber}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <label className="text-sm font-medium text-cm-secondary mb-2 block">Reason <span className="text-red-400">*</span></label>
+              <Select value={returnReason} onValueChange={setReturnReason}>
+                <SelectTrigger className="bg-cm-hover border-cm-border-hover text-cm-secondary rounded-xl h-10">
+                  <SelectValue placeholder="Select a reason" />
+                </SelectTrigger>
+                <SelectContent className="bg-cm-elevated border-cm-border-hover">
+                  {(Object.entries(RETURN_REASON_LABELS) as [ReturnReason, string][]).map(([key, label]) => (
+                    <SelectItem key={key} value={key} className="text-cm-secondary">{label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-cm-secondary mb-2 block">Description <span className="text-red-400">*</span></label>
+              <Textarea
+                value={returnDescription}
+                onChange={(e) => setReturnDescription(e.target.value)}
+                placeholder="Please describe the issue with your order..."
+                className="bg-cm-hover border-cm-border-hover text-cm-secondary placeholder:text-cm-faint min-h-[100px] rounded-xl"
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => { setReturnDialogOpen(false); setReturnReason(''); setReturnDescription('') }}
+              disabled={submittingReturn}
+              className="border-cm-border-hover text-cm-secondary rounded-xl"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmitReturn}
+              disabled={submittingReturn || !returnReason || !returnDescription.trim()}
+              className="bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl"
+            >
+              {submittingReturn ? <CircleDot className="w-4 h-4 mr-2 animate-spin" /> : <RotateCcw className="w-4 h-4 mr-2" />}
+              Submit Return Request
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {order.disputes.length > 0 && (
         <div className="mt-4 p-4 rounded-xl bg-red-500/5 border border-red-500/10">
