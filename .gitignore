@@ -60,3 +60,4 @@ download/
 
 # Mini-services
 mini-services/*/node_modules/
+prisma/db/
