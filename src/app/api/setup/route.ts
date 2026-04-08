@@ -65,8 +65,9 @@ async function ensureSchemaSync(): Promise<{ synced: boolean; message: string }>
 
     // Create new tables if they don't exist
     const newTables = ['"Brand"', '"GiftCard"', '"RewardPoints"', '"StoreCredit"', '"Affiliate"', '"ExtraFee"', '"ShippingRate"', '"PickupLocation"', '"DailyDeal"', '"QuoteRequest"', '"Return"'] as const
+    const newTableList = ['Brand', 'GiftCard', 'RewardPoints', 'StoreCredit', 'Affiliate', 'ExtraFee', 'ShippingRate', 'PickupLocation', 'DailyDeal', 'QuoteRequest', 'Return']
     const existingNewTables = await db.$queryRawUnsafe(
-      `SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN (${newTables.join(',')})`
+      `SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('${newTableList.join("','")}')`
     ) as Array<{ table_name: string }>
     const existingTableNames = new Set(existingNewTables.map(t => t.table_name))
 
