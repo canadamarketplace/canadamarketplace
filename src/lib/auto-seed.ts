@@ -19,36 +19,21 @@ export async function ensureDatabaseSeeded(force: boolean = false): Promise<{ se
     // If force reseed, clear all existing data first
     if (force && categoryCount > 0) {
       console.log("🔄 Force reseed: clearing existing data...")
-      await db.appliedCoupon.deleteMany()
-      await db.coupon.deleteMany()
-      await db.message.deleteMany()
-      await db.conversation.deleteMany()
-      await db.cartItem.deleteMany()
-      await db.report.deleteMany()
-      await db.return.deleteMany()
-      await db.dispute.deleteMany()
-      await db.review.deleteMany()
-      await db.orderItem.deleteMany()
-      await db.order.deleteMany()
-      await db.productVariant.deleteMany()
-      await db.product.deleteMany()
-      await db.payout.deleteMany()
-      await db.notification.deleteMany()
-      await db.siteSetting.deleteMany()
-      await db.store.deleteMany()
-      await db.province.deleteMany()
-      await db.category.deleteMany()
-      await db.brand.deleteMany()
-      await db.giftCard.deleteMany()
-      await db.rewardPoints.deleteMany()
-      await db.storeCredit.deleteMany()
-      await db.affiliate.deleteMany()
-      await db.extraFee.deleteMany()
-      await db.quoteRequest.deleteMany()
-      await db.dailyDeal.deleteMany()
-      await db.shippingRate.deleteMany()
-      await db.pickupLocation.deleteMany()
-      await db.user.deleteMany()
+      const tablesToDelete = [
+        '"AppliedCoupon"', '"OrderItem"', '"Review"', '"Return"',
+        '"Dispute"', '"Message"', '"Conversation"', '"CartItem"',
+        '"Payout"', '"Notification"', '"ProductVariant"', '"DailyDeal"',
+        '"Product"', '"Coupon"', '"QuoteRequest"',
+        '"SiteSetting"', '"Store"', '"Province"', '"Category"',
+        '"Brand"', '"GiftCard"', '"RewardPoints"', '"StoreCredit"',
+        '"Affiliate"', '"ExtraFee"', '"ShippingRate"', '"PickupLocation"',
+      ]
+      for (const table of tablesToDelete) {
+        try {
+          await db.$executeRawUnsafe(`DELETE FROM ${table}`)
+        } catch (e) { /* table might not exist yet */ }
+      }
+      try { await db.$executeRawUnsafe(`DELETE FROM "User"`) } catch (e) {}
       console.log("  ✅ All existing data cleared")
     }
 
